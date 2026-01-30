@@ -138,10 +138,10 @@ const preloadedAssets: PreloadedAsset[] = [
   { id: 'fire-hydrant', name: 'Fire Hydrant', category: 'structures', subcategory: 'safety', icon: FlameKindling, tags: ['fire', 'hydrant', 'water', 'emergency'], tier: 'free', imageUrl: '/placeholder.svg' },
 
   // Marine Structures
-  { id: 'wharf', name: 'Wharf', category: 'structures', subcategory: 'marine', icon: Anchor, tags: ['dock', 'pier', 'harbor', 'water'], tier: 'free', imageUrl: '/placeholder.svg' },
-  { id: 'dock-wooden', name: 'Wooden Dock', category: 'structures', subcategory: 'marine', icon: Anchor, tags: ['dock', 'wood', 'pier', 'lake'], tier: 'free', imageUrl: '/placeholder.svg' },
-  { id: 'dock-concrete', name: 'Concrete Dock', category: 'structures', subcategory: 'marine', icon: Anchor, tags: ['dock', 'concrete', 'harbor', 'industrial'], tier: 'pro', imageUrl: '/placeholder.svg' },
-  { id: 'pier', name: 'Pier', category: 'structures', subcategory: 'marine', icon: Anchor, tags: ['pier', 'boardwalk', 'ocean'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'wharf', name: 'Wharf', category: 'structures', subcategory: 'docks', icon: Anchor, tags: ['dock', 'pier', 'harbor', 'water'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'dock-wooden', name: 'Wooden Dock', category: 'structures', subcategory: 'docks', icon: Anchor, tags: ['dock', 'wood', 'pier', 'lake'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'dock-concrete', name: 'Concrete Dock', category: 'structures', subcategory: 'docks', icon: Anchor, tags: ['dock', 'concrete', 'harbor', 'industrial'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'pier', name: 'Pier', category: 'structures', subcategory: 'docks', icon: Anchor, tags: ['pier', 'boardwalk', 'ocean'], tier: 'free', imageUrl: '/placeholder.svg' },
 
   // Outdoor
   { id: 'swimming-pool', name: 'Swimming Pool', category: 'structures', subcategory: 'outdoor', icon: Waves, tags: ['pool', 'water', 'backyard', 'recreation'], tier: 'pro', imageUrl: '/placeholder.svg' },
@@ -354,15 +354,15 @@ const preloadedAssets: PreloadedAsset[] = [
   { id: 'bass', name: 'Bass', category: 'animals', subcategory: 'freshwater', icon: Fish, tags: ['animal', 'fish', 'bass', 'freshwater'], tier: 'free', imageUrl: '/placeholder.svg' },
 
   // Aquatic - Marine
-  { id: 'jellyfish', name: 'Jellyfish', category: 'animals', subcategory: 'marine', icon: Waves, tags: ['animal', 'jellyfish', 'ocean', 'invertebrate'], tier: 'free', imageUrl: '/placeholder.svg' },
-  { id: 'seahorse', name: 'Seahorse', category: 'animals', subcategory: 'marine', icon: Fish, tags: ['animal', 'seahorse', 'ocean', 'tropical'], tier: 'free', imageUrl: '/placeholder.svg' },
-  { id: 'sea-urchin', name: 'Sea Urchin', category: 'animals', subcategory: 'marine', icon: CircleDot, tags: ['animal', 'sea-urchin', 'ocean', 'spiny'], tier: 'free', imageUrl: '/placeholder.svg' },
-  { id: 'manta-ray', name: 'Manta Ray', category: 'animals', subcategory: 'marine', icon: Fish, tags: ['animal', 'manta', 'ray', 'ocean'], tier: 'pro', imageUrl: '/placeholder.svg' },
-  { id: 'blue-whale', name: 'Blue Whale', category: 'animals', subcategory: 'marine', icon: Fish, tags: ['animal', 'whale', 'blue', 'ocean', 'mammal'], tier: 'pro', imageUrl: '/placeholder.svg' },
-  { id: 'orca', name: 'Orca', category: 'animals', subcategory: 'marine', icon: Fish, tags: ['animal', 'orca', 'killer-whale', 'ocean'], tier: 'pro', imageUrl: '/placeholder.svg' },
-  { id: 'shrimp', name: 'Shrimp', category: 'animals', subcategory: 'marine', icon: Fish, tags: ['animal', 'shrimp', 'crustacean', 'ocean'], tier: 'free', imageUrl: '/placeholder.svg' },
-  { id: 'dolphin', name: 'Dolphin', category: 'animals', subcategory: 'marine', icon: Fish, tags: ['animal', 'dolphin', 'ocean', 'mammal'], tier: 'free', imageUrl: '/placeholder.svg' },
-  { id: 'algae', name: 'Algae', category: 'animals', subcategory: 'marine', icon: Leaf, tags: ['plant', 'algae', 'ocean', 'seaweed'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'jellyfish', name: 'Jellyfish', category: 'animals', subcategory: 'sea-life', icon: Waves, tags: ['animal', 'jellyfish', 'ocean', 'invertebrate'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'seahorse', name: 'Seahorse', category: 'animals', subcategory: 'sea-life', icon: Fish, tags: ['animal', 'seahorse', 'ocean', 'tropical'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'sea-urchin', name: 'Sea Urchin', category: 'animals', subcategory: 'sea-life', icon: CircleDot, tags: ['animal', 'sea-urchin', 'ocean', 'spiny'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'manta-ray', name: 'Manta Ray', category: 'animals', subcategory: 'sea-life', icon: Fish, tags: ['animal', 'manta', 'ray', 'ocean'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'blue-whale', name: 'Blue Whale', category: 'animals', subcategory: 'sea-life', icon: Fish, tags: ['animal', 'whale', 'blue', 'ocean', 'mammal'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'orca', name: 'Orca', category: 'animals', subcategory: 'sea-life', icon: Fish, tags: ['animal', 'orca', 'killer-whale', 'ocean'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'shrimp', name: 'Shrimp', category: 'animals', subcategory: 'sea-life', icon: Fish, tags: ['animal', 'shrimp', 'crustacean', 'ocean'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'dolphin', name: 'Dolphin', category: 'animals', subcategory: 'sea-life', icon: Fish, tags: ['animal', 'dolphin', 'ocean', 'mammal'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'algae', name: 'Algae', category: 'animals', subcategory: 'sea-life', icon: Leaf, tags: ['plant', 'algae', 'ocean', 'seaweed'], tier: 'free', imageUrl: '/placeholder.svg' },
 
   // Reptiles
   { id: 'crocodile', name: 'Crocodile', category: 'animals', subcategory: 'reptiles', icon: Fish, tags: ['animal', 'crocodile', 'reptile', 'swamp'], tier: 'pro', imageUrl: '/placeholder.svg' },
@@ -442,8 +442,93 @@ export function PreloadedAssets() {
       source: 'local',
     });
 
-    // ALSO spawn in 3D scene - map category to primitive type
-    const categoryToPrimitive: Record<string, PrimitiveType> = {
+    // Map subcategory to appropriate primitive shape for visual representation
+    const subcategoryToPrimitive: Record<string, PrimitiveType> = {
+      // Characters - upright figures
+      'males': 'cylinder',
+      'females': 'cylinder',
+      'robots': 'cube',
+      'cyborgs': 'cube',
+      'monsters': 'cylinder',
+      'dragons': 'cone',
+      
+      // Structures
+      'houses': 'cube',
+      'buildings': 'cube',
+      'walls': 'plane',
+      'doors': 'plane',
+      'stairs': 'cube',
+      'roofs': 'cone',
+      'safety': 'cylinder',
+      'docks': 'plane',
+      'outdoor': 'plane',
+      
+      // Furniture
+      'tables': 'cube',
+      'cabinets': 'cube',
+      'beds': 'cube',
+      'seating': 'cube',
+      
+      // Electronics
+      'computers': 'cube',
+      'monitors': 'plane',
+      'tvs': 'plane',
+      'electrical': 'cylinder',
+      'lights': 'sphere',
+      
+      // Kitchen
+      'appliances': 'cube',
+      'cutlery': 'cylinder',
+      
+      // Food
+      'breakfast': 'cube',
+      'lunch': 'sphere',
+      'dinner': 'sphere',
+      'decor': 'sphere',
+      'fruits': 'sphere',
+      
+      // Textiles
+      'clothing': 'plane',
+      'linens': 'plane',
+      
+      // Vehicles
+      'sports': 'cube',
+      'jdm': 'cube',
+      'trucks': 'cube',
+      'luxury': 'cube',
+      'classic': 'cube',
+      'sedan': 'cube',
+      'emergency': 'cube',
+      
+      // Parts
+      'gears': 'torus',
+      'engines': 'cube',
+      'exhausts': 'cylinder',
+      'spoilers': 'plane',
+      
+      // Nature
+      'trees': 'cone',
+      'bushes': 'sphere',
+      'rocks': 'sphere',
+      'mountains': 'cone',
+      'gardening': 'cylinder',
+      
+      // Animals - shape based on body type
+      'domestic': 'cylinder',     // dogs, cats - upright
+      'wild': 'cylinder',         // wolves, big cats
+      'primates': 'cylinder',     // gorillas, chimps - upright
+      'birds': 'cone',            // birds - pointed/tapered
+      'freshwater': 'sphere',     // fish - oval
+      'sea-life': 'sphere',       // sea creatures - round/oval
+      'reptiles': 'cylinder',     // crocodiles - elongated
+      
+      // Terrain/Biomes
+      'biomes': 'plane',
+      'roads': 'plane',
+    };
+    
+    // Use subcategory first, then fall back to category-based defaults
+    const categoryDefaults: Record<string, PrimitiveType> = {
       'characters': 'cylinder',
       'structures': 'cube',
       'furniture': 'cube',
@@ -457,7 +542,8 @@ export function PreloadedAssets() {
       'nature': 'cone',
       'terrain': 'plane',
     };
-    const primitiveType = categoryToPrimitive[asset.category] || 'cube';
+    
+    const primitiveType = subcategoryToPrimitive[asset.subcategory] || categoryDefaults[asset.category] || 'cube';
     addObject(primitiveType, asset.name);
     
     toast.success(`Added ${asset.name}`, {
