@@ -10,24 +10,36 @@ import {
 } from '@react-three/drei';
 import { Suspense } from 'react';
 import { motion } from 'framer-motion';
+import { useSceneStore } from '@/store/sceneStore';
+import { SceneObjectMesh } from './SceneObject';
 
 function Scene() {
+  const { objects, selectObject } = useSceneStore();
+
+  const handleMissedClick = () => {
+    selectObject(null);
+  };
+
   return (
     <>
       <ambientLight intensity={0.4} />
       <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
       <pointLight position={[-10, -10, -5]} intensity={0.5} color="#00d4ff" />
       
-      {/* Demo object - a glowing cube */}
-      <mesh position={[0, 0.5, 0]} castShadow>
-        <boxGeometry args={[1, 1, 1]} />
-        <meshStandardMaterial 
-          color="#00d4ff" 
-          emissive="#00d4ff"
-          emissiveIntensity={0.2}
-          metalness={0.8}
-          roughness={0.2}
-        />
+      {/* Render all scene objects */}
+      {objects.map((object) => (
+        <SceneObjectMesh key={object.id} object={object} />
+      ))}
+
+      {/* Clickable ground plane for deselection */}
+      <mesh 
+        rotation={[-Math.PI / 2, 0, 0]} 
+        position={[0, -0.01, 0]} 
+        onClick={handleMissedClick}
+        visible={false}
+      >
+        <planeGeometry args={[100, 100]} />
+        <meshBasicMaterial transparent opacity={0} />
       </mesh>
 
       {/* Ground grid */}

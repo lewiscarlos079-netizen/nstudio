@@ -14,10 +14,13 @@ import {
   Upload,
   Save,
   Undo,
-  Redo
+  Redo,
+  Trash2
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Separator } from '@/components/ui/separator';
+import { useSceneStore, PrimitiveType } from '@/store/sceneStore';
+import { toast } from 'sonner';
 
 const transformTools = [
   { icon: MousePointer, label: 'Select', shortcut: 'Q' },
@@ -26,14 +29,28 @@ const transformTools = [
   { icon: Maximize2, label: 'Scale', shortcut: 'R' },
 ];
 
-const primitives = [
-  { icon: Box, label: 'Cube' },
-  { icon: Circle, label: 'Sphere' },
-  { icon: Cylinder, label: 'Cylinder' },
-  { icon: Triangle, label: 'Cone' },
+const primitives: { icon: typeof Box; label: string; type: PrimitiveType }[] = [
+  { icon: Box, label: 'Cube', type: 'cube' },
+  { icon: Circle, label: 'Sphere', type: 'sphere' },
+  { icon: Cylinder, label: 'Cylinder', type: 'cylinder' },
+  { icon: Triangle, label: 'Cone', type: 'cone' },
 ];
 
 export function ToolPanel() {
+  const { addObject, clearScene, objects, selectedObjectId, removeObject } = useSceneStore();
+
+  const handleAddPrimitive = (type: PrimitiveType, label: string) => {
+    addObject(type);
+    toast.success(`${label} added to scene`);
+  };
+
+  const handleDeleteSelected = () => {
+    if (selectedObjectId) {
+      removeObject(selectedObjectId);
+      toast.success('Object deleted');
+    }
+  };
+
   return (
     <motion.div
       initial={{ x: -20, opacity: 0 }}
@@ -69,14 +86,37 @@ export function ToolPanel() {
               key={prim.label}
               variant="ghost"
               size="sm"
-              className="flex-col gap-1 h-auto py-3 text-muted-foreground hover:text-foreground"
+              className="flex-col gap-1 h-auto py-3 text-muted-foreground hover:text-foreground hover:bg-primary/20"
+              onClick={() => handleAddPrimitive(prim.type, prim.label)}
             >
               <prim.icon className="w-5 h-5" />
               <span className="text-xs">{prim.label}</span>
             </Button>
           ))}
         </div>
+        <div className="text-xs text-muted-foreground/60 text-center mt-1">
+          {objects.length} object{objects.length !== 1 ? 's' : ''} in scene
+        </div>
       </div>
+
+      {/* Selection Actions */}
+      {selectedObjectId && (
+        <>
+          <Separator className="bg-border/50" />
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-muted-foreground font-mono mb-2 px-2">SELECTION</span>
+            <Button
+              variant="destructive"
+              size="sm"
+              className="gap-2"
+              onClick={handleDeleteSelected}
+            >
+              <Trash2 className="w-4 h-4" />
+              Delete Selected
+            </Button>
+          </div>
+        </>
+      )}
 
       <Separator className="bg-border/50" />
 
