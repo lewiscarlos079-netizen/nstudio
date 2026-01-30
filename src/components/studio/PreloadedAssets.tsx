@@ -61,7 +61,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useProjectStore } from '@/store/projectStore';
-import { useSceneStore, PrimitiveType } from '@/store/sceneStore';
+import { useSceneStore } from '@/store/sceneStore';
 
 interface PreloadedAsset {
   id: string;
@@ -407,7 +407,7 @@ export function PreloadedAssets() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedTier, setSelectedTier] = useState<'all' | 'free' | 'pro' | 'enterprise'>('all');
   const { addAsset } = useProjectStore();
-  const { addObject } = useSceneStore();
+  const { addObject, addProceduralModel } = useSceneStore();
 
   const filteredAssets = preloadedAssets.filter(asset => {
     const matchesSearch = 
@@ -442,109 +442,283 @@ export function PreloadedAssets() {
       source: 'local',
     });
 
-    // Map subcategory to appropriate primitive shape for visual representation
-    const subcategoryToPrimitive: Record<string, PrimitiveType> = {
-      // Characters - upright figures
-      'males': 'cylinder',
-      'females': 'cylinder',
-      'robots': 'cube',
-      'cyborgs': 'cube',
-      'monsters': 'cylinder',
-      'dragons': 'cone',
+    // Map asset IDs to procedural model IDs
+    const assetToProceduralModel: Record<string, string> = {
+      // Characters
+      'male-warrior': 'humanoid',
+      'male-mage': 'humanoid',
+      'male-knight': 'humanoid',
+      'male-peasant': 'humanoid',
+      'female-archer': 'humanoid',
+      'female-sorceress': 'humanoid',
+      'female-queen': 'humanoid',
+      'robot-basic': 'robot',
+      'cyborg-soldier': 'robot',
+      'ogre': 'humanoid',
+      'tree-monster': 'tree',
+      'dragon-red': 'dragon',
+      'dragon-ice': 'dragon',
       
-      // Structures
-      'houses': 'cube',
-      'buildings': 'cube',
-      'walls': 'plane',
-      'doors': 'plane',
-      'stairs': 'cube',
-      'roofs': 'cone',
-      'safety': 'cylinder',
-      'docks': 'plane',
-      'outdoor': 'plane',
+      // Animals - Domestic
+      'dog-labrador': 'dog',
+      'dog-german-shepherd': 'dog',
+      'dog-husky': 'dog',
+      'cat-tabby': 'cat',
+      'cat-persian': 'cat',
+      'cat-siamese': 'cat',
       
-      // Furniture
-      'tables': 'cube',
-      'cabinets': 'cube',
-      'beds': 'cube',
-      'seating': 'cube',
+      // Animals - Wild
+      'wolf': 'wolf',
+      'wolf-arctic': 'wolf',
+      'tiger': 'tiger',
+      'cougar': 'tiger',
+      'snow-leopard': 'tiger',
+      
+      // Animals - Primates
+      'gorilla': 'gorilla',
+      'chimpanzee': 'gorilla',
+      
+      // Animals - Birds
+      'peacock': 'bird',
+      'eagle': 'bird',
+      'parrot': 'bird',
+      
+      // Animals - Fish
+      'trout': 'fish',
+      'catfish': 'fish',
+      'bass': 'fish',
+      
+      // Animals - Marine
+      'jellyfish': 'fish',
+      'seahorse': 'fish',
+      'sea-urchin': 'fish',
+      'manta-ray': 'fish',
+      'blue-whale': 'whale',
+      'orca': 'whale',
+      'shrimp': 'fish',
+      'dolphin': 'dolphin',
+      'algae': 'bush',
+      
+      // Animals - Reptiles
+      'crocodile': 'crocodile',
+      'alligator': 'crocodile',
+      
+      // Nature - Trees
+      'tree-oak': 'tree',
+      'tree-pine': 'tree',
+      'tree-willow': 'willow',
+      'tree-apricot': 'tree',
+      'tree-palm': 'palm',
+      'tree-birch': 'tree',
+      'tree-maple': 'tree',
+      
+      // Nature - Bushes
+      'bush-green': 'bush',
+      'bush-flowering': 'flower',
+      'bush-hedge': 'bush',
+      'bush-berry': 'bush',
+      'bush-tropical': 'bush',
+      
+      // Nature - Rocks
+      'rock-large': 'rock',
+      'mountain-peak': 'rock',
+      
+      // Nature - Gardening
+      'garden-shovel': 'humanoid',
+      'garden-rake': 'humanoid',
+      'garden-hose': 'humanoid',
+      'lawn-mower': 'car',
+      'wheelbarrow': 'car',
+      'watering-can': 'humanoid',
+      'flower-pot': 'flower',
+      
+      // Structures - Houses
+      'house-medieval': 'house',
+      'house-modern': 'house',
+      'cottage': 'cottage',
+      'cottage-stone': 'cottage',
+      'cottage-thatched': 'cottage',
+      'castle': 'house',
+      'tower': 'house',
+      'shop': 'house',
+      'tavern': 'house',
+      
+      // Structures - Walls
+      'wall-brick': 'wall',
+      'wall-stone': 'wall',
+      'wall-concrete': 'wall',
+      'wall-wooden': 'wall',
+      'wall-drywall': 'wall',
+      
+      // Structures - Doors
+      'door-wooden': 'door',
+      'door-glass': 'door',
+      'door-metal': 'door',
+      'door-double': 'door',
+      'door-sliding': 'door',
+      
+      // Structures - Stairs
+      'stairs-wooden': 'stairs',
+      'stairs-stone': 'stairs',
+      'stairs-spiral': 'stairs',
+      'stairs-metal': 'stairs',
+      
+      // Structures - Roofs
+      'roof-shingle': 'roof',
+      'roof-tile': 'roof',
+      'roof-thatch': 'roof',
+      'roof-flat': 'roof',
+      'roof-metal': 'roof',
+      
+      // Structures - Safety
+      'fire-escape': 'stairs',
+      'fire-hydrant': 'fire-hydrant',
+      
+      // Structures - Marine
+      'wharf': 'dock',
+      'dock-wooden': 'dock',
+      'dock-concrete': 'dock',
+      'pier': 'dock',
+      
+      // Structures - Outdoor
+      'swimming-pool': 'pool',
+      'pool-inground': 'pool',
+      'pool-above': 'pool',
+      
+      // Furniture - Tables
+      'table-dining': 'table',
+      'table-coffee': 'table',
+      'table-with-cloth': 'table-cloth',
+      'table-desk': 'table',
+      'table-side': 'table',
+      
+      // Furniture - Cabinets
+      'cabinet-kitchen': 'cabinet',
+      'cabinet-bathroom': 'cabinet',
+      'cabinet-filing': 'cabinet',
+      'cabinet-china': 'cabinet',
+      'wardrobe': 'cabinet',
+      
+      // Furniture - Beds
+      'bed-twin': 'bed',
+      'bed-full': 'bed',
+      'bed-queen': 'bed',
+      'bed-king': 'bed',
+      'bed-california-king': 'bed',
+      'bed-bunk': 'bunk-bed',
+      'bed-loft': 'bunk-bed',
+      'bed-murphy': 'bed',
+      'bed-daybed': 'bed',
+      
+      // Furniture - Seating
+      'couch-sectional': 'couch',
+      'couch-loveseat': 'couch',
+      'couch-sofa': 'couch',
+      'couch-futon': 'couch',
+      'armchair': 'chair',
+      'recliner': 'chair',
       
       // Electronics
-      'computers': 'cube',
-      'monitors': 'plane',
-      'tvs': 'plane',
-      'electrical': 'cylinder',
-      'lights': 'sphere',
+      'computer-desktop': 'computer',
+      'computer-laptop': 'computer',
+      'computer-gaming': 'computer',
+      'monitor-standard': 'monitor',
+      'monitor-ultrawide': 'monitor',
+      'monitor-on': 'monitor',
+      'monitor-fp-access': 'monitor',
+      'monitor-dual': 'monitor',
+      'tv-flatscreen': 'tv',
+      'tv-curved': 'tv',
+      'tv-mounted': 'tv',
+      'tv-retro': 'tv',
+      'outlet-standard': 'lamp',
+      'outlet-usb': 'lamp',
+      'power-strip': 'lamp',
+      'light-ceiling': 'lamp',
+      'light-lamp': 'lamp',
+      'light-floor': 'lamp',
+      'light-chandelier': 'lamp',
+      'light-pendant': 'lamp',
+      'light-outdoor': 'lamp',
       
       // Kitchen
-      'appliances': 'cube',
-      'cutlery': 'cylinder',
+      'refrigerator': 'refrigerator',
+      'refrigerator-double': 'refrigerator',
+      'stove': 'stove',
+      'oven': 'stove',
+      'microwave': 'cabinet',
+      'dishwasher': 'cabinet',
+      'toaster': 'cabinet',
+      'blender': 'lamp',
+      'coffee-maker': 'lamp',
+      'cutlery-set': 'humanoid',
+      'knife-set': 'humanoid',
+      'spoon-set': 'humanoid',
+      'fork-set': 'humanoid',
+      'chopsticks': 'humanoid',
       
       // Food
-      'breakfast': 'cube',
-      'lunch': 'sphere',
-      'dinner': 'sphere',
-      'decor': 'sphere',
-      'fruits': 'sphere',
+      'cereal-box': 'cereal',
+      'cereal-bowl': 'fruit-bowl',
+      'pancakes': 'pizza',
+      'eggs-bacon': 'pizza',
+      'toast': 'cereal',
+      'oatmeal': 'fruit-bowl',
+      'sandwich': 'cereal',
+      'salad': 'fruit-bowl',
+      'soup-bowl': 'fruit-bowl',
+      'burger': 'cereal',
+      'wrap': 'cereal',
+      'pizza': 'pizza',
+      'pasta': 'fruit-bowl',
+      'steak-dinner': 'pizza',
+      'roast-chicken': 'pizza',
+      'fish-dinner': 'fish',
+      'rice-bowl': 'fruit-bowl',
+      'bowl-fruit': 'fruit-bowl',
+      'apple': 'fruit-bowl',
+      'banana': 'fruit-bowl',
+      'orange': 'fruit-bowl',
       
       // Textiles
-      'clothing': 'plane',
-      'linens': 'plane',
+      'apron': 'apron',
+      'apron-pinned': 'apron',
+      'tablecloth': 'table-cloth',
       
       // Vehicles
-      'sports': 'cube',
-      'jdm': 'cube',
-      'trucks': 'cube',
-      'luxury': 'cube',
-      'classic': 'cube',
-      'sedan': 'cube',
-      'emergency': 'cube',
-      
-      // Parts
-      'gears': 'torus',
-      'engines': 'cube',
-      'exhausts': 'cylinder',
-      'spoilers': 'plane',
-      
-      // Nature
-      'trees': 'cone',
-      'bushes': 'sphere',
-      'rocks': 'sphere',
-      'mountains': 'cone',
-      'gardening': 'cylinder',
-      
-      // Animals - shape based on body type
-      'domestic': 'cylinder',     // dogs, cats - upright
-      'wild': 'cylinder',         // wolves, big cats
-      'primates': 'cylinder',     // gorillas, chimps - upright
-      'birds': 'cone',            // birds - pointed/tapered
-      'freshwater': 'sphere',     // fish - oval
-      'sea-life': 'sphere',       // sea creatures - round/oval
-      'reptiles': 'cylinder',     // crocodiles - elongated
+      'car-jaguar': 'car',
+      'car-nissan-gt': 'car',
+      'car-mazda-rx7': 'car',
+      'car-ford-f150': 'truck',
+      'car-mercedes-amg': 'car',
+      'car-camaro-77': 'car',
+      'car-bentley': 'car',
+      'car-chrysler-300': 'car',
+      'fire-truck': 'fire-truck',
       
       // Terrain/Biomes
-      'biomes': 'plane',
-      'roads': 'plane',
+      'biome-swamp': 'bush',
+      'swamp-tree': 'willow',
+      'swamp-water': 'pool',
+      'lily-pad': 'flower',
+      'biome-marsh': 'bush',
+      'marsh-grass': 'bush',
+      'cattails': 'flower',
+      'road-cobble': 'dock',
+      'road-dirt': 'dock',
+      'road-asphalt': 'dock',
     };
     
-    // Use subcategory first, then fall back to category-based defaults
-    const categoryDefaults: Record<string, PrimitiveType> = {
-      'characters': 'cylinder',
-      'structures': 'cube',
-      'furniture': 'cube',
-      'electronics': 'cube',
-      'kitchen': 'cube',
-      'food': 'sphere',
-      'textiles': 'plane',
-      'animals': 'cylinder',
-      'parts': 'torus',
-      'vehicles': 'cube',
-      'nature': 'cone',
-      'terrain': 'plane',
-    };
+    // Get the procedural model ID or fallback
+    const modelId = assetToProceduralModel[asset.id];
     
-    const primitiveType = subcategoryToPrimitive[asset.subcategory] || categoryDefaults[asset.category] || 'cube';
-    addObject(primitiveType, asset.name);
+    if (modelId) {
+      // Use procedural 3D model
+      addProceduralModel(modelId, asset.name);
+    } else {
+      // Fallback to primitive for unmapped assets
+      addObject('cube', asset.name);
+    }
     
     toast.success(`Added ${asset.name}`, {
       description: 'Asset spawned in scene and added to inventory!',
