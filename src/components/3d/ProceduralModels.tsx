@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { Group } from 'three';
+import { BodyPartType, BodyPartConfig } from '@/store/sceneStore';
 
 // Color palettes for different asset types
 const COLORS = {
@@ -32,42 +33,95 @@ const COLORS = {
   gray: '#808080',
 };
 
-interface ModelProps {
+export interface ModelProps {
   color?: string;
+  bodyParts?: Record<BodyPartType, BodyPartConfig>;
+}
+
+// Helper to get part config with defaults
+function getPartConfig(
+  bodyParts: Record<BodyPartType, BodyPartConfig> | undefined, 
+  part: BodyPartType
+): { scale: [number, number, number]; offset: [number, number, number]; color?: string } {
+  const config = bodyParts?.[part];
+  return {
+    scale: config?.scale || [1, 1, 1],
+    offset: config?.offset || [0, 0, 0],
+    color: config?.color,
+  };
+}
+
+// Helper to apply part transforms
+function applyPartTransform(
+  basePosition: [number, number, number],
+  config: { scale: [number, number, number]; offset: [number, number, number] }
+): [number, number, number] {
+  return [
+    basePosition[0] + config.offset[0],
+    basePosition[1] + config.offset[1],
+    basePosition[2] + config.offset[2],
+  ];
 }
 
 // ==================== CHARACTERS ====================
 
-export function HumanoidModel({ color = COLORS.skin }: ModelProps) {
+export function HumanoidModel({ color = COLORS.skin, bodyParts }: ModelProps) {
+  const headConfig = getPartConfig(bodyParts, 'head');
+  const torsoConfig = getPartConfig(bodyParts, 'torso');
+  const leftArmConfig = getPartConfig(bodyParts, 'leftArm');
+  const rightArmConfig = getPartConfig(bodyParts, 'rightArm');
+  const leftLegConfig = getPartConfig(bodyParts, 'leftLeg');
+  const rightLegConfig = getPartConfig(bodyParts, 'rightLeg');
+
   return (
     <group>
-      {/* Body */}
-      <mesh position={[0, 0.4, 0]}>
+      {/* Body/Torso */}
+      <mesh 
+        position={applyPartTransform([0, 0.4, 0], torsoConfig)}
+        scale={torsoConfig.scale}
+      >
         <boxGeometry args={[0.4, 0.6, 0.25]} />
-        <meshStandardMaterial color={COLORS.fabric} />
+        <meshStandardMaterial color={torsoConfig.color || COLORS.fabric} />
       </mesh>
       {/* Head */}
-      <mesh position={[0, 0.9, 0]}>
+      <mesh 
+        position={applyPartTransform([0, 0.9, 0], headConfig)}
+        scale={headConfig.scale}
+      >
         <sphereGeometry args={[0.18, 16, 16]} />
-        <meshStandardMaterial color={color} />
+        <meshStandardMaterial color={headConfig.color || color} />
       </mesh>
-      {/* Arms */}
-      <mesh position={[-0.3, 0.45, 0]}>
+      {/* Left Arm */}
+      <mesh 
+        position={applyPartTransform([-0.3, 0.45, 0], leftArmConfig)}
+        scale={leftArmConfig.scale}
+      >
         <boxGeometry args={[0.12, 0.5, 0.12]} />
-        <meshStandardMaterial color={color} />
+        <meshStandardMaterial color={leftArmConfig.color || color} />
       </mesh>
-      <mesh position={[0.3, 0.45, 0]}>
+      {/* Right Arm */}
+      <mesh 
+        position={applyPartTransform([0.3, 0.45, 0], rightArmConfig)}
+        scale={rightArmConfig.scale}
+      >
         <boxGeometry args={[0.12, 0.5, 0.12]} />
-        <meshStandardMaterial color={color} />
+        <meshStandardMaterial color={rightArmConfig.color || color} />
       </mesh>
-      {/* Legs */}
-      <mesh position={[-0.1, -0.15, 0]}>
+      {/* Left Leg */}
+      <mesh 
+        position={applyPartTransform([-0.1, -0.15, 0], leftLegConfig)}
+        scale={leftLegConfig.scale}
+      >
         <boxGeometry args={[0.14, 0.5, 0.14]} />
-        <meshStandardMaterial color={COLORS.fabricDark} />
+        <meshStandardMaterial color={leftLegConfig.color || COLORS.fabricDark} />
       </mesh>
-      <mesh position={[0.1, -0.15, 0]}>
+      {/* Right Leg */}
+      <mesh 
+        position={applyPartTransform([0.1, -0.15, 0], rightLegConfig)}
+        scale={rightLegConfig.scale}
+      >
         <boxGeometry args={[0.14, 0.5, 0.14]} />
-        <meshStandardMaterial color={COLORS.fabricDark} />
+        <meshStandardMaterial color={rightLegConfig.color || COLORS.fabricDark} />
       </mesh>
     </group>
   );
@@ -155,54 +209,95 @@ export function DragonModel({ color = COLORS.red }: ModelProps) {
 
 // ==================== ANIMALS ====================
 
-export function DogModel({ color = COLORS.furDark }: ModelProps) {
+export function DogModel({ color = COLORS.furDark, bodyParts }: ModelProps) {
+  const headConfig = getPartConfig(bodyParts, 'head');
+  const torsoConfig = getPartConfig(bodyParts, 'torso');
+  const snoutConfig = getPartConfig(bodyParts, 'snout');
+  const earsConfig = getPartConfig(bodyParts, 'ears');
+  const leftFrontLegConfig = getPartConfig(bodyParts, 'leftFrontLeg');
+  const rightFrontLegConfig = getPartConfig(bodyParts, 'rightFrontLeg');
+  const leftBackLegConfig = getPartConfig(bodyParts, 'leftBackLeg');
+  const rightBackLegConfig = getPartConfig(bodyParts, 'rightBackLeg');
+  const tailConfig = getPartConfig(bodyParts, 'tail');
+
   return (
     <group>
       {/* Body */}
-      <mesh position={[0, 0.25, 0]} rotation={[0, 0, Math.PI / 2]}>
+      <mesh 
+        position={applyPartTransform([0, 0.25, 0], torsoConfig)} 
+        rotation={[0, 0, Math.PI / 2]}
+        scale={torsoConfig.scale}
+      >
         <capsuleGeometry args={[0.15, 0.4, 8, 16]} />
-        <meshStandardMaterial color={color} />
+        <meshStandardMaterial color={torsoConfig.color || color} />
       </mesh>
       {/* Head */}
-      <mesh position={[0.35, 0.35, 0]}>
+      <mesh 
+        position={applyPartTransform([0.35, 0.35, 0], headConfig)}
+        scale={headConfig.scale}
+      >
         <sphereGeometry args={[0.15, 16, 16]} />
-        <meshStandardMaterial color={color} />
+        <meshStandardMaterial color={headConfig.color || color} />
       </mesh>
       {/* Snout */}
-      <mesh position={[0.48, 0.32, 0]}>
+      <mesh 
+        position={applyPartTransform([0.48, 0.32, 0], snoutConfig)}
+        scale={snoutConfig.scale}
+      >
         <boxGeometry args={[0.12, 0.08, 0.1]} />
-        <meshStandardMaterial color={color} />
+        <meshStandardMaterial color={snoutConfig.color || color} />
       </mesh>
       {/* Ears */}
-      <mesh position={[0.3, 0.5, -0.08]} rotation={[0, 0, 0.3]}>
-        <coneGeometry args={[0.05, 0.12, 4]} />
-        <meshStandardMaterial color={color} />
-      </mesh>
-      <mesh position={[0.3, 0.5, 0.08]} rotation={[0, 0, 0.3]}>
-        <coneGeometry args={[0.05, 0.12, 4]} />
-        <meshStandardMaterial color={color} />
-      </mesh>
-      {/* Legs */}
-      <mesh position={[0.2, 0.08, 0.1]}>
+      <group scale={earsConfig.scale} position={applyPartTransform([0, 0, 0], earsConfig)}>
+        <mesh position={[0.3, 0.5, -0.08]} rotation={[0, 0, 0.3]}>
+          <coneGeometry args={[0.05, 0.12, 4]} />
+          <meshStandardMaterial color={earsConfig.color || color} />
+        </mesh>
+        <mesh position={[0.3, 0.5, 0.08]} rotation={[0, 0, 0.3]}>
+          <coneGeometry args={[0.05, 0.12, 4]} />
+          <meshStandardMaterial color={earsConfig.color || color} />
+        </mesh>
+      </group>
+      {/* Front Right Leg */}
+      <mesh 
+        position={applyPartTransform([0.2, 0.08, 0.1], rightFrontLegConfig)}
+        scale={rightFrontLegConfig.scale}
+      >
         <cylinderGeometry args={[0.04, 0.04, 0.16, 8]} />
-        <meshStandardMaterial color={color} />
+        <meshStandardMaterial color={rightFrontLegConfig.color || color} />
       </mesh>
-      <mesh position={[0.2, 0.08, -0.1]}>
+      {/* Front Left Leg */}
+      <mesh 
+        position={applyPartTransform([0.2, 0.08, -0.1], leftFrontLegConfig)}
+        scale={leftFrontLegConfig.scale}
+      >
         <cylinderGeometry args={[0.04, 0.04, 0.16, 8]} />
-        <meshStandardMaterial color={color} />
+        <meshStandardMaterial color={leftFrontLegConfig.color || color} />
       </mesh>
-      <mesh position={[-0.2, 0.08, 0.1]}>
+      {/* Back Right Leg */}
+      <mesh 
+        position={applyPartTransform([-0.2, 0.08, 0.1], rightBackLegConfig)}
+        scale={rightBackLegConfig.scale}
+      >
         <cylinderGeometry args={[0.04, 0.04, 0.16, 8]} />
-        <meshStandardMaterial color={color} />
+        <meshStandardMaterial color={rightBackLegConfig.color || color} />
       </mesh>
-      <mesh position={[-0.2, 0.08, -0.1]}>
+      {/* Back Left Leg */}
+      <mesh 
+        position={applyPartTransform([-0.2, 0.08, -0.1], leftBackLegConfig)}
+        scale={leftBackLegConfig.scale}
+      >
         <cylinderGeometry args={[0.04, 0.04, 0.16, 8]} />
-        <meshStandardMaterial color={color} />
+        <meshStandardMaterial color={leftBackLegConfig.color || color} />
       </mesh>
       {/* Tail */}
-      <mesh position={[-0.35, 0.35, 0]} rotation={[0, 0, 0.8]}>
+      <mesh 
+        position={applyPartTransform([-0.35, 0.35, 0], tailConfig)} 
+        rotation={[0, 0, 0.8]}
+        scale={tailConfig.scale}
+      >
         <cylinderGeometry args={[0.03, 0.02, 0.2, 8]} />
-        <meshStandardMaterial color={color} />
+        <meshStandardMaterial color={tailConfig.color || color} />
       </mesh>
     </group>
   );
@@ -317,28 +412,44 @@ export function BirdModel({ color = COLORS.blue }: ModelProps) {
   );
 }
 
-export function FishModel({ color = COLORS.blue }: ModelProps) {
+export function FishModel({ color = COLORS.blue, bodyParts }: ModelProps) {
+  const headConfig = getPartConfig(bodyParts, 'head');
+  const torsoConfig = getPartConfig(bodyParts, 'torso');
+  const tailFinConfig = getPartConfig(bodyParts, 'tailFin');
+  const dorsalFinConfig = getPartConfig(bodyParts, 'dorsalFin');
+
   return (
     <group rotation={[0, Math.PI / 2, 0]}>
       {/* Body */}
-      <mesh position={[0, 0.15, 0]} scale={[1, 0.6, 0.4]}>
+      <mesh 
+        position={applyPartTransform([0, 0.15, 0], torsoConfig)} 
+        scale={[torsoConfig.scale[0], torsoConfig.scale[1] * 0.6, torsoConfig.scale[2] * 0.4]}
+      >
         <sphereGeometry args={[0.2, 16, 16]} />
-        <meshStandardMaterial color={color} />
+        <meshStandardMaterial color={torsoConfig.color || color} />
       </mesh>
-      {/* Tail */}
-      <mesh position={[-0.25, 0.15, 0]} rotation={[0, 0, Math.PI / 4]}>
+      {/* Tail Fin */}
+      <mesh 
+        position={applyPartTransform([-0.25, 0.15, 0], tailFinConfig)} 
+        rotation={[0, 0, Math.PI / 4]}
+        scale={tailFinConfig.scale}
+      >
         <coneGeometry args={[0.12, 0.15, 4]} />
-        <meshStandardMaterial color={color} />
+        <meshStandardMaterial color={tailFinConfig.color || color} />
       </mesh>
       {/* Dorsal Fin */}
-      <mesh position={[0, 0.28, 0]} rotation={[0, 0, 0]}>
+      <mesh 
+        position={applyPartTransform([0, 0.28, 0], dorsalFinConfig)} 
+        rotation={[0, 0, 0]}
+        scale={dorsalFinConfig.scale}
+      >
         <boxGeometry args={[0.1, 0.08, 0.02]} />
-        <meshStandardMaterial color={color} />
+        <meshStandardMaterial color={dorsalFinConfig.color || color} />
       </mesh>
       {/* Eye */}
-      <mesh position={[0.12, 0.18, 0.06]}>
+      <mesh position={applyPartTransform([0.12, 0.18, 0.06], headConfig)}>
         <sphereGeometry args={[0.025, 8, 8]} />
-        <meshStandardMaterial color={COLORS.white} />
+        <meshStandardMaterial color={headConfig.color || COLORS.white} />
       </mesh>
     </group>
   );

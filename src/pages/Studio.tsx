@@ -12,6 +12,7 @@ import { InventorySidebar } from '@/components/studio/InventorySidebar';
 import { SceneSettings } from '@/components/studio/SceneSettings';
 import { SandboxBuilder } from '@/components/studio/SandboxBuilder';
 import { PDFUploader } from '@/components/studio/PDFUploader';
+import { BodyPartEditor } from '@/components/studio/BodyPartEditor';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -183,6 +184,10 @@ export default function Studio() {
                 <MotionCapturePanel />
               </div>
             )}
+            
+            {/* Body Part Editor (shows when design mode active) */}
+            <BodyPartEditor />
+            
             <div className="flex-1 min-w-0">
               <Viewport3D className="w-full h-full" />
             </div>

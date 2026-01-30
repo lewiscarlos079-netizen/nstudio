@@ -288,7 +288,7 @@ export function SceneObjectMesh({ object }: SceneObjectProps) {
             }
           }}
         >
-          <ProceduralModel color={object.color} />
+          <ProceduralModel color={object.color} bodyParts={object.bodyParts} />
           {isSelected && (
             <mesh>
               <sphereGeometry args={[0.6, 8, 8]} />
