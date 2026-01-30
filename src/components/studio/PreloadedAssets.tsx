@@ -63,6 +63,9 @@ const preloadedAssets: PreloadedAsset[] = [
   // Buildings
   { id: 'house-medieval', name: 'Medieval House', category: 'structures', subcategory: 'houses', icon: Home, tags: ['building', 'wood', 'thatch'], tier: 'free', imageUrl: '/placeholder.svg' },
   { id: 'house-modern', name: 'Modern House', category: 'structures', subcategory: 'houses', icon: Home, tags: ['building', 'contemporary', 'glass'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'cottage', name: 'Cottage', category: 'structures', subcategory: 'houses', icon: Home, tags: ['building', 'cozy', 'rustic', 'country'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'cottage-stone', name: 'Stone Cottage', category: 'structures', subcategory: 'houses', icon: Home, tags: ['building', 'stone', 'medieval', 'countryside'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'cottage-thatched', name: 'Thatched Cottage', category: 'structures', subcategory: 'houses', icon: Home, tags: ['building', 'thatch', 'village', 'fantasy'], tier: 'free', imageUrl: '/placeholder.svg' },
   { id: 'castle', name: 'Castle', category: 'structures', subcategory: 'buildings', icon: Building2, tags: ['fortress', 'medieval', 'stone'], tier: 'pro', imageUrl: '/placeholder.svg' },
   { id: 'tower', name: 'Tower', category: 'structures', subcategory: 'buildings', icon: Building2, tags: ['tall', 'stone', 'defense'], tier: 'free', imageUrl: '/placeholder.svg' },
   { id: 'shop', name: 'Shop', category: 'structures', subcategory: 'buildings', icon: Building2, tags: ['commerce', 'store', 'village'], tier: 'free', imageUrl: '/placeholder.svg' },
