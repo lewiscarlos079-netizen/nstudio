@@ -6,6 +6,8 @@ import { PropertiesPanel } from '@/components/studio/PropertiesPanel';
 import { PreloadedAssets } from '@/components/studio/PreloadedAssets';
 import { AIChatPanel } from '@/components/studio/AIChatPanel';
 import { CameraRecordingPanel } from '@/components/studio/CameraRecordingPanel';
+import { MotionCapturePanel } from '@/components/studio/MotionCapturePanel';
+import { ExpandedInventory } from '@/components/studio/ExpandedInventory';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -14,7 +16,6 @@ import {
   Layers, 
   Image, 
   Settings2, 
-  MessageSquare, 
   Sparkles,
   PanelLeftClose,
   PanelLeftOpen,
@@ -22,8 +23,8 @@ import {
   PanelRightOpen,
   Save,
   Download,
-  Upload,
-  Camera
+  Camera,
+  Activity
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -103,6 +104,10 @@ export default function Studio() {
                 <Camera className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">Record</span>
               </TabsTrigger>
+              <TabsTrigger value="mocap" className="gap-2 text-xs h-7">
+                <Activity className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">MoCap</span>
+              </TabsTrigger>
               <TabsTrigger value="texture" className="gap-2 text-xs h-7">
                 <Image className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">Texture</span>
@@ -153,13 +158,19 @@ export default function Studio() {
           {/* Center - Content based on tab */}
           <div className="flex-1 min-w-0 flex gap-4">
             {activeTab === 'assets' && (
-              <div className="w-80 flex-shrink-0">
+              <div className="w-80 flex-shrink-0 flex flex-col gap-4">
                 <PreloadedAssets />
+                <ExpandedInventory />
               </div>
             )}
             {activeTab === 'camera' && (
               <div className="w-80 flex-shrink-0">
                 <CameraRecordingPanel />
+              </div>
+            )}
+            {activeTab === 'mocap' && (
+              <div className="w-80 flex-shrink-0">
+                <MotionCapturePanel />
               </div>
             )}
             <div className="flex-1 min-w-0">
