@@ -10,6 +10,8 @@ import { MotionCapturePanel } from '@/components/studio/MotionCapturePanel';
 import { ExpandedInventory } from '@/components/studio/ExpandedInventory';
 import { InventorySidebar } from '@/components/studio/InventorySidebar';
 import { SceneSettings } from '@/components/studio/SceneSettings';
+import { SandboxBuilder } from '@/components/studio/SandboxBuilder';
+import { PDFUploader } from '@/components/studio/PDFUploader';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -27,7 +29,8 @@ import {
   Download,
   Camera,
   Activity,
-  Package
+  Package,
+  Bone
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -123,6 +126,8 @@ export default function Studio() {
           </Tabs>
 
           <div className="flex items-center gap-2">
+            <PDFUploader />
+            <SandboxBuilder />
             <InventorySidebar />
             <SceneSettings />
             <Button variant="ghost" size="sm" className="gap-2 h-8" onClick={handleSave}>

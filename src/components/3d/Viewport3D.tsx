@@ -12,6 +12,7 @@ import { Suspense, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useSceneStore } from '@/store/sceneStore';
 import { SceneObjectMesh } from './SceneObject';
+import { SceneTransformGizmos } from './TransformGizmo';
 
 function Scene() {
   const { objects, selectObject, showGrid, setTransformMode, selectedObjectId, removeObject, duplicateObject, toggleObjectLock, toggleObjectVisibility, toggleGrid } = useSceneStore();
@@ -75,6 +76,9 @@ function Scene() {
       {objects.map((object) => (
         <SceneObjectMesh key={object.id} object={object} />
       ))}
+
+      {/* Transform gizmos for selected objects */}
+      <SceneTransformGizmos />
 
       {/* Clickable ground plane for deselection */}
       <mesh 
