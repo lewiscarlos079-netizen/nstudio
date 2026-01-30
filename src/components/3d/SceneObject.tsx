@@ -3,6 +3,7 @@ import { Mesh, Vector3, Plane, Group } from 'three';
 import { ThreeEvent, useThree, useFrame } from '@react-three/fiber';
 import { useSceneStore, SceneObject } from '@/store/sceneStore';
 import { getProceduralModel } from './ProceduralModels';
+import { StyledMaterial } from './ToonMaterials';
 
 interface SceneObjectProps {
   object: SceneObject;
@@ -13,7 +14,7 @@ const keysPressed = new Set<string>();
 
 export function SceneObjectMesh({ object }: SceneObjectProps) {
   const meshRef = useRef<Mesh>(null);
-  const { selectedObjectId, selectObject, updateObject, transformMode, mouseSensitivity } = useSceneStore();
+  const { selectedObjectId, selectObject, updateObject, transformMode, mouseSensitivity, modelStyle } = useSceneStore();
   const isSelected = selectedObjectId === object.id;
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState<Vector3>(new Vector3());
@@ -288,7 +289,7 @@ export function SceneObjectMesh({ object }: SceneObjectProps) {
             }
           }}
         >
-          <ProceduralModel color={object.color} bodyParts={object.bodyParts} />
+          <ProceduralModel color={object.color} bodyParts={object.bodyParts} style={modelStyle} />
           {isSelected && (
             <mesh>
               <sphereGeometry args={[0.6, 8, 8]} />

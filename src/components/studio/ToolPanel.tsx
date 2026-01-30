@@ -22,9 +22,10 @@ import {
   Square,
   View,
   Layers2,
-  Pencil
+  Pencil,
+  Palette
 } from 'lucide-react';
-import { useSceneStore, PrimitiveType } from '@/store/sceneStore';
+import { useSceneStore, PrimitiveType, ModelStyle } from '@/store/sceneStore';
 import { toast } from 'sonner';
 
 const primitives: { type: PrimitiveType; icon: React.ComponentType<any>; label: string }[] = [
@@ -58,6 +59,8 @@ export function ToolPanel() {
     toggleGrid,
     cameraMode,
     setCameraMode,
+    modelStyle,
+    setModelStyle,
     designMode,
     toggleDesignMode
   } = useSceneStore();
@@ -68,6 +71,22 @@ export function ToolPanel() {
   const handleAddPrimitive = (type: PrimitiveType, label: string) => {
     addObject(type);
     toast.success(`${label} added to scene`);
+  };
+
+  const cycleModelStyle = () => {
+    const styles: ModelStyle[] = ['standard', 'toon', 'wireframe'];
+    const currentIndex = styles.indexOf(modelStyle);
+    const nextStyle = styles[(currentIndex + 1) % styles.length];
+    setModelStyle(nextStyle);
+    toast.success(`Style: ${nextStyle.charAt(0).toUpperCase() + nextStyle.slice(1)}`);
+  };
+
+  const getStyleLabel = () => {
+    switch (modelStyle) {
+      case 'toon': return 'Toon';
+      case 'wireframe': return 'Wire';
+      default: return 'Std';
+    }
   };
 
   return (
@@ -255,6 +274,23 @@ export function ToolPanel() {
               </TooltipTrigger>
               <TooltipContent side="right">
                 <p>Toggle Grid (G)</p>
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant={modelStyle !== 'standard' ? "default" : "ghost"}
+                  size="icon"
+                  className={`w-10 h-10 mx-auto relative ${modelStyle === 'toon' ? 'glow-primary-sm' : ''}`}
+                  onClick={cycleModelStyle}
+                >
+                  <Palette className="w-4 h-4" />
+                  <span className="absolute -bottom-0.5 text-[8px] font-bold">{getStyleLabel()}</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <p>Render Style: {modelStyle} (click to cycle)</p>
               </TooltipContent>
             </Tooltip>
           </div>
