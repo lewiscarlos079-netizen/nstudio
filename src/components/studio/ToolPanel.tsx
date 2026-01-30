@@ -68,62 +68,76 @@ export function ToolPanel() {
         initial={{ x: -20, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.3 }}
-        className="glass rounded-xl p-3 w-16 flex flex-col items-center gap-2"
+        className="glass rounded-xl p-3 w-20 flex flex-col items-center gap-2 relative z-30"
       >
         {/* Transform Tools */}
-        <div className="flex flex-col gap-1">
-          {transformTools.map((tool) => (
-            <Tooltip key={tool.mode}>
-              <TooltipTrigger asChild>
-                <Button
-                  variant={transformMode === tool.mode ? "default" : "ghost"}
-                  size="icon"
-                  className={`w-10 h-10 ${transformMode === tool.mode ? 'glow-primary-sm' : ''}`}
-                  onClick={() => setTransformMode(tool.mode)}
-                >
-                  <tool.icon className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right">
-                <p>{tool.label}</p>
-              </TooltipContent>
-            </Tooltip>
-          ))}
+        <div className="w-full">
+          <p className="text-[9px] text-muted-foreground font-medium uppercase tracking-wider text-center mb-1">
+            Tools
+          </p>
+          <div className="flex flex-col gap-1">
+            {transformTools.map((tool) => (
+              <Tooltip key={tool.mode}>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant={transformMode === tool.mode ? "default" : "ghost"}
+                    size="icon"
+                    className={`w-10 h-10 mx-auto ${transformMode === tool.mode ? 'glow-primary-sm' : ''}`}
+                    onClick={() => setTransformMode(tool.mode)}
+                  >
+                    <tool.icon className="w-4 h-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  <p>{tool.label}</p>
+                </TooltipContent>
+              </Tooltip>
+            ))}
+          </div>
         </div>
 
-        <Separator className="bg-border/50 w-8" />
+        <Separator className="bg-border/50 w-12" />
 
         {/* Primitives */}
-        <div className="flex flex-col gap-1">
-          {primitives.map((primitive) => (
-            <Tooltip key={primitive.type}>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="w-10 h-10 hover:glow-primary-sm"
-                  onClick={() => handleAddPrimitive(primitive.type, primitive.label)}
-                >
-                  <primitive.icon className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right">
-                <p>Add {primitive.label}</p>
-              </TooltipContent>
-            </Tooltip>
-          ))}
+        <div className="w-full">
+          <p className="text-[9px] text-muted-foreground font-medium uppercase tracking-wider text-center mb-1">
+            Shapes
+          </p>
+          <div className="flex flex-col gap-1">
+            {primitives.map((primitive) => (
+              <Tooltip key={primitive.type}>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="w-10 h-10 mx-auto hover:glow-primary-sm"
+                    onClick={() => handleAddPrimitive(primitive.type, primitive.label)}
+                  >
+                    <primitive.icon className="w-4 h-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  <p>Add {primitive.label}</p>
+                </TooltipContent>
+              </Tooltip>
+            ))}
+          </div>
         </div>
 
-        <Separator className="bg-border/50 w-8" />
+        <Separator className="bg-border/50 w-12" />
 
         {/* Object Actions */}
-        <div className="flex flex-col gap-1">
+        <div className="w-full">
+          <p className="text-[9px] text-muted-foreground font-medium uppercase tracking-wider text-center mb-1">
+            Actions
+          </p>
+          <div className="flex flex-col gap-1">
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
                 variant="ghost"
                 size="icon"
-                className="w-10 h-10"
+                className="w-10 h-10 mx-auto"
                 disabled={!selectedObjectId}
                 onClick={() => selectedObjectId && duplicateObject(selectedObjectId)}
               >
@@ -140,7 +154,7 @@ export function ToolPanel() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="w-10 h-10"
+                className="w-10 h-10 mx-auto"
                 disabled={!selectedObjectId}
                 onClick={() => selectedObjectId && toggleObjectLock(selectedObjectId)}
               >
@@ -161,7 +175,7 @@ export function ToolPanel() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="w-10 h-10"
+                className="w-10 h-10 mx-auto"
                 disabled={!selectedObjectId}
                 onClick={() => selectedObjectId && toggleObjectVisibility(selectedObjectId)}
               >
@@ -182,7 +196,7 @@ export function ToolPanel() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="w-10 h-10 hover:bg-destructive/20 hover:text-destructive"
+                className="w-10 h-10 mx-auto hover:bg-destructive/20 hover:text-destructive"
                 disabled={!selectedObjectId}
                 onClick={() => selectedObjectId && removeObject(selectedObjectId)}
               >
@@ -193,9 +207,10 @@ export function ToolPanel() {
               <p>Delete (Del)</p>
             </TooltipContent>
           </Tooltip>
+          </div>
         </div>
 
-        <Separator className="bg-border/50 w-8" />
+        <Separator className="bg-border/50 w-12" />
 
         {/* View Options */}
         <Tooltip>
@@ -203,7 +218,7 @@ export function ToolPanel() {
             <Button
               variant={showGrid ? "default" : "ghost"}
               size="icon"
-              className="w-10 h-10"
+              className="w-10 h-10 mx-auto"
               onClick={toggleGrid}
             >
               <Grid3X3 className="w-4 h-4" />

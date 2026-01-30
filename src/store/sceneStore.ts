@@ -27,6 +27,7 @@ interface SceneState {
   transformMode: TransformMode['mode'];
   gridSize: number;
   showGrid: boolean;
+  mouseSensitivity: number;
   
   // Actions
   addObject: (type: PrimitiveType, name?: string) => void;
@@ -40,6 +41,7 @@ interface SceneState {
   duplicateObject: (id: string) => void;
   setGridSize: (size: number) => void;
   toggleGrid: () => void;
+  setMouseSensitivity: (sensitivity: number) => void;
 }
 
 const getRandomPosition = (): [number, number, number] => {
@@ -58,6 +60,7 @@ export const useSceneStore = create<SceneState>((set, get) => ({
   transformMode: 'translate',
   gridSize: 1,
   showGrid: true,
+  mouseSensitivity: 30,
 
   addObject: (type, name) =>
     set((state) => {
@@ -139,4 +142,6 @@ export const useSceneStore = create<SceneState>((set, get) => ({
   setGridSize: (size) => set({ gridSize: size }),
   
   toggleGrid: () => set((state) => ({ showGrid: !state.showGrid })),
+  
+  setMouseSensitivity: (sensitivity) => set({ mouseSensitivity: sensitivity }),
 }));
