@@ -93,10 +93,10 @@ export function SceneObjectMesh({ object }: SceneObjectProps) {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  // Use frame loop for smooth continuous updates
+  // Use frame loop for smooth continuous updates - NO SHIFT REQUIRED
   useFrame(() => {
-    // WASD Movement - only when selected and Shift is held
-    if (isSelected && !object.locked && shiftHeld) {
+    // WASD Movement - works anytime object is selected (smooth movement)
+    if (isSelected && !object.locked && !isDragging) {
       let deltaX = 0;
       let deltaZ = 0;
       let deltaY = 0;
@@ -126,8 +126,8 @@ export function SceneObjectMesh({ object }: SceneObjectProps) {
     // Mouse drag movement
     if (!isDragging || object.locked) return;
     
-    if (shiftHeld && !keysPressed.has('w') && !keysPressed.has('a') && !keysPressed.has('s') && !keysPressed.has('d')) {
-      // Vertical movement (Y axis) - based on mouse Y delta (only if not using WASD)
+    if (shiftHeld) {
+      // Vertical movement (Y axis) - based on mouse Y delta
       const deltaY = (initialMouseY - mouseYRef.current) * 0.01;
       const newY = Math.max(0.1, initialY + deltaY);
       
@@ -136,7 +136,7 @@ export function SceneObjectMesh({ object }: SceneObjectProps) {
           position: [object.position[0], newY, object.position[2]],
         });
       }
-    } else if (!shiftHeld) {
+    } else {
       // Horizontal movement (X/Z plane) with mouse
       raycaster.setFromCamera(pointer, camera);
       
@@ -195,7 +195,7 @@ export function SceneObjectMesh({ object }: SceneObjectProps) {
     }
   };
 
-  const isUsingWASD = shiftHeld && (keysPressed.has('w') || keysPressed.has('a') || keysPressed.has('s') || keysPressed.has('d') || keysPressed.has('q') || keysPressed.has('e'));
+  const isUsingWASD = keysPressed.has('w') || keysPressed.has('a') || keysPressed.has('s') || keysPressed.has('d') || keysPressed.has('q') || keysPressed.has('e');
 
   return (
     <mesh

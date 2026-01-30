@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useProjectStore } from '@/store/projectStore';
+import { useSceneStore, PrimitiveType } from '@/store/sceneStore';
 
 interface PreloadedAsset {
   id: string;
@@ -124,6 +125,7 @@ export function PreloadedAssets() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedTier, setSelectedTier] = useState<'all' | 'free' | 'pro' | 'enterprise'>('all');
   const { addAsset } = useProjectStore();
+  const { addObject } = useSceneStore();
 
   const filteredAssets = preloadedAssets.filter(asset => {
     const matchesSearch = 
@@ -150,16 +152,28 @@ export function PreloadedAssets() {
       return;
     }
     
-    // Add to project store
+    // Add to project store (inventory)
     addAsset({
       name: asset.name,
       type: 'model',
       thumbnail: asset.imageUrl || '',
       source: 'local',
     });
+
+    // ALSO spawn in 3D scene - map category to primitive type
+    const categoryToPrimitive: Record<string, PrimitiveType> = {
+      'characters': 'cylinder',
+      'structures': 'cube',
+      'parts': 'torus',
+      'vehicles': 'cube',
+      'nature': 'cone',
+      'terrain': 'plane',
+    };
+    const primitiveType = categoryToPrimitive[asset.category] || 'cube';
+    addObject(primitiveType, asset.name);
     
     toast.success(`Added ${asset.name}`, {
-      description: 'Asset added to your inventory and scene.',
+      description: 'Asset spawned in scene and added to inventory!',
     });
   };
 

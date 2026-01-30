@@ -160,22 +160,22 @@ export function Viewport3D({ className }: Viewport3DProps) {
         </Canvas>
       </Suspense>
 
-      {/* Viewport overlay info */}
-      <div className="absolute top-4 left-4 flex items-center gap-2">
-        <div className="glass px-3 py-1.5 rounded-lg text-xs font-mono text-muted-foreground">
+      {/* Viewport overlay info - pushed forward with z-index and pointer-events */}
+      <div className="absolute top-4 left-4 flex items-center gap-2 z-20 pointer-events-none">
+        <div className="glass px-3 py-1.5 rounded-lg text-xs font-mono text-foreground/90 bg-background/80 backdrop-blur-md shadow-lg">
           Perspective View
         </div>
-        <div className="glass px-3 py-1.5 rounded-lg text-xs font-mono text-muted-foreground capitalize">
+        <div className="glass px-3 py-1.5 rounded-lg text-xs font-mono text-foreground/90 capitalize bg-background/80 backdrop-blur-md shadow-lg">
           {transformMode} Mode
         </div>
-        <div className="glass px-3 py-1.5 rounded-lg text-xs font-mono text-muted-foreground">
+        <div className="glass px-3 py-1.5 rounded-lg text-xs font-mono text-foreground/90 bg-background/80 backdrop-blur-md shadow-lg">
           {objects.length} Objects
         </div>
       </div>
 
-      {/* Viewport controls hint */}
-      <div className="absolute bottom-4 left-4 text-xs text-muted-foreground/60 font-mono">
-        LMB: Rotate | RMB: Pan | Scroll: Zoom | Drag Objects: Move
+      {/* Viewport controls hint - pushed forward */}
+      <div className="absolute bottom-4 left-4 text-xs text-foreground/80 font-mono z-20 pointer-events-none bg-background/70 px-3 py-1.5 rounded-lg backdrop-blur-md shadow-lg">
+        LMB: Rotate | RMB: Pan | Scroll: Zoom | WASD: Move | QE: Up/Down
       </div>
     </motion.div>
   );
