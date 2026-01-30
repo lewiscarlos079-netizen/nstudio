@@ -8,6 +8,8 @@ import { AIChatPanel } from '@/components/studio/AIChatPanel';
 import { CameraRecordingPanel } from '@/components/studio/CameraRecordingPanel';
 import { MotionCapturePanel } from '@/components/studio/MotionCapturePanel';
 import { ExpandedInventory } from '@/components/studio/ExpandedInventory';
+import { InventorySidebar } from '@/components/studio/InventorySidebar';
+import { SceneSettings } from '@/components/studio/SceneSettings';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -24,7 +26,8 @@ import {
   Save,
   Download,
   Camera,
-  Activity
+  Activity,
+  Package
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -120,6 +123,8 @@ export default function Studio() {
           </Tabs>
 
           <div className="flex items-center gap-2">
+            <InventorySidebar />
+            <SceneSettings />
             <Button variant="ghost" size="sm" className="gap-2 h-8" onClick={handleSave}>
               <Save className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Save</span>

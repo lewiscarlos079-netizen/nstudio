@@ -22,6 +22,7 @@ import {
   X,
 } from 'lucide-react';
 import { useProjectStore, Asset } from '@/store/projectStore';
+import { useSceneStore, PrimitiveType } from '@/store/sceneStore';
 import { toast } from 'sonner';
 
 interface InventoryItem extends Asset {
@@ -95,6 +96,7 @@ export function ExpandedInventory({ onAddToScene }: ExpandedInventoryProps) {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   
   const { assets: userAssets, addAsset } = useProjectStore();
+  const { addObject } = useSceneStore();
 
   // Combine user assets with preloaded vehicle parts
   const allItems = [...userAssets, ...vehicleParts];
@@ -107,10 +109,21 @@ export function ExpandedInventory({ onAddToScene }: ExpandedInventoryProps) {
   });
 
   const handleAddToScene = (item: InventoryItem) => {
+    // Map category to primitive type for spawning
+    const categoryToPrimitive: Record<string, PrimitiveType> = {
+      'gears': 'torus',
+      'engines': 'cube',
+      'exhausts': 'cylinder',
+      'spoilers': 'plane',
+      'vehicles': 'cube',
+    };
+    const primitiveType = categoryToPrimitive[item.category || ''] || 'cube';
+    addObject(primitiveType, item.name);
+    
     if (onAddToScene) {
       onAddToScene(item);
     }
-    toast.success(`Added ${item.name} to scene`);
+    toast.success(`Spawned ${item.name} in scene`);
     setIsExpanded(false);
   };
 
