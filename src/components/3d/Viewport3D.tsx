@@ -2,17 +2,19 @@ import { Canvas } from '@react-three/fiber';
 import { 
   OrbitControls, 
   PerspectiveCamera, 
+  OrthographicCamera,
   Environment,
   Grid,
   GizmoHelper,
   GizmoViewport,
   ContactShadows
 } from '@react-three/drei';
-import { Suspense, useEffect } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useSceneStore } from '@/store/sceneStore';
 import { SceneObjectMesh } from './SceneObject';
 import { SceneTransformGizmos } from './TransformGizmo';
+import * as THREE from 'three';
 
 function Scene() {
   const { objects, selectObject, showGrid, setTransformMode, selectedObjectId, removeObject, duplicateObject, toggleObjectLock, toggleObjectVisibility, toggleGrid } = useSceneStore();
@@ -136,7 +138,7 @@ interface Viewport3DProps {
 }
 
 export function Viewport3D({ className }: Viewport3DProps) {
-  const { transformMode, objects } = useSceneStore();
+  const { transformMode, objects, cameraMode } = useSceneStore();
 
   return (
     <motion.div 
@@ -147,12 +149,24 @@ export function Viewport3D({ className }: Viewport3DProps) {
     >
       <Suspense fallback={<LoadingFallback />}>
         <Canvas shadows dpr={[1, 2]}>
-          <PerspectiveCamera makeDefault position={[4, 3, 4]} fov={50} />
+          {cameraMode === '3D' ? (
+            <PerspectiveCamera makeDefault position={[4, 3, 4]} fov={50} />
+          ) : (
+            <OrthographicCamera 
+              makeDefault 
+              position={[0, 10, 0]} 
+              zoom={80} 
+              rotation={[-Math.PI / 2, 0, 0]}
+            />
+          )}
           <OrbitControls 
             enableDamping 
             dampingFactor={0.05}
-            minDistance={2}
-            maxDistance={50}
+            minDistance={cameraMode === '3D' ? 2 : undefined}
+            maxDistance={cameraMode === '3D' ? 50 : undefined}
+            minZoom={cameraMode === '2D' ? 20 : undefined}
+            maxZoom={cameraMode === '2D' ? 200 : undefined}
+            enableRotate={cameraMode === '3D'}
           />
           <Scene />
           <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
@@ -167,7 +181,7 @@ export function Viewport3D({ className }: Viewport3DProps) {
       {/* Viewport overlay info - pushed forward with z-index and pointer-events */}
       <div className="absolute top-4 left-4 flex items-center gap-2 z-20 pointer-events-none">
         <div className="glass px-3 py-1.5 rounded-lg text-xs font-mono text-foreground/90 bg-background/80 backdrop-blur-md shadow-lg">
-          Perspective View
+          {cameraMode === '3D' ? 'Perspective View' : 'Top-Down 2D View'}
         </div>
         <div className="glass px-3 py-1.5 rounded-lg text-xs font-mono text-foreground/90 capitalize bg-background/80 backdrop-blur-md shadow-lg">
           {transformMode} Mode
@@ -179,7 +193,10 @@ export function Viewport3D({ className }: Viewport3DProps) {
 
       {/* Viewport controls hint - pushed forward */}
       <div className="absolute bottom-4 left-4 text-xs text-foreground/80 font-mono z-20 pointer-events-none bg-background/70 px-3 py-1.5 rounded-lg backdrop-blur-md shadow-lg">
-        LMB: Rotate View | RMB: Pan | WASD: Move | QE: Up/Down | Scroll: Rotate Y | Shift+Scroll: Rotate X
+        {cameraMode === '3D' 
+          ? 'LMB: Rotate View | RMB: Pan | WASD: Move | QE: Up/Down | Scroll: Rotate Y | Shift+Scroll: Rotate X'
+          : 'LMB: Pan | Scroll: Zoom | Click objects to select'
+        }
       </div>
     </motion.div>
   );

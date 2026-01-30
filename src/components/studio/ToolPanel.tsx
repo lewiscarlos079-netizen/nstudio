@@ -19,7 +19,10 @@ import {
   EyeOff,
   Grid3X3,
   Hexagon,
-  Square
+  Square,
+  View,
+  Layers2,
+  Pencil
 } from 'lucide-react';
 import { useSceneStore, PrimitiveType } from '@/store/sceneStore';
 import { toast } from 'sonner';
@@ -52,10 +55,15 @@ export function ToolPanel() {
     toggleObjectLock,
     toggleObjectVisibility,
     showGrid,
-    toggleGrid
+    toggleGrid,
+    cameraMode,
+    setCameraMode,
+    designMode,
+    toggleDesignMode
   } = useSceneStore();
 
   const selectedObject = objects.find(obj => obj.id === selectedObjectId);
+  const canEnterDesignMode = selectedObject?.type === 'procedural';
 
   const handleAddPrimitive = (type: PrimitiveType, label: string) => {
     addObject(type);
@@ -213,19 +221,62 @@ export function ToolPanel() {
         <Separator className="bg-border/50 w-12" />
 
         {/* View Options */}
+        <div className="w-full">
+          <p className="text-[9px] text-muted-foreground font-medium uppercase tracking-wider text-center mb-1">
+            View
+          </p>
+          <div className="flex flex-col gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant={cameraMode === '2D' ? "default" : "ghost"}
+                  size="icon"
+                  className={`w-10 h-10 mx-auto ${cameraMode === '2D' ? 'glow-primary-sm' : ''}`}
+                  onClick={() => setCameraMode(cameraMode === '2D' ? '3D' : '2D')}
+                >
+                  {cameraMode === '2D' ? <Layers2 className="w-4 h-4" /> : <View className="w-4 h-4" />}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <p>{cameraMode === '2D' ? 'Switch to 3D View' : 'Switch to 2D View'}</p>
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant={showGrid ? "default" : "ghost"}
+                  size="icon"
+                  className="w-10 h-10 mx-auto"
+                  onClick={toggleGrid}
+                >
+                  <Grid3X3 className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <p>Toggle Grid (G)</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
+        </div>
+
+        <Separator className="bg-border/50 w-12" />
+
+        {/* Design Mode */}
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
-              variant={showGrid ? "default" : "ghost"}
+              variant={designMode ? "default" : "ghost"}
               size="icon"
-              className="w-10 h-10 mx-auto"
-              onClick={toggleGrid}
+              className={`w-10 h-10 mx-auto ${designMode ? 'glow-primary-sm bg-accent' : ''} ${!canEnterDesignMode && !designMode ? 'opacity-50' : ''}`}
+              disabled={!canEnterDesignMode && !designMode}
+              onClick={toggleDesignMode}
             >
-              <Grid3X3 className="w-4 h-4" />
+              <Pencil className="w-4 h-4" />
             </Button>
           </TooltipTrigger>
           <TooltipContent side="right">
-            <p>Toggle Grid (G)</p>
+            <p>{designMode ? 'Exit Design Mode' : canEnterDesignMode ? 'Design Body Parts' : 'Select a character/animal first'}</p>
           </TooltipContent>
         </Tooltip>
 

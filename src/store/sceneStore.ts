@@ -2,6 +2,17 @@ import { create } from 'zustand';
 
 export type PrimitiveType = 'cube' | 'sphere' | 'cylinder' | 'cone' | 'plane' | 'torus';
 
+export type BodyPartType = 
+  | 'head' | 'face' | 'torso' | 'leftArm' | 'rightArm' | 'leftLeg' | 'rightLeg' 
+  | 'tail' | 'leftWing' | 'rightWing' | 'dorsalFin' | 'tailFin' | 'leftFin' | 'rightFin'
+  | 'ears' | 'snout' | 'neck' | 'leftFrontLeg' | 'rightFrontLeg' | 'leftBackLeg' | 'rightBackLeg';
+
+export interface BodyPartConfig {
+  scale: [number, number, number];
+  offset: [number, number, number];
+  color?: string;
+}
+
 export interface SceneObject {
   id: string;
   name: string;
@@ -16,7 +27,11 @@ export interface SceneObject {
   emissiveIntensity: number;
   locked: boolean;
   visible: boolean;
+  // Body part customization for procedural models
+  bodyParts?: Record<BodyPartType, BodyPartConfig>;
 }
+
+export type CameraMode = '2D' | '3D';
 
 interface TransformMode {
   mode: 'translate' | 'rotate' | 'scale' | 'select';
@@ -25,6 +40,9 @@ interface TransformMode {
 interface SceneState {
   objects: SceneObject[];
   selectedObjectId: string | null;
+  selectedBodyPart: BodyPartType | null;
+  designMode: boolean;
+  cameraMode: CameraMode;
   transformMode: TransformMode['mode'];
   gridSize: number;
   showGrid: boolean;
@@ -44,6 +62,11 @@ interface SceneState {
   setGridSize: (size: number) => void;
   toggleGrid: () => void;
   setMouseSensitivity: (sensitivity: number) => void;
+  // New actions
+  setCameraMode: (mode: CameraMode) => void;
+  toggleDesignMode: () => void;
+  selectBodyPart: (part: BodyPartType | null) => void;
+  updateBodyPart: (objectId: string, part: BodyPartType, config: Partial<BodyPartConfig>) => void;
 }
 
 const getRandomPosition = (): [number, number, number] => {
@@ -59,6 +82,9 @@ let objectCounter = 1;
 export const useSceneStore = create<SceneState>((set, get) => ({
   objects: [],
   selectedObjectId: null,
+  selectedBodyPart: null,
+  designMode: false,
+  cameraMode: '3D',
   transformMode: 'translate',
   gridSize: 1,
   showGrid: true,
@@ -169,4 +195,32 @@ export const useSceneStore = create<SceneState>((set, get) => ({
   toggleGrid: () => set((state) => ({ showGrid: !state.showGrid })),
   
   setMouseSensitivity: (sensitivity) => set({ mouseSensitivity: sensitivity }),
+  
+  setCameraMode: (mode) => set({ cameraMode: mode }),
+  
+  toggleDesignMode: () => set((state) => ({ 
+    designMode: !state.designMode,
+    selectedBodyPart: state.designMode ? null : state.selectedBodyPart 
+  })),
+  
+  selectBodyPart: (part) => set({ selectedBodyPart: part }),
+  
+  updateBodyPart: (objectId, part, config) =>
+    set((state) => ({
+      objects: state.objects.map((obj) => {
+        if (obj.id !== objectId) return obj;
+        const currentParts = obj.bodyParts || {} as Record<BodyPartType, BodyPartConfig>;
+        const currentConfig = currentParts[part] || { 
+          scale: [1, 1, 1] as [number, number, number], 
+          offset: [0, 0, 0] as [number, number, number] 
+        };
+        return {
+          ...obj,
+          bodyParts: {
+            ...currentParts,
+            [part]: { ...currentConfig, ...config }
+          }
+        };
+      }),
+    })),
 }));
