@@ -2,6 +2,8 @@ import { create } from 'zustand';
 
 export type PrimitiveType = 'cube' | 'sphere' | 'cylinder' | 'cone' | 'plane' | 'torus';
 
+export type ModelStyle = 'standard' | 'toon' | 'wireframe';
+
 export type BodyPartType = 
   | 'head' | 'face' | 'torso' | 'leftArm' | 'rightArm' | 'leftLeg' | 'rightLeg' 
   | 'tail' | 'leftWing' | 'rightWing' | 'dorsalFin' | 'tailFin' | 'leftFin' | 'rightFin'
@@ -43,6 +45,7 @@ interface SceneState {
   selectedBodyPart: BodyPartType | null;
   designMode: boolean;
   cameraMode: CameraMode;
+  modelStyle: ModelStyle;
   transformMode: TransformMode['mode'];
   gridSize: number;
   showGrid: boolean;
@@ -64,6 +67,7 @@ interface SceneState {
   setMouseSensitivity: (sensitivity: number) => void;
   // New actions
   setCameraMode: (mode: CameraMode) => void;
+  setModelStyle: (style: ModelStyle) => void;
   toggleDesignMode: () => void;
   selectBodyPart: (part: BodyPartType | null) => void;
   updateBodyPart: (objectId: string, part: BodyPartType, config: Partial<BodyPartConfig>) => void;
@@ -85,6 +89,7 @@ export const useSceneStore = create<SceneState>((set, get) => ({
   selectedBodyPart: null,
   designMode: false,
   cameraMode: '3D',
+  modelStyle: 'toon',
   transformMode: 'translate',
   gridSize: 1,
   showGrid: true,
@@ -197,6 +202,8 @@ export const useSceneStore = create<SceneState>((set, get) => ({
   setMouseSensitivity: (sensitivity) => set({ mouseSensitivity: sensitivity }),
   
   setCameraMode: (mode) => set({ cameraMode: mode }),
+  
+  setModelStyle: (style) => set({ modelStyle: style }),
   
   toggleDesignMode: () => set((state) => ({ 
     designMode: !state.designMode,
