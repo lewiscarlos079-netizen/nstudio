@@ -1,10 +1,11 @@
 import { create } from 'zustand';
 
-export type PrimitiveType = 'cube' | 'sphere' | 'cylinder' | 'cone';
+export type PrimitiveType = 'cube' | 'sphere' | 'cylinder' | 'cone' | 'plane' | 'torus';
 
 export interface SceneObject {
   id: string;
-  type: PrimitiveType;
+  name: string;
+  type: PrimitiveType | 'model';
   position: [number, number, number];
   rotation: [number, number, number];
   scale: [number, number, number];
@@ -12,16 +13,33 @@ export interface SceneObject {
   metalness: number;
   roughness: number;
   emissiveIntensity: number;
+  locked: boolean;
+  visible: boolean;
+}
+
+interface TransformMode {
+  mode: 'translate' | 'rotate' | 'scale' | 'select';
 }
 
 interface SceneState {
   objects: SceneObject[];
   selectedObjectId: string | null;
-  addObject: (type: PrimitiveType) => void;
+  transformMode: TransformMode['mode'];
+  gridSize: number;
+  showGrid: boolean;
+  
+  // Actions
+  addObject: (type: PrimitiveType, name?: string) => void;
   removeObject: (id: string) => void;
   selectObject: (id: string | null) => void;
   updateObject: (id: string, updates: Partial<SceneObject>) => void;
   clearScene: () => void;
+  setTransformMode: (mode: TransformMode['mode']) => void;
+  toggleObjectLock: (id: string) => void;
+  toggleObjectVisibility: (id: string) => void;
+  duplicateObject: (id: string) => void;
+  setGridSize: (size: number) => void;
+  toggleGrid: () => void;
 }
 
 const getRandomPosition = (): [number, number, number] => {
@@ -32,27 +50,36 @@ const getRandomPosition = (): [number, number, number] => {
   ];
 };
 
-export const useSceneStore = create<SceneState>((set) => ({
+let objectCounter = 1;
+
+export const useSceneStore = create<SceneState>((set, get) => ({
   objects: [],
   selectedObjectId: null,
+  transformMode: 'translate',
+  gridSize: 1,
+  showGrid: true,
 
-  addObject: (type) =>
-    set((state) => ({
-      objects: [
-        ...state.objects,
-        {
-          id: crypto.randomUUID(),
-          type,
-          position: getRandomPosition(),
-          rotation: [0, 0, 0],
-          scale: [1, 1, 1],
-          color: '#00d4ff',
-          metalness: 0.8,
-          roughness: 0.2,
-          emissiveIntensity: 0.2,
-        },
-      ],
-    })),
+  addObject: (type, name) =>
+    set((state) => {
+      const newObject: SceneObject = {
+        id: crypto.randomUUID(),
+        name: name || `${type.charAt(0).toUpperCase() + type.slice(1)}_${objectCounter++}`,
+        type,
+        position: getRandomPosition(),
+        rotation: [0, 0, 0],
+        scale: [1, 1, 1],
+        color: '#00d4ff',
+        metalness: 0.8,
+        roughness: 0.2,
+        emissiveIntensity: 0.2,
+        locked: false,
+        visible: true,
+      };
+      return {
+        objects: [...state.objects, newObject],
+        selectedObjectId: newObject.id,
+      };
+    }),
 
   removeObject: (id) =>
     set((state) => ({
@@ -70,4 +97,46 @@ export const useSceneStore = create<SceneState>((set) => ({
     })),
 
   clearScene: () => set({ objects: [], selectedObjectId: null }),
+
+  setTransformMode: (mode) => set({ transformMode: mode }),
+
+  toggleObjectLock: (id) =>
+    set((state) => ({
+      objects: state.objects.map((obj) =>
+        obj.id === id ? { ...obj, locked: !obj.locked } : obj
+      ),
+    })),
+
+  toggleObjectVisibility: (id) =>
+    set((state) => ({
+      objects: state.objects.map((obj) =>
+        obj.id === id ? { ...obj, visible: !obj.visible } : obj
+      ),
+    })),
+
+  duplicateObject: (id) =>
+    set((state) => {
+      const original = state.objects.find((obj) => obj.id === id);
+      if (!original) return state;
+      
+      const duplicate: SceneObject = {
+        ...original,
+        id: crypto.randomUUID(),
+        name: `${original.name}_copy`,
+        position: [
+          original.position[0] + 1,
+          original.position[1],
+          original.position[2] + 1,
+        ],
+        locked: false,
+      };
+      return {
+        objects: [...state.objects, duplicate],
+        selectedObjectId: duplicate.id,
+      };
+    }),
+
+  setGridSize: (size) => set({ gridSize: size }),
+  
+  toggleGrid: () => set((state) => ({ showGrid: !state.showGrid })),
 }));

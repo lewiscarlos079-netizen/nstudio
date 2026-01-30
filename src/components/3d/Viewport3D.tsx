@@ -8,17 +8,62 @@ import {
   GizmoViewport,
   ContactShadows
 } from '@react-three/drei';
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useSceneStore } from '@/store/sceneStore';
 import { SceneObjectMesh } from './SceneObject';
 
 function Scene() {
-  const { objects, selectObject } = useSceneStore();
+  const { objects, selectObject, showGrid, setTransformMode, selectedObjectId, removeObject, duplicateObject, toggleObjectLock, toggleObjectVisibility, toggleGrid } = useSceneStore();
 
   const handleMissedClick = () => {
     selectObject(null);
   };
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if typing in input
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+      switch (e.key.toLowerCase()) {
+        case 'q':
+          setTransformMode('select');
+          break;
+        case 'w':
+          setTransformMode('translate');
+          break;
+        case 'e':
+          setTransformMode('rotate');
+          break;
+        case 'r':
+          setTransformMode('scale');
+          break;
+        case 'delete':
+        case 'backspace':
+          if (selectedObjectId) removeObject(selectedObjectId);
+          break;
+        case 'd':
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            if (selectedObjectId) duplicateObject(selectedObjectId);
+          }
+          break;
+        case 'l':
+          if (selectedObjectId) toggleObjectLock(selectedObjectId);
+          break;
+        case 'h':
+          if (selectedObjectId) toggleObjectVisibility(selectedObjectId);
+          break;
+        case 'g':
+          toggleGrid();
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [setTransformMode, selectedObjectId, removeObject, duplicateObject, toggleObjectLock, toggleObjectVisibility, toggleGrid]);
 
   return (
     <>
@@ -43,18 +88,20 @@ function Scene() {
       </mesh>
 
       {/* Ground grid */}
-      <Grid 
-        infiniteGrid 
-        cellSize={0.5}
-        cellThickness={0.5}
-        cellColor="#00d4ff"
-        sectionSize={2}
-        sectionThickness={1}
-        sectionColor="#7c3aed"
-        fadeDistance={30}
-        fadeStrength={1}
-        followCamera={false}
-      />
+      {showGrid && (
+        <Grid 
+          infiniteGrid 
+          cellSize={0.5}
+          cellThickness={0.5}
+          cellColor="#00d4ff"
+          sectionSize={2}
+          sectionThickness={1}
+          sectionColor="#7c3aed"
+          fadeDistance={30}
+          fadeStrength={1}
+          followCamera={false}
+        />
+      )}
 
       <ContactShadows 
         position={[0, -0.01, 0]} 
@@ -85,6 +132,8 @@ interface Viewport3DProps {
 }
 
 export function Viewport3D({ className }: Viewport3DProps) {
+  const { transformMode, objects } = useSceneStore();
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -99,7 +148,7 @@ export function Viewport3D({ className }: Viewport3DProps) {
             enableDamping 
             dampingFactor={0.05}
             minDistance={2}
-            maxDistance={20}
+            maxDistance={50}
           />
           <Scene />
           <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
@@ -116,11 +165,17 @@ export function Viewport3D({ className }: Viewport3DProps) {
         <div className="glass px-3 py-1.5 rounded-lg text-xs font-mono text-muted-foreground">
           Perspective View
         </div>
+        <div className="glass px-3 py-1.5 rounded-lg text-xs font-mono text-muted-foreground capitalize">
+          {transformMode} Mode
+        </div>
+        <div className="glass px-3 py-1.5 rounded-lg text-xs font-mono text-muted-foreground">
+          {objects.length} Objects
+        </div>
       </div>
 
       {/* Viewport controls hint */}
       <div className="absolute bottom-4 left-4 text-xs text-muted-foreground/60 font-mono">
-        LMB: Rotate | RMB: Pan | Scroll: Zoom
+        LMB: Rotate | RMB: Pan | Scroll: Zoom | Drag Objects: Move
       </div>
     </motion.div>
   );
