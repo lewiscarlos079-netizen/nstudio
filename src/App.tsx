@@ -8,6 +8,8 @@ import Studio from "./pages/Studio";
 import Assets from "./pages/Assets";
 import Render from "./pages/Render";
 import Portfolio from "./pages/Portfolio";
+import Subscription from "./pages/Subscription";
+import Legal from "./pages/Legal";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +26,8 @@ const App = () => (
           <Route path="/assets" element={<Assets />} />
           <Route path="/render" element={<Render />} />
           <Route path="/portfolio" element={<Portfolio />} />
+          <Route path="/subscription" element={<Subscription />} />
+          <Route path="/legal" element={<Legal />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
