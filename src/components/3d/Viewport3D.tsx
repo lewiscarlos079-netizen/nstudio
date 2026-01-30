@@ -93,10 +93,10 @@ function Scene() {
           infiniteGrid 
           cellSize={0.5}
           cellThickness={0.5}
-          cellColor="#00d4ff"
+          cellColor="hsl(38, 95%, 55%)"
           sectionSize={2}
           sectionThickness={1}
-          sectionColor="#7c3aed"
+          sectionColor="hsl(270, 70%, 55%)"
           fadeDistance={30}
           fadeStrength={1}
           followCamera={false}

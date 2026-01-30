@@ -1,7 +1,8 @@
+import { useState, useEffect } from 'react';
 import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Box, 
   Layers, 
@@ -12,8 +13,13 @@ import {
   Cpu,
   Globe,
   Zap,
-  Download
+  Download,
+  Play
 } from 'lucide-react';
+import { IntroVideo } from '@/components/landing/IntroVideo';
+import { StoragePrompt, useStoragePrompt } from '@/components/landing/StoragePrompt';
+
+const INTRO_SHOWN_KEY = 'nexus_intro_shown';
 
 const features = [
   {
@@ -21,24 +27,28 @@ const features = [
     title: '3D Modeling Studio',
     description: 'Create and edit 3D models with professional-grade tools and real-time preview.',
     href: '/studio',
+    preview: true,
   },
   {
     icon: Layers,
     title: 'Asset Library',
     description: 'Manage your assets and import from Unity Store, Google, and Reddit.',
     href: '/assets',
+    preview: true,
   },
   {
     icon: Film,
     title: 'Render Engine',
     description: 'Export your projects in 1080p or 4K UHD with GPU-accelerated rendering.',
     href: '/render',
+    preview: true,
   },
   {
     icon: FolderOpen,
     title: 'Portfolio',
     description: 'Save, organize, and download your creations for use on any hardware.',
     href: '/portfolio',
+    preview: true,
   },
 ];
 
@@ -49,8 +59,34 @@ const stats = [
 ];
 
 export default function Index() {
+  const [showIntro, setShowIntro] = useState(false);
+  const { showPrompt: showStoragePrompt, dismissPrompt } = useStoragePrompt();
+
+  useEffect(() => {
+    const hasSeenIntro = localStorage.getItem(INTRO_SHOWN_KEY);
+    if (!hasSeenIntro) {
+      setShowIntro(true);
+    }
+  }, []);
+
+  const handleCloseIntro = () => {
+    localStorage.setItem(INTRO_SHOWN_KEY, 'true');
+    setShowIntro(false);
+  };
+
   return (
-    <Layout>
+    <>
+      {/* Intro Video Modal */}
+      <AnimatePresence>
+        {showIntro && <IntroVideo onClose={handleCloseIntro} />}
+      </AnimatePresence>
+
+      {/* Storage Prompt Modal */}
+      <AnimatePresence>
+        {showStoragePrompt && !showIntro && <StoragePrompt onDismiss={dismissPrompt} />}
+      </AnimatePresence>
+
+      <Layout>
       <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden">
         {/* Background Effects */}
         <div className="absolute inset-0 grid-bg" />
@@ -128,9 +164,24 @@ export default function Index() {
                 transition={{ delay: 0.1 * index + 0.3 }}
               >
                 <Link to={feature.href}>
-                  <div className="group h-full p-6 rounded-xl glass border border-primary/10 hover:border-primary/30 transition-all hover:shadow-[0_0_30px_hsl(185_100%_50%/0.1)]">
-                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                      <feature.icon className="w-6 h-6 text-primary" />
+                  <div className="group h-full p-6 rounded-xl glass border border-primary/10 hover:border-primary/30 transition-all hover:shadow-[0_0_30px_hsl(var(--primary)/0.15)]">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <feature.icon className="w-6 h-6 text-primary" />
+                      </div>
+                      {feature.preview && (
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            // Show preview/demo trailer
+                          }}
+                        >
+                          <Play className="w-4 h-4" />
+                        </Button>
+                      )}
                     </div>
                     <h3 className="font-display text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
                       {feature.title}
@@ -212,5 +263,6 @@ export default function Index() {
         </div>
       </div>
     </Layout>
+    </>
   );
 }

@@ -5,7 +5,6 @@ import {
   Layers, 
   Film, 
   FolderOpen, 
-  Settings, 
   Sparkles,
   Menu,
   X,
@@ -14,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { SettingsDropdown } from './SettingsDropdown';
 
 const navItems = [
   { label: 'Studio', href: '/studio', icon: Box },
@@ -61,9 +61,9 @@ export function Header() {
                 Create New
               </Button>
             </Link>
-            <Button variant="ghost" size="icon" className="text-muted-foreground">
-              <Settings className="w-5 h-5" />
-            </Button>
+            
+            {/* Settings Dropdown */}
+            <SettingsDropdown />
 
             {/* Mobile Menu Toggle */}
             <Button
