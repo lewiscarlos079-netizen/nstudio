@@ -1,5 +1,5 @@
-import { useRef, useState, useEffect, useCallback } from 'react';
-import { Mesh, Vector3, Plane, Raycaster, Vector2 } from 'three';
+import { useRef, useState, useEffect } from 'react';
+import { Mesh, Vector3, Plane } from 'three';
 import { ThreeEvent, useThree, useFrame } from '@react-three/fiber';
 import { useSceneStore, SceneObject } from '@/store/sceneStore';
 
@@ -13,11 +13,33 @@ export function SceneObjectMesh({ object }: SceneObjectProps) {
   const isSelected = selectedObjectId === object.id;
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState<Vector3>(new Vector3());
+  const [shiftHeld, setShiftHeld] = useState(false);
+  const [initialY, setInitialY] = useState(0);
+  const [initialMouseY, setInitialMouseY] = useState(0);
   const { camera, gl, raycaster, pointer } = useThree();
   
-  // Create a plane for dragging at the object's height
-  const dragPlane = useRef(new Plane(new Vector3(0, 1, 0), 0));
+  // Planes for different movement directions
+  const horizontalPlane = useRef(new Plane(new Vector3(0, 1, 0), 0));
+  const verticalPlane = useRef(new Plane(new Vector3(0, 0, 1), 0));
   const intersection = useRef(new Vector3());
+
+  // Track shift key state
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Shift') setShiftHeld(true);
+    };
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.key === 'Shift') setShiftHeld(false);
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, []);
 
   const handleClick = (e: ThreeEvent<MouseEvent>) => {
     if (!isDragging) {
@@ -32,12 +54,16 @@ export function SceneObjectMesh({ object }: SceneObjectProps) {
     if (object.locked || transformMode === 'select') return;
     e.stopPropagation();
     
-    // Set the drag plane at the object's current Y position
-    dragPlane.current.constant = -object.position[1];
+    // Set the horizontal drag plane at the object's current Y position
+    horizontalPlane.current.constant = -object.position[1];
+    
+    // Store initial Y for vertical movement
+    setInitialY(object.position[1]);
+    setInitialMouseY(e.clientY);
     
     // Calculate offset from click point to object center
     raycaster.setFromCamera(pointer, camera);
-    if (raycaster.ray.intersectPlane(dragPlane.current, intersection.current)) {
+    if (raycaster.ray.intersectPlane(horizontalPlane.current, intersection.current)) {
       setDragOffset(new Vector3(
         object.position[0] - intersection.current.x,
         0,
@@ -47,29 +73,48 @@ export function SceneObjectMesh({ object }: SceneObjectProps) {
     
     setIsDragging(true);
     gl.domElement.style.cursor = 'grabbing';
-    
-    // Capture pointer for smooth tracking
-    (e.target as HTMLElement)?.setPointerCapture?.(e.pointerId);
   };
+
+  // Track mouse position for vertical movement
+  const mouseYRef = useRef(0);
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      mouseYRef.current = e.clientY;
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   // Use frame loop for smooth continuous updates while dragging
   useFrame(() => {
     if (!isDragging || object.locked) return;
     
-    raycaster.setFromCamera(pointer, camera);
-    
-    if (raycaster.ray.intersectPlane(dragPlane.current, intersection.current)) {
-      const newX = intersection.current.x + dragOffset.x;
-      const newZ = intersection.current.z + dragOffset.z;
+    if (shiftHeld) {
+      // Vertical movement (Y axis) - based on mouse Y delta
+      const deltaY = (initialMouseY - mouseYRef.current) * 0.01;
+      const newY = Math.max(0.1, initialY + deltaY); // Prevent going below ground
       
-      // Only update if position actually changed (prevents unnecessary rerenders)
-      if (
-        Math.abs(newX - object.position[0]) > 0.001 ||
-        Math.abs(newZ - object.position[2]) > 0.001
-      ) {
+      if (Math.abs(newY - object.position[1]) > 0.001) {
         updateObject(object.id, {
-          position: [newX, object.position[1], newZ],
+          position: [object.position[0], newY, object.position[2]],
         });
+      }
+    } else {
+      // Horizontal movement (X/Z plane)
+      raycaster.setFromCamera(pointer, camera);
+      
+      if (raycaster.ray.intersectPlane(horizontalPlane.current, intersection.current)) {
+        const newX = intersection.current.x + dragOffset.x;
+        const newZ = intersection.current.z + dragOffset.z;
+        
+        if (
+          Math.abs(newX - object.position[0]) > 0.001 ||
+          Math.abs(newZ - object.position[2]) > 0.001
+        ) {
+          updateObject(object.id, {
+            position: [newX, object.position[1], newZ],
+          });
+        }
       }
     }
   });
@@ -83,19 +128,12 @@ export function SceneObjectMesh({ object }: SceneObjectProps) {
       }
     };
 
-    const handlePointerLeave = () => {
-      if (isDragging) {
-        setIsDragging(false);
-        gl.domElement.style.cursor = 'auto';
-      }
-    };
-
     gl.domElement.addEventListener('pointerup', handlePointerUp);
-    gl.domElement.addEventListener('pointerleave', handlePointerLeave);
+    gl.domElement.addEventListener('pointerleave', handlePointerUp);
     
     return () => {
       gl.domElement.removeEventListener('pointerup', handlePointerUp);
-      gl.domElement.removeEventListener('pointerleave', handlePointerLeave);
+      gl.domElement.removeEventListener('pointerleave', handlePointerUp);
     };
   }, [isDragging, gl.domElement]);
 
@@ -154,7 +192,10 @@ export function SceneObjectMesh({ object }: SceneObjectProps) {
       {isSelected && (
         <lineSegments>
           <edgesGeometry args={[meshRef.current?.geometry]} />
-          <lineBasicMaterial color={isDragging ? "#00ff00" : "#ffff00"} linewidth={2} />
+          <lineBasicMaterial 
+            color={isDragging ? (shiftHeld ? "#00ffff" : "#00ff00") : "#ffff00"} 
+            linewidth={2} 
+          />
         </lineSegments>
       )}
     </mesh>
