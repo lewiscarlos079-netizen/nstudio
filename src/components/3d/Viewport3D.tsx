@@ -179,7 +179,7 @@ export function Viewport3D({ className }: Viewport3DProps) {
 
       {/* Viewport controls hint - pushed forward */}
       <div className="absolute bottom-4 left-4 text-xs text-foreground/80 font-mono z-20 pointer-events-none bg-background/70 px-3 py-1.5 rounded-lg backdrop-blur-md shadow-lg">
-        LMB: Rotate | RMB: Pan | Scroll: Zoom | WASD: Move | QE: Up/Down
+        LMB: Rotate View | RMB: Pan | WASD: Move | QE: Up/Down | Scroll: Rotate Y | Shift+Scroll: Rotate X
       </div>
     </motion.div>
   );

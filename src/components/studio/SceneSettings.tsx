@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -31,9 +31,9 @@ import {
   Volume2,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useSceneStore } from '@/store/sceneStore';
 
-interface SceneSettingsState {
-  sensitivity: number;
+interface LocalSettingsState {
   hdrEnabled: boolean;
   quality: 'low' | 'medium' | 'high' | 'ultra';
   weather: 'clear' | 'rain' | 'snow' | 'fog' | 'storm';
@@ -44,8 +44,7 @@ interface SceneSettingsState {
   entityBehavior: 'neutral' | 'aggressive';
 }
 
-const defaultSettings: SceneSettingsState = {
-  sensitivity: 50,
+const defaultSettings: LocalSettingsState = {
   hdrEnabled: true,
   quality: 'high',
   weather: 'clear',
@@ -57,14 +56,19 @@ const defaultSettings: SceneSettingsState = {
 };
 
 export function SceneSettings() {
-  const [settings, setSettings] = useState<SceneSettingsState>(defaultSettings);
+  const { mouseSensitivity, setMouseSensitivity } = useSceneStore();
+  const [settings, setSettings] = useState<LocalSettingsState>(defaultSettings);
 
-  const updateSetting = <K extends keyof SceneSettingsState>(
+  const updateSetting = <K extends keyof LocalSettingsState>(
     key: K,
-    value: SceneSettingsState[K]
+    value: LocalSettingsState[K]
   ) => {
     setSettings(prev => ({ ...prev, [key]: value }));
     toast.success(`${key} updated`);
+  };
+
+  const handleSensitivityChange = (value: number) => {
+    setMouseSensitivity(value);
   };
 
   const handleDownload = (platform: string) => {
@@ -117,15 +121,18 @@ export function SceneSettings() {
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <Label className="text-sm">Mouse Sensitivity</Label>
-                <span className="text-xs text-muted-foreground">{settings.sensitivity}%</span>
+                <span className="text-xs text-muted-foreground">{mouseSensitivity}%</span>
               </div>
               <Slider
-                value={[settings.sensitivity]}
-                onValueChange={([val]) => updateSetting('sensitivity', val)}
+                value={[mouseSensitivity]}
+                onValueChange={([val]) => handleSensitivityChange(val)}
                 min={10}
                 max={100}
                 step={5}
               />
+              <p className="text-xs text-muted-foreground">
+                Lower values = slower, more precise movement
+              </p>
             </div>
           </div>
 

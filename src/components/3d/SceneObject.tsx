@@ -12,7 +12,7 @@ const keysPressed = new Set<string>();
 
 export function SceneObjectMesh({ object }: SceneObjectProps) {
   const meshRef = useRef<Mesh>(null);
-  const { selectedObjectId, selectObject, updateObject, transformMode } = useSceneStore();
+  const { selectedObjectId, selectObject, updateObject, transformMode, mouseSensitivity } = useSceneStore();
   const isSelected = selectedObjectId === object.id;
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState<Vector3>(new Vector3());
@@ -21,17 +21,28 @@ export function SceneObjectMesh({ object }: SceneObjectProps) {
   const [initialMouseY, setInitialMouseY] = useState(0);
   const { camera, gl, raycaster, pointer } = useThree();
   
-  // Movement speed for WASD
-  const moveSpeed = 0.05;
+  // Movement speed based on sensitivity (reduced base speed)
+  const baseSpeed = 0.01;
+  const moveSpeed = baseSpeed * (mouseSensitivity / 50);
   
   // Planes for different movement directions
   const horizontalPlane = useRef(new Plane(new Vector3(0, 1, 0), 0));
   const intersection = useRef(new Vector3());
 
-  // Track keyboard state for WASD movement
+  // Track keyboard state for WASD movement - only when canvas is focused
   useEffect(() => {
+    const canvas = gl.domElement;
+    
     const handleKeyDown = (e: KeyboardEvent) => {
-      keysPressed.add(e.key.toLowerCase());
+      // Only capture WASD/QE if the event target is the canvas
+      const key = e.key.toLowerCase();
+      if (['w', 'a', 's', 'd', 'q', 'e'].includes(key)) {
+        // Check if we're in an input or if canvas is focused
+        if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+          return;
+        }
+        keysPressed.add(key);
+      }
       if (e.key === 'Shift') setShiftHeld(true);
     };
     
@@ -39,15 +50,63 @@ export function SceneObjectMesh({ object }: SceneObjectProps) {
       keysPressed.delete(e.key.toLowerCase());
       if (e.key === 'Shift') setShiftHeld(false);
     };
+
+    // Clear keys when canvas loses focus
+    const handleBlur = () => {
+      keysPressed.clear();
+    };
     
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
+    canvas.addEventListener('blur', handleBlur);
     
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
+      canvas.removeEventListener('blur', handleBlur);
     };
-  }, []);
+  }, [gl.domElement]);
+
+  // Scroll wheel for X/Y rotation control
+  useEffect(() => {
+    const canvas = gl.domElement;
+    
+    const handleWheel = (e: WheelEvent) => {
+      if (!isSelected || object.locked) return;
+      
+      e.preventDefault();
+      
+      const rotationSpeed = 0.02 * (mouseSensitivity / 50);
+      const deltaY = e.deltaY * rotationSpeed;
+      
+      // Shift + scroll = rotate on X axis, normal scroll = rotate on Y axis
+      if (e.shiftKey) {
+        // Rotate on X axis
+        updateObject(object.id, {
+          rotation: [
+            object.rotation[0] + deltaY,
+            object.rotation[1],
+            object.rotation[2],
+          ],
+        });
+      } else {
+        // Rotate on Y axis
+        updateObject(object.id, {
+          rotation: [
+            object.rotation[0],
+            object.rotation[1] + deltaY,
+            object.rotation[2],
+          ],
+        });
+      }
+    };
+    
+    canvas.addEventListener('wheel', handleWheel, { passive: false });
+    
+    return () => {
+      canvas.removeEventListener('wheel', handleWheel);
+    };
+  }, [isSelected, object.id, object.rotation, object.locked, updateObject, mouseSensitivity, gl.domElement]);
 
   const handleClick = (e: ThreeEvent<MouseEvent>) => {
     if (!isDragging) {
@@ -93,7 +152,7 @@ export function SceneObjectMesh({ object }: SceneObjectProps) {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  // Use frame loop for smooth continuous updates - NO SHIFT REQUIRED
+  // Use frame loop for smooth continuous updates
   useFrame(() => {
     // WASD Movement - works anytime object is selected (smooth movement)
     if (isSelected && !object.locked && !isDragging) {
@@ -123,12 +182,14 @@ export function SceneObjectMesh({ object }: SceneObjectProps) {
       }
     }
     
-    // Mouse drag movement
+    // Mouse drag movement with reduced sensitivity
     if (!isDragging || object.locked) return;
+    
+    const dragSensitivity = mouseSensitivity / 100;
     
     if (shiftHeld) {
       // Vertical movement (Y axis) - based on mouse Y delta
-      const deltaY = (initialMouseY - mouseYRef.current) * 0.01;
+      const deltaY = (initialMouseY - mouseYRef.current) * 0.005 * dragSensitivity;
       const newY = Math.max(0.1, initialY + deltaY);
       
       if (Math.abs(newY - object.position[1]) > 0.001) {
@@ -144,12 +205,18 @@ export function SceneObjectMesh({ object }: SceneObjectProps) {
         const newX = intersection.current.x + dragOffset.x;
         const newZ = intersection.current.z + dragOffset.z;
         
+        // Apply sensitivity to movement
+        const currentX = object.position[0];
+        const currentZ = object.position[2];
+        const targetX = currentX + (newX - currentX) * dragSensitivity;
+        const targetZ = currentZ + (newZ - currentZ) * dragSensitivity;
+        
         if (
-          Math.abs(newX - object.position[0]) > 0.001 ||
-          Math.abs(newZ - object.position[2]) > 0.001
+          Math.abs(targetX - currentX) > 0.001 ||
+          Math.abs(targetZ - currentZ) > 0.001
         ) {
           updateObject(object.id, {
-            position: [newX, object.position[1], newZ],
+            position: [targetX, object.position[1], targetZ],
           });
         }
       }
