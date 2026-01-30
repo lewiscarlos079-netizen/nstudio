@@ -7,6 +7,9 @@ interface SceneObjectProps {
   object: SceneObject;
 }
 
+// Track which keys are currently pressed
+const keysPressed = new Set<string>();
+
 export function SceneObjectMesh({ object }: SceneObjectProps) {
   const meshRef = useRef<Mesh>(null);
   const { selectedObjectId, selectObject, updateObject, transformMode } = useSceneStore();
@@ -18,17 +21,22 @@ export function SceneObjectMesh({ object }: SceneObjectProps) {
   const [initialMouseY, setInitialMouseY] = useState(0);
   const { camera, gl, raycaster, pointer } = useThree();
   
+  // Movement speed for WASD
+  const moveSpeed = 0.05;
+  
   // Planes for different movement directions
   const horizontalPlane = useRef(new Plane(new Vector3(0, 1, 0), 0));
-  const verticalPlane = useRef(new Plane(new Vector3(0, 0, 1), 0));
   const intersection = useRef(new Vector3());
 
-  // Track shift key state
+  // Track keyboard state for WASD movement
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      keysPressed.add(e.key.toLowerCase());
       if (e.key === 'Shift') setShiftHeld(true);
     };
+    
     const handleKeyUp = (e: KeyboardEvent) => {
+      keysPressed.delete(e.key.toLowerCase());
       if (e.key === 'Shift') setShiftHeld(false);
     };
     
@@ -85,22 +93,51 @@ export function SceneObjectMesh({ object }: SceneObjectProps) {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  // Use frame loop for smooth continuous updates while dragging
+  // Use frame loop for smooth continuous updates
   useFrame(() => {
+    // WASD Movement - only when selected and Shift is held
+    if (isSelected && !object.locked && shiftHeld) {
+      let deltaX = 0;
+      let deltaZ = 0;
+      let deltaY = 0;
+      
+      // WASD for horizontal movement
+      if (keysPressed.has('w')) deltaZ -= moveSpeed;
+      if (keysPressed.has('s')) deltaZ += moveSpeed;
+      if (keysPressed.has('a')) deltaX -= moveSpeed;
+      if (keysPressed.has('d')) deltaX += moveSpeed;
+      
+      // Q/E for vertical movement
+      if (keysPressed.has('q')) deltaY -= moveSpeed;
+      if (keysPressed.has('e')) deltaY += moveSpeed;
+      
+      if (deltaX !== 0 || deltaZ !== 0 || deltaY !== 0) {
+        const newY = Math.max(0.1, object.position[1] + deltaY);
+        updateObject(object.id, {
+          position: [
+            object.position[0] + deltaX,
+            newY,
+            object.position[2] + deltaZ,
+          ],
+        });
+      }
+    }
+    
+    // Mouse drag movement
     if (!isDragging || object.locked) return;
     
-    if (shiftHeld) {
-      // Vertical movement (Y axis) - based on mouse Y delta
+    if (shiftHeld && !keysPressed.has('w') && !keysPressed.has('a') && !keysPressed.has('s') && !keysPressed.has('d')) {
+      // Vertical movement (Y axis) - based on mouse Y delta (only if not using WASD)
       const deltaY = (initialMouseY - mouseYRef.current) * 0.01;
-      const newY = Math.max(0.1, initialY + deltaY); // Prevent going below ground
+      const newY = Math.max(0.1, initialY + deltaY);
       
       if (Math.abs(newY - object.position[1]) > 0.001) {
         updateObject(object.id, {
           position: [object.position[0], newY, object.position[2]],
         });
       }
-    } else {
-      // Horizontal movement (X/Z plane)
+    } else if (!shiftHeld) {
+      // Horizontal movement (X/Z plane) with mouse
       raycaster.setFromCamera(pointer, camera);
       
       if (raycaster.ray.intersectPlane(horizontalPlane.current, intersection.current)) {
@@ -158,6 +195,8 @@ export function SceneObjectMesh({ object }: SceneObjectProps) {
     }
   };
 
+  const isUsingWASD = shiftHeld && (keysPressed.has('w') || keysPressed.has('a') || keysPressed.has('s') || keysPressed.has('d') || keysPressed.has('q') || keysPressed.has('e'));
+
   return (
     <mesh
       ref={meshRef}
@@ -183,7 +222,7 @@ export function SceneObjectMesh({ object }: SceneObjectProps) {
       <meshStandardMaterial
         color={object.color}
         emissive={object.color}
-        emissiveIntensity={isDragging ? object.emissiveIntensity + 0.3 : object.emissiveIntensity}
+        emissiveIntensity={isDragging || isUsingWASD ? object.emissiveIntensity + 0.3 : object.emissiveIntensity}
         metalness={object.metalness}
         roughness={object.roughness}
         transparent={object.locked}
@@ -193,7 +232,7 @@ export function SceneObjectMesh({ object }: SceneObjectProps) {
         <lineSegments>
           <edgesGeometry args={[meshRef.current?.geometry]} />
           <lineBasicMaterial 
-            color={isDragging ? (shiftHeld ? "#00ffff" : "#00ff00") : "#ffff00"} 
+            color={isUsingWASD ? "#ff00ff" : (isDragging ? (shiftHeld ? "#00ffff" : "#00ff00") : "#ffff00")} 
             linewidth={2} 
           />
         </lineSegments>
