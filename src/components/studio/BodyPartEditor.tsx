@@ -103,6 +103,106 @@ const MODEL_BODY_PARTS: Record<string, { part: BodyPartType; label: string; icon
     { part: 'leftLeg', label: 'Left Leg', icon: Footprints },
     { part: 'rightLeg', label: 'Right Leg', icon: Footprints },
   ],
+  elephant: [
+    { part: 'head', label: 'Head', icon: Circle },
+    { part: 'snout', label: 'Trunk', icon: User },
+    { part: 'ears', label: 'Ears', icon: Circle },
+    { part: 'torso', label: 'Body', icon: User },
+    { part: 'leftFrontLeg', label: 'Front Left Leg', icon: Footprints },
+    { part: 'rightFrontLeg', label: 'Front Right Leg', icon: Footprints },
+    { part: 'leftBackLeg', label: 'Back Left Leg', icon: Footprints },
+    { part: 'rightBackLeg', label: 'Back Right Leg', icon: Footprints },
+    { part: 'tail', label: 'Tail', icon: Footprints },
+  ],
+  horse: [
+    { part: 'head', label: 'Head', icon: Circle },
+    { part: 'snout', label: 'Snout', icon: User },
+    { part: 'neck', label: 'Neck & Mane', icon: User },
+    { part: 'torso', label: 'Body', icon: User },
+    { part: 'leftFrontLeg', label: 'Front Left Leg', icon: Footprints },
+    { part: 'rightFrontLeg', label: 'Front Right Leg', icon: Footprints },
+    { part: 'leftBackLeg', label: 'Back Left Leg', icon: Footprints },
+    { part: 'rightBackLeg', label: 'Back Right Leg', icon: Footprints },
+    { part: 'tail', label: 'Tail', icon: Footprints },
+  ],
+  lion: [
+    { part: 'head', label: 'Head', icon: Circle },
+    { part: 'ears', label: 'Mane', icon: Circle },
+    { part: 'torso', label: 'Body', icon: User },
+    { part: 'leftFrontLeg', label: 'Front Left Leg', icon: Footprints },
+    { part: 'rightFrontLeg', label: 'Front Right Leg', icon: Footprints },
+    { part: 'leftBackLeg', label: 'Back Left Leg', icon: Footprints },
+    { part: 'rightBackLeg', label: 'Back Right Leg', icon: Footprints },
+    { part: 'tail', label: 'Tail', icon: Footprints },
+  ],
+  fox: [
+    { part: 'head', label: 'Head', icon: Circle },
+    { part: 'snout', label: 'Snout', icon: User },
+    { part: 'ears', label: 'Ears', icon: Circle },
+    { part: 'torso', label: 'Body', icon: User },
+    { part: 'leftFrontLeg', label: 'Front Left Leg', icon: Footprints },
+    { part: 'rightFrontLeg', label: 'Front Right Leg', icon: Footprints },
+    { part: 'leftBackLeg', label: 'Back Left Leg', icon: Footprints },
+    { part: 'rightBackLeg', label: 'Back Right Leg', icon: Footprints },
+    { part: 'tail', label: 'Tail', icon: Footprints },
+  ],
+  rabbit: [
+    { part: 'head', label: 'Head', icon: Circle },
+    { part: 'ears', label: 'Ears', icon: Circle },
+    { part: 'torso', label: 'Body', icon: User },
+    { part: 'leftFrontLeg', label: 'Front Left Leg', icon: Footprints },
+    { part: 'rightFrontLeg', label: 'Front Right Leg', icon: Footprints },
+    { part: 'leftBackLeg', label: 'Back Left Leg', icon: Footprints },
+    { part: 'rightBackLeg', label: 'Back Right Leg', icon: Footprints },
+    { part: 'tail', label: 'Tail', icon: Footprints },
+  ],
+  penguin: [
+    { part: 'head', label: 'Head', icon: Circle },
+    { part: 'snout', label: 'Beak', icon: User },
+    { part: 'torso', label: 'Body', icon: User },
+    { part: 'leftWing', label: 'Left Flipper', icon: Hand },
+    { part: 'rightWing', label: 'Right Flipper', icon: Hand },
+    { part: 'leftLeg', label: 'Left Foot', icon: Footprints },
+    { part: 'rightLeg', label: 'Right Foot', icon: Footprints },
+  ],
+  wolf: [
+    { part: 'head', label: 'Head', icon: Circle },
+    { part: 'snout', label: 'Snout', icon: User },
+    { part: 'ears', label: 'Ears', icon: Circle },
+    { part: 'torso', label: 'Body', icon: User },
+    { part: 'leftFrontLeg', label: 'Front Left Leg', icon: Footprints },
+    { part: 'rightFrontLeg', label: 'Front Right Leg', icon: Footprints },
+    { part: 'leftBackLeg', label: 'Back Left Leg', icon: Footprints },
+    { part: 'rightBackLeg', label: 'Back Right Leg', icon: Footprints },
+    { part: 'tail', label: 'Tail', icon: Footprints },
+  ],
+  tiger: [
+    { part: 'head', label: 'Head', icon: Circle },
+    { part: 'snout', label: 'Snout', icon: User },
+    { part: 'torso', label: 'Body', icon: User },
+    { part: 'leftFrontLeg', label: 'Front Left Leg', icon: Footprints },
+    { part: 'rightFrontLeg', label: 'Front Right Leg', icon: Footprints },
+    { part: 'leftBackLeg', label: 'Back Left Leg', icon: Footprints },
+    { part: 'rightBackLeg', label: 'Back Right Leg', icon: Footprints },
+    { part: 'tail', label: 'Tail', icon: Footprints },
+  ],
+  whale: [
+    { part: 'head', label: 'Head', icon: Circle },
+    { part: 'torso', label: 'Body', icon: User },
+    { part: 'dorsalFin', label: 'Dorsal Fin', icon: Hand },
+    { part: 'tailFin', label: 'Tail Fluke', icon: Footprints },
+    { part: 'leftFin', label: 'Left Fin', icon: Hand },
+    { part: 'rightFin', label: 'Right Fin', icon: Hand },
+  ],
+  dolphin: [
+    { part: 'head', label: 'Head', icon: Circle },
+    { part: 'snout', label: 'Snout', icon: User },
+    { part: 'torso', label: 'Body', icon: User },
+    { part: 'dorsalFin', label: 'Dorsal Fin', icon: Hand },
+    { part: 'tailFin', label: 'Tail Fluke', icon: Footprints },
+    { part: 'leftFin', label: 'Left Fin', icon: Hand },
+    { part: 'rightFin', label: 'Right Fin', icon: Hand },
+  ],
 };
 
 // Default body parts for unknown models
@@ -116,6 +216,7 @@ const DEFAULT_BODY_PARTS = [
 export function BodyPartEditor() {
   const { 
     designMode, 
+    designModePopout,
     toggleDesignMode, 
     selectedObjectId, 
     objects, 
@@ -126,7 +227,8 @@ export function BodyPartEditor() {
 
   const selectedObject = objects.find(obj => obj.id === selectedObjectId);
   
-  if (!designMode || !selectedObject || selectedObject.type !== 'procedural') {
+  // Only show if design mode is on, popout is enabled, and a procedural model is selected
+  if (!designMode || !designModePopout || !selectedObject || selectedObject.type !== 'procedural') {
     return null;
   }
 

@@ -334,19 +334,32 @@ const preloadedAssets: PreloadedAsset[] = [
 
   // Wild
   { id: 'wolf', name: 'Wolf', category: 'animals', subcategory: 'wild', icon: Dog, tags: ['animal', 'wolf', 'predator', 'wild'], tier: 'free', imageUrl: '/placeholder.svg' },
-  { id: 'wolf-arctic', name: 'Arctic Wolf', category: 'animals', subcategory: 'wild', icon: Dog, tags: ['animal', 'wolf', 'arctic', 'white'], tier: 'pro', imageUrl: '/placeholder.svg' },
-  { id: 'tiger', name: 'Tiger', category: 'animals', subcategory: 'wild', icon: Cat, tags: ['animal', 'tiger', 'big-cat', 'stripes'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'wolf-arctic', name: 'Arctic Wolf', category: 'animals', subcategory: 'wild', icon: Dog, tags: ['animal', 'wolf', 'arctic', 'white'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'tiger', name: 'Tiger', category: 'animals', subcategory: 'wild', icon: Cat, tags: ['animal', 'tiger', 'big-cat', 'stripes'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'lion', name: 'Lion', category: 'animals', subcategory: 'wild', icon: Cat, tags: ['animal', 'lion', 'big-cat', 'mane', 'king'], tier: 'free', imageUrl: '/placeholder.svg' },
   { id: 'cougar', name: 'Cougar', category: 'animals', subcategory: 'wild', icon: Cat, tags: ['animal', 'cougar', 'mountain-lion', 'predator'], tier: 'free', imageUrl: '/placeholder.svg' },
-  { id: 'snow-leopard', name: 'Snow Leopard', category: 'animals', subcategory: 'wild', icon: Cat, tags: ['animal', 'leopard', 'snow', 'spotted'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'snow-leopard', name: 'Snow Leopard', category: 'animals', subcategory: 'wild', icon: Cat, tags: ['animal', 'leopard', 'snow', 'spotted'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'fox', name: 'Fox', category: 'animals', subcategory: 'wild', icon: Dog, tags: ['animal', 'fox', 'red', 'cunning'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // Large Mammals
+  { id: 'elephant', name: 'Elephant', category: 'animals', subcategory: 'wild', icon: User, tags: ['animal', 'elephant', 'large', 'trunk', 'tusks'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'horse', name: 'Horse', category: 'animals', subcategory: 'domestic', icon: Dog, tags: ['animal', 'horse', 'equine', 'riding'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'horse-white', name: 'White Horse', category: 'animals', subcategory: 'domestic', icon: Dog, tags: ['animal', 'horse', 'white', 'stallion'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'horse-black', name: 'Black Stallion', category: 'animals', subcategory: 'domestic', icon: Dog, tags: ['animal', 'horse', 'black', 'stallion'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // Small Mammals
+  { id: 'rabbit', name: 'Rabbit', category: 'animals', subcategory: 'domestic', icon: Cat, tags: ['animal', 'rabbit', 'bunny', 'pet'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'rabbit-white', name: 'White Rabbit', category: 'animals', subcategory: 'domestic', icon: Cat, tags: ['animal', 'rabbit', 'bunny', 'white'], tier: 'free', imageUrl: '/placeholder.svg' },
 
   // Primates
-  { id: 'gorilla', name: 'Gorilla', category: 'animals', subcategory: 'primates', icon: User, tags: ['animal', 'gorilla', 'ape', 'primate'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'gorilla', name: 'Gorilla', category: 'animals', subcategory: 'primates', icon: User, tags: ['animal', 'gorilla', 'ape', 'primate'], tier: 'free', imageUrl: '/placeholder.svg' },
   { id: 'chimpanzee', name: 'Chimpanzee', category: 'animals', subcategory: 'primates', icon: User, tags: ['animal', 'chimpanzee', 'ape', 'primate'], tier: 'free', imageUrl: '/placeholder.svg' },
 
   // Birds
   { id: 'peacock', name: 'Peacock', category: 'animals', subcategory: 'birds', icon: Bird, tags: ['animal', 'peacock', 'bird', 'colorful'], tier: 'free', imageUrl: '/placeholder.svg' },
-  { id: 'eagle', name: 'Eagle', category: 'animals', subcategory: 'birds', icon: Bird, tags: ['animal', 'eagle', 'bird', 'predator'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'eagle', name: 'Eagle', category: 'animals', subcategory: 'birds', icon: Bird, tags: ['animal', 'eagle', 'bird', 'predator'], tier: 'free', imageUrl: '/placeholder.svg' },
   { id: 'parrot', name: 'Parrot', category: 'animals', subcategory: 'birds', icon: Bird, tags: ['animal', 'parrot', 'bird', 'tropical'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'penguin', name: 'Penguin', category: 'animals', subcategory: 'birds', icon: Bird, tags: ['animal', 'penguin', 'bird', 'arctic', 'flightless'], tier: 'free', imageUrl: '/placeholder.svg' },
 
   // Aquatic - Freshwater
   { id: 'trout', name: 'Trout', category: 'animals', subcategory: 'freshwater', icon: Fish, tags: ['animal', 'fish', 'trout', 'freshwater'], tier: 'free', imageUrl: '/placeholder.svg' },
@@ -356,17 +369,17 @@ const preloadedAssets: PreloadedAsset[] = [
   // Aquatic - Marine
   { id: 'jellyfish', name: 'Jellyfish', category: 'animals', subcategory: 'sea-life', icon: Waves, tags: ['animal', 'jellyfish', 'ocean', 'invertebrate'], tier: 'free', imageUrl: '/placeholder.svg' },
   { id: 'seahorse', name: 'Seahorse', category: 'animals', subcategory: 'sea-life', icon: Fish, tags: ['animal', 'seahorse', 'ocean', 'tropical'], tier: 'free', imageUrl: '/placeholder.svg' },
-  { id: 'sea-urchin', name: 'Sea Urchin', category: 'animals', subcategory: 'sea-life', icon: CircleDot, tags: ['animal', 'sea-urchin', 'ocean', 'spiny'], tier: 'free', imageUrl: '/placeholder.svg' },
-  { id: 'manta-ray', name: 'Manta Ray', category: 'animals', subcategory: 'sea-life', icon: Fish, tags: ['animal', 'manta', 'ray', 'ocean'], tier: 'pro', imageUrl: '/placeholder.svg' },
-  { id: 'blue-whale', name: 'Blue Whale', category: 'animals', subcategory: 'sea-life', icon: Fish, tags: ['animal', 'whale', 'blue', 'ocean', 'mammal'], tier: 'pro', imageUrl: '/placeholder.svg' },
-  { id: 'orca', name: 'Orca', category: 'animals', subcategory: 'sea-life', icon: Fish, tags: ['animal', 'orca', 'killer-whale', 'ocean'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'sea-urchin', name: 'Sea Urchin', category: 'animals', subcategory: 'sea-life', icon: Fish, tags: ['animal', 'sea-urchin', 'ocean', 'spiny'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'manta-ray', name: 'Manta Ray', category: 'animals', subcategory: 'sea-life', icon: Fish, tags: ['animal', 'manta', 'ray', 'ocean'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'blue-whale', name: 'Blue Whale', category: 'animals', subcategory: 'sea-life', icon: Fish, tags: ['animal', 'whale', 'blue', 'ocean', 'mammal'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'orca', name: 'Orca', category: 'animals', subcategory: 'sea-life', icon: Fish, tags: ['animal', 'orca', 'killer-whale', 'ocean'], tier: 'free', imageUrl: '/placeholder.svg' },
   { id: 'shrimp', name: 'Shrimp', category: 'animals', subcategory: 'sea-life', icon: Fish, tags: ['animal', 'shrimp', 'crustacean', 'ocean'], tier: 'free', imageUrl: '/placeholder.svg' },
   { id: 'dolphin', name: 'Dolphin', category: 'animals', subcategory: 'sea-life', icon: Fish, tags: ['animal', 'dolphin', 'ocean', 'mammal'], tier: 'free', imageUrl: '/placeholder.svg' },
   { id: 'algae', name: 'Algae', category: 'animals', subcategory: 'sea-life', icon: Leaf, tags: ['plant', 'algae', 'ocean', 'seaweed'], tier: 'free', imageUrl: '/placeholder.svg' },
 
   // Reptiles
-  { id: 'crocodile', name: 'Crocodile', category: 'animals', subcategory: 'reptiles', icon: Fish, tags: ['animal', 'crocodile', 'reptile', 'swamp'], tier: 'pro', imageUrl: '/placeholder.svg' },
-  { id: 'alligator', name: 'Alligator', category: 'animals', subcategory: 'reptiles', icon: Fish, tags: ['animal', 'alligator', 'reptile', 'swamp'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'crocodile', name: 'Crocodile', category: 'animals', subcategory: 'reptiles', icon: Fish, tags: ['animal', 'crocodile', 'reptile', 'swamp'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'alligator', name: 'Alligator', category: 'animals', subcategory: 'reptiles', icon: Fish, tags: ['animal', 'alligator', 'reptile', 'swamp'], tier: 'free', imageUrl: '/placeholder.svg' },
 
   // ========== BIOMES ==========
   // Swamp
@@ -466,13 +479,21 @@ export function PreloadedAssets() {
       'cat-tabby': 'cat',
       'cat-persian': 'cat',
       'cat-siamese': 'cat',
+      'horse': 'horse',
+      'horse-white': 'horse',
+      'horse-black': 'horse',
+      'rabbit': 'rabbit',
+      'rabbit-white': 'rabbit',
       
       // Animals - Wild
       'wolf': 'wolf',
       'wolf-arctic': 'wolf',
       'tiger': 'tiger',
+      'lion': 'lion',
       'cougar': 'tiger',
       'snow-leopard': 'tiger',
+      'fox': 'fox',
+      'elephant': 'elephant',
       
       // Animals - Primates
       'gorilla': 'gorilla',
@@ -482,6 +503,7 @@ export function PreloadedAssets() {
       'peacock': 'bird',
       'eagle': 'bird',
       'parrot': 'bird',
+      'penguin': 'penguin',
       
       // Animals - Fish
       'trout': 'fish',

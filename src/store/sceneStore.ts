@@ -35,6 +35,8 @@ export interface SceneObject {
 
 export type CameraMode = '2D' | '3D';
 
+export type TimeOfDay = 'day' | 'night' | 'sunset';
+
 interface TransformMode {
   mode: 'translate' | 'rotate' | 'scale' | 'select';
 }
@@ -44,7 +46,9 @@ interface SceneState {
   selectedObjectId: string | null;
   selectedBodyPart: BodyPartType | null;
   designMode: boolean;
+  designModePopout: boolean; // Whether to show Design Mode as a popup panel
   cameraMode: CameraMode;
+  timeOfDay: TimeOfDay;
   modelStyle: ModelStyle;
   transformMode: TransformMode['mode'];
   gridSize: number;
@@ -67,8 +71,11 @@ interface SceneState {
   setMouseSensitivity: (sensitivity: number) => void;
   // New actions
   setCameraMode: (mode: CameraMode) => void;
+  setTimeOfDay: (time: TimeOfDay) => void;
+  cycleTimeOfDay: () => void;
   setModelStyle: (style: ModelStyle) => void;
   toggleDesignMode: () => void;
+  toggleDesignModePopout: () => void;
   selectBodyPart: (part: BodyPartType | null) => void;
   updateBodyPart: (objectId: string, part: BodyPartType, config: Partial<BodyPartConfig>) => void;
 }
@@ -88,7 +95,9 @@ export const useSceneStore = create<SceneState>((set, get) => ({
   selectedObjectId: null,
   selectedBodyPart: null,
   designMode: false,
+  designModePopout: true, // Enable popout by default
   cameraMode: '3D',
+  timeOfDay: 'day',
   modelStyle: 'toon',
   transformMode: 'translate',
   gridSize: 1,
@@ -203,11 +212,23 @@ export const useSceneStore = create<SceneState>((set, get) => ({
   
   setCameraMode: (mode) => set({ cameraMode: mode }),
   
+  setTimeOfDay: (time) => set({ timeOfDay: time }),
+  
+  cycleTimeOfDay: () => set((state) => {
+    const cycle: TimeOfDay[] = ['day', 'sunset', 'night'];
+    const currentIndex = cycle.indexOf(state.timeOfDay);
+    return { timeOfDay: cycle[(currentIndex + 1) % cycle.length] };
+  }),
+  
   setModelStyle: (style) => set({ modelStyle: style }),
   
   toggleDesignMode: () => set((state) => ({ 
     designMode: !state.designMode,
     selectedBodyPart: state.designMode ? null : state.selectedBodyPart 
+  })),
+  
+  toggleDesignModePopout: () => set((state) => ({ 
+    designModePopout: !state.designModePopout 
   })),
   
   selectBodyPart: (part) => set({ selectedBodyPart: part }),
