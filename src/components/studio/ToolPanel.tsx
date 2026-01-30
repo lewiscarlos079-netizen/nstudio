@@ -23,9 +23,14 @@ import {
   View,
   Layers2,
   Pencil,
-  Palette
+  Palette,
+  Sun,
+  Moon,
+  Sunset,
+  PanelLeftOpen,
+  PanelLeftClose
 } from 'lucide-react';
-import { useSceneStore, PrimitiveType, ModelStyle } from '@/store/sceneStore';
+import { useSceneStore, PrimitiveType, ModelStyle, TimeOfDay } from '@/store/sceneStore';
 import { toast } from 'sonner';
 
 const primitives: { type: PrimitiveType; icon: React.ComponentType<any>; label: string }[] = [
@@ -59,10 +64,14 @@ export function ToolPanel() {
     toggleGrid,
     cameraMode,
     setCameraMode,
+    timeOfDay,
+    cycleTimeOfDay,
     modelStyle,
     setModelStyle,
     designMode,
-    toggleDesignMode
+    toggleDesignMode,
+    designModePopout,
+    toggleDesignModePopout
   } = useSceneStore();
 
   const selectedObject = objects.find(obj => obj.id === selectedObjectId);
@@ -81,6 +90,16 @@ export function ToolPanel() {
     toast.success(`Style: ${nextStyle.charAt(0).toUpperCase() + nextStyle.slice(1)}`);
   };
 
+  const handleCycleTimeOfDay = () => {
+    cycleTimeOfDay();
+    const timeLabels: Record<TimeOfDay, string> = {
+      day: 'Day',
+      sunset: 'Sunset',
+      night: 'Night'
+    };
+    toast.success(`Time: ${timeLabels[timeOfDay === 'day' ? 'sunset' : timeOfDay === 'sunset' ? 'night' : 'day']}`);
+  };
+
   const getStyleLabel = () => {
     switch (modelStyle) {
       case 'toon': return 'Toon';
@@ -88,6 +107,17 @@ export function ToolPanel() {
       default: return 'Std';
     }
   };
+
+  const getTimeIcon = () => {
+    switch (timeOfDay) {
+      case 'day': return Sun;
+      case 'sunset': return Sunset;
+      case 'night': return Moon;
+      default: return Sun;
+    }
+  };
+
+  const TimeIcon = getTimeIcon();
 
   return (
     <TooltipProvider>
@@ -293,28 +323,69 @@ export function ToolPanel() {
                 <p>Render Style: {modelStyle} (click to cycle)</p>
               </TooltipContent>
             </Tooltip>
+
+            {/* Day/Night Cycle */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant={timeOfDay !== 'day' ? "default" : "ghost"}
+                  size="icon"
+                  className={`w-10 h-10 mx-auto ${timeOfDay === 'night' ? 'glow-primary-sm' : timeOfDay === 'sunset' ? 'bg-orange-500/20' : ''}`}
+                  onClick={handleCycleTimeOfDay}
+                >
+                  <TimeIcon className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <p>Time of Day: {timeOfDay.charAt(0).toUpperCase() + timeOfDay.slice(1)} (click to cycle)</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
         </div>
 
         <Separator className="bg-border/50 w-12" />
 
-        {/* Design Mode */}
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant={designMode ? "default" : "ghost"}
-              size="icon"
-              className={`w-10 h-10 mx-auto ${designMode ? 'glow-primary-sm bg-accent' : ''} ${!canEnterDesignMode && !designMode ? 'opacity-50' : ''}`}
-              disabled={!canEnterDesignMode && !designMode}
-              onClick={toggleDesignMode}
-            >
-              <Pencil className="w-4 h-4" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side="right">
-            <p>{designMode ? 'Exit Design Mode' : canEnterDesignMode ? 'Design Body Parts' : 'Select a character/animal first'}</p>
-          </TooltipContent>
-        </Tooltip>
+        {/* Design Mode Section */}
+        <div className="w-full">
+          <p className="text-[9px] text-muted-foreground font-medium uppercase tracking-wider text-center mb-1">
+            Design
+          </p>
+          <div className="flex flex-col gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant={designMode ? "default" : "ghost"}
+                  size="icon"
+                  className={`w-10 h-10 mx-auto ${designMode ? 'glow-primary-sm bg-accent' : ''} ${!canEnterDesignMode && !designMode ? 'opacity-50' : ''}`}
+                  disabled={!canEnterDesignMode && !designMode}
+                  onClick={toggleDesignMode}
+                >
+                  <Pencil className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <p>{designMode ? 'Exit Design Mode' : canEnterDesignMode ? 'Design Body Parts' : 'Select a character/animal first'}</p>
+              </TooltipContent>
+            </Tooltip>
+
+            {/* Design Mode Popout Toggle */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant={designModePopout ? "default" : "ghost"}
+                  size="icon"
+                  className={`w-10 h-10 mx-auto ${designModePopout ? 'glow-primary-sm' : ''}`}
+                  onClick={toggleDesignModePopout}
+                >
+                  {designModePopout ? <PanelLeftOpen className="w-4 h-4" /> : <PanelLeftClose className="w-4 h-4" />}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <p>{designModePopout ? 'Disable Design Panel Popup' : 'Enable Design Panel Popup'}</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
+        </div>
 
         {/* Object Count */}
         <div className="text-xs text-muted-foreground/60 font-mono mt-2">

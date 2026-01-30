@@ -16,8 +16,58 @@ import { SceneObjectMesh } from './SceneObject';
 import { SceneTransformGizmos } from './TransformGizmo';
 import * as THREE from 'three';
 
+// Lighting presets for different times of day
+function SceneLighting({ timeOfDay }: { timeOfDay: 'day' | 'night' | 'sunset' }) {
+  const lightConfigs = {
+    day: {
+      ambient: 0.5,
+      directionalIntensity: 1.2,
+      directionalColor: '#ffffff',
+      pointColor: '#87CEEB',
+      pointIntensity: 0.3,
+      environment: 'city' as const,
+    },
+    sunset: {
+      ambient: 0.35,
+      directionalIntensity: 0.9,
+      directionalColor: '#FF6B35',
+      pointColor: '#FF8C00',
+      pointIntensity: 0.5,
+      environment: 'sunset' as const,
+    },
+    night: {
+      ambient: 0.15,
+      directionalIntensity: 0.3,
+      directionalColor: '#4169E1',
+      pointColor: '#00d4ff',
+      pointIntensity: 0.7,
+      environment: 'night' as const,
+    },
+  };
+
+  const config = lightConfigs[timeOfDay];
+
+  return (
+    <>
+      <ambientLight intensity={config.ambient} />
+      <directionalLight 
+        position={[10, 10, 5]} 
+        intensity={config.directionalIntensity} 
+        color={config.directionalColor}
+        castShadow 
+      />
+      <pointLight 
+        position={[-10, -10, -5]} 
+        intensity={config.pointIntensity} 
+        color={config.pointColor} 
+      />
+      <Environment preset={config.environment} />
+    </>
+  );
+}
+
 function Scene() {
-  const { objects, selectObject, showGrid, setTransformMode, selectedObjectId, removeObject, duplicateObject, toggleObjectLock, toggleObjectVisibility, toggleGrid } = useSceneStore();
+  const { objects, selectObject, showGrid, setTransformMode, selectedObjectId, removeObject, duplicateObject, toggleObjectLock, toggleObjectVisibility, toggleGrid, timeOfDay } = useSceneStore();
 
   const handleMissedClick = () => {
     selectObject(null);
@@ -70,9 +120,8 @@ function Scene() {
 
   return (
     <>
-      <ambientLight intensity={0.4} />
-      <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
-      <pointLight position={[-10, -10, -5]} intensity={0.5} color="#00d4ff" />
+      {/* Dynamic lighting based on time of day */}
+      <SceneLighting timeOfDay={timeOfDay} />
       
       {/* Render all scene objects */}
       {objects.map((object) => (
@@ -111,13 +160,11 @@ function Scene() {
 
       <ContactShadows 
         position={[0, -0.01, 0]} 
-        opacity={0.4}
+        opacity={timeOfDay === 'night' ? 0.2 : 0.4}
         scale={10}
         blur={2}
         far={4}
       />
-
-      <Environment preset="night" />
     </>
   );
 }
@@ -138,7 +185,13 @@ interface Viewport3DProps {
 }
 
 export function Viewport3D({ className }: Viewport3DProps) {
-  const { transformMode, objects, cameraMode } = useSceneStore();
+  const { transformMode, objects, cameraMode, timeOfDay } = useSceneStore();
+
+  const timeLabels = {
+    day: '☀️ Day',
+    sunset: '🌅 Sunset',
+    night: '🌙 Night'
+  };
 
   return (
     <motion.div 
@@ -179,7 +232,7 @@ export function Viewport3D({ className }: Viewport3DProps) {
       </Suspense>
 
       {/* Viewport overlay info - pushed forward with z-index and pointer-events */}
-      <div className="absolute top-4 left-4 flex items-center gap-2 z-20 pointer-events-none">
+      <div className="absolute top-4 left-4 flex items-center gap-2 z-20 pointer-events-none flex-wrap">
         <div className="glass px-3 py-1.5 rounded-lg text-xs font-mono text-foreground/90 bg-background/80 backdrop-blur-md shadow-lg">
           {cameraMode === '3D' ? 'Perspective View' : 'Top-Down 2D View'}
         </div>
@@ -188,6 +241,9 @@ export function Viewport3D({ className }: Viewport3DProps) {
         </div>
         <div className="glass px-3 py-1.5 rounded-lg text-xs font-mono text-foreground/90 bg-background/80 backdrop-blur-md shadow-lg">
           {objects.length} Objects
+        </div>
+        <div className={`glass px-3 py-1.5 rounded-lg text-xs font-mono text-foreground/90 bg-background/80 backdrop-blur-md shadow-lg ${timeOfDay === 'night' ? 'border border-blue-500/30' : timeOfDay === 'sunset' ? 'border border-orange-500/30' : ''}`}>
+          {timeLabels[timeOfDay]}
         </div>
       </div>
 
