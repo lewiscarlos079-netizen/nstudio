@@ -23,7 +23,41 @@ import {
   Cog,
   Gauge,
   Wind,
-  Sparkles
+  Sparkles,
+  Fence,
+  Shrub,
+  DoorOpen,
+  Lightbulb,
+  Sofa,
+  Bed,
+  Tv,
+  Monitor,
+  Refrigerator,
+  UtensilsCrossed,
+  Coffee,
+  Sandwich,
+  Pizza,
+  Soup,
+  Apple,
+  Fish,
+  Dog,
+  Cat,
+  Bird,
+  TreePine,
+  Waves,
+  Droplets,
+  Armchair,
+  Table,
+  Lamp,
+  Warehouse,
+  Flower2,
+  Leaf,
+  Anchor,
+  CircleDot,
+  LayoutGrid,
+  Box,
+  Truck,
+  FlameKindling
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useProjectStore } from '@/store/projectStore';
@@ -60,7 +94,8 @@ const preloadedAssets: PreloadedAsset[] = [
   { id: 'dragon-red', name: 'Red Dragon', category: 'characters', subcategory: 'dragons', icon: Flame, tags: ['dragon', 'fire', 'flying'], tier: 'enterprise', imageUrl: '/placeholder.svg' },
   { id: 'dragon-ice', name: 'Ice Dragon', category: 'characters', subcategory: 'dragons', icon: Flame, tags: ['dragon', 'ice', 'flying'], tier: 'enterprise', imageUrl: '/placeholder.svg' },
   
-  // Buildings
+  // ========== STRUCTURES ==========
+  // Houses & Cottages
   { id: 'house-medieval', name: 'Medieval House', category: 'structures', subcategory: 'houses', icon: Home, tags: ['building', 'wood', 'thatch'], tier: 'free', imageUrl: '/placeholder.svg' },
   { id: 'house-modern', name: 'Modern House', category: 'structures', subcategory: 'houses', icon: Home, tags: ['building', 'contemporary', 'glass'], tier: 'pro', imageUrl: '/placeholder.svg' },
   { id: 'cottage', name: 'Cottage', category: 'structures', subcategory: 'houses', icon: Home, tags: ['building', 'cozy', 'rustic', 'country'], tier: 'free', imageUrl: '/placeholder.svg' },
@@ -70,28 +105,170 @@ const preloadedAssets: PreloadedAsset[] = [
   { id: 'tower', name: 'Tower', category: 'structures', subcategory: 'buildings', icon: Building2, tags: ['tall', 'stone', 'defense'], tier: 'free', imageUrl: '/placeholder.svg' },
   { id: 'shop', name: 'Shop', category: 'structures', subcategory: 'buildings', icon: Building2, tags: ['commerce', 'store', 'village'], tier: 'free', imageUrl: '/placeholder.svg' },
   { id: 'tavern', name: 'Tavern', category: 'structures', subcategory: 'buildings', icon: Building2, tags: ['inn', 'medieval', 'social'], tier: 'free', imageUrl: '/placeholder.svg' },
-  
-  // Vehicle Parts - Gears
-  { id: 'gear-manual-5', name: '5-Speed Manual', category: 'parts', subcategory: 'gears', icon: Cog, tags: ['transmission', 'manual', 'gearbox'], tier: 'free', imageUrl: '/placeholder.svg' },
-  { id: 'gear-manual-6', name: '6-Speed Manual', category: 'parts', subcategory: 'gears', icon: Cog, tags: ['transmission', 'manual', 'racing'], tier: 'pro', imageUrl: '/placeholder.svg' },
-  { id: 'gear-dct', name: 'Dual-Clutch DCT', category: 'parts', subcategory: 'gears', icon: Cog, tags: ['transmission', 'automatic', 'sport'], tier: 'pro', imageUrl: '/placeholder.svg' },
-  
-  // Vehicle Parts - Engines
-  { id: 'engine-v6', name: 'Twin-Turbo V6', category: 'parts', subcategory: 'engines', icon: Gauge, tags: ['engine', 'turbo', 'v6'], tier: 'free', imageUrl: '/placeholder.svg' },
-  { id: 'engine-v8', name: 'V8 Muscle Engine', category: 'parts', subcategory: 'engines', icon: Gauge, tags: ['engine', 'muscle', 'v8'], tier: 'pro', imageUrl: '/placeholder.svg' },
-  { id: 'engine-rotary', name: '13B Rotary', category: 'parts', subcategory: 'engines', icon: Gauge, tags: ['engine', 'rotary', 'wankel'], tier: 'enterprise', imageUrl: '/placeholder.svg' },
-  
-  // Vehicle Parts - Exhausts
-  { id: 'exhaust-straight', name: 'Straight Pipe', category: 'parts', subcategory: 'exhausts', icon: Wind, tags: ['exhaust', 'performance', 'loud'], tier: 'free', imageUrl: '/placeholder.svg' },
-  { id: 'exhaust-quad', name: 'Quad Tip Exhaust', category: 'parts', subcategory: 'exhausts', icon: Wind, tags: ['exhaust', 'sport', 'quad'], tier: 'pro', imageUrl: '/placeholder.svg' },
-  { id: 'exhaust-titanium', name: 'Titanium Race', category: 'parts', subcategory: 'exhausts', icon: Wind, tags: ['exhaust', 'racing', 'titanium'], tier: 'enterprise', imageUrl: '/placeholder.svg' },
-  
-  // Vehicle Parts - Spoilers
-  { id: 'spoiler-gt', name: 'GT Wing Spoiler', category: 'parts', subcategory: 'spoilers', icon: Sparkles, tags: ['spoiler', 'racing', 'wing'], tier: 'free', imageUrl: '/placeholder.svg' },
-  { id: 'spoiler-lip', name: 'Lip Spoiler', category: 'parts', subcategory: 'spoilers', icon: Sparkles, tags: ['spoiler', 'subtle', 'lip'], tier: 'free', imageUrl: '/placeholder.svg' },
-  { id: 'spoiler-active', name: 'Active Aero Wing', category: 'parts', subcategory: 'spoilers', icon: Sparkles, tags: ['spoiler', 'hypercar', 'active'], tier: 'enterprise', imageUrl: '/placeholder.svg' },
-  
-  // Vehicles
+
+  // Walls
+  { id: 'wall-brick', name: 'Brick Wall', category: 'structures', subcategory: 'walls', icon: Fence, tags: ['wall', 'brick', 'red'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'wall-stone', name: 'Stone Wall', category: 'structures', subcategory: 'walls', icon: Fence, tags: ['wall', 'stone', 'medieval'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'wall-concrete', name: 'Concrete Wall', category: 'structures', subcategory: 'walls', icon: Fence, tags: ['wall', 'concrete', 'modern'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'wall-wooden', name: 'Wooden Wall', category: 'structures', subcategory: 'walls', icon: Fence, tags: ['wall', 'wood', 'rustic'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'wall-drywall', name: 'Drywall Panel', category: 'structures', subcategory: 'walls', icon: Fence, tags: ['wall', 'interior', 'modern'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // Doors
+  { id: 'door-wooden', name: 'Wooden Door', category: 'structures', subcategory: 'doors', icon: DoorOpen, tags: ['door', 'wood', 'classic'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'door-glass', name: 'Glass Door', category: 'structures', subcategory: 'doors', icon: DoorOpen, tags: ['door', 'glass', 'modern'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'door-metal', name: 'Metal Door', category: 'structures', subcategory: 'doors', icon: DoorOpen, tags: ['door', 'metal', 'security'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'door-double', name: 'Double Door', category: 'structures', subcategory: 'doors', icon: DoorOpen, tags: ['door', 'double', 'entrance'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'door-sliding', name: 'Sliding Door', category: 'structures', subcategory: 'doors', icon: DoorOpen, tags: ['door', 'sliding', 'patio'], tier: 'pro', imageUrl: '/placeholder.svg' },
+
+  // Stairs
+  { id: 'stairs-wooden', name: 'Wooden Stairs', category: 'structures', subcategory: 'stairs', icon: LayoutGrid, tags: ['stairs', 'wood', 'indoor'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'stairs-stone', name: 'Stone Stairs', category: 'structures', subcategory: 'stairs', icon: LayoutGrid, tags: ['stairs', 'stone', 'outdoor'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'stairs-spiral', name: 'Spiral Staircase', category: 'structures', subcategory: 'stairs', icon: LayoutGrid, tags: ['stairs', 'spiral', 'elegant'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'stairs-metal', name: 'Metal Stairs', category: 'structures', subcategory: 'stairs', icon: LayoutGrid, tags: ['stairs', 'metal', 'industrial'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // Roofs
+  { id: 'roof-shingle', name: 'Shingle Roof', category: 'structures', subcategory: 'roofs', icon: Home, tags: ['roof', 'shingle', 'residential'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'roof-tile', name: 'Tile Roof', category: 'structures', subcategory: 'roofs', icon: Home, tags: ['roof', 'tile', 'mediterranean'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'roof-thatch', name: 'Thatch Roof', category: 'structures', subcategory: 'roofs', icon: Home, tags: ['roof', 'thatch', 'cottage'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'roof-flat', name: 'Flat Roof', category: 'structures', subcategory: 'roofs', icon: Home, tags: ['roof', 'flat', 'modern'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'roof-metal', name: 'Metal Roof', category: 'structures', subcategory: 'roofs', icon: Home, tags: ['roof', 'metal', 'industrial'], tier: 'pro', imageUrl: '/placeholder.svg' },
+
+  // Fire Safety
+  { id: 'fire-escape', name: 'Fire Escape', category: 'structures', subcategory: 'safety', icon: LayoutGrid, tags: ['fire', 'escape', 'emergency', 'stairs'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'fire-hydrant', name: 'Fire Hydrant', category: 'structures', subcategory: 'safety', icon: FlameKindling, tags: ['fire', 'hydrant', 'water', 'emergency'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // Marine Structures
+  { id: 'wharf', name: 'Wharf', category: 'structures', subcategory: 'marine', icon: Anchor, tags: ['dock', 'pier', 'harbor', 'water'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'dock-wooden', name: 'Wooden Dock', category: 'structures', subcategory: 'marine', icon: Anchor, tags: ['dock', 'wood', 'pier', 'lake'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'dock-concrete', name: 'Concrete Dock', category: 'structures', subcategory: 'marine', icon: Anchor, tags: ['dock', 'concrete', 'harbor', 'industrial'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'pier', name: 'Pier', category: 'structures', subcategory: 'marine', icon: Anchor, tags: ['pier', 'boardwalk', 'ocean'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // Outdoor
+  { id: 'swimming-pool', name: 'Swimming Pool', category: 'structures', subcategory: 'outdoor', icon: Waves, tags: ['pool', 'water', 'backyard', 'recreation'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'pool-inground', name: 'Inground Pool', category: 'structures', subcategory: 'outdoor', icon: Waves, tags: ['pool', 'luxury', 'swim'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'pool-above', name: 'Above Ground Pool', category: 'structures', subcategory: 'outdoor', icon: Waves, tags: ['pool', 'portable', 'backyard'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // ========== FURNITURE ==========
+  // Tables
+  { id: 'table-dining', name: 'Dining Table', category: 'furniture', subcategory: 'tables', icon: Table, tags: ['table', 'dining', 'wood'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'table-coffee', name: 'Coffee Table', category: 'furniture', subcategory: 'tables', icon: Table, tags: ['table', 'living', 'low'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'table-with-cloth', name: 'Table with Cloth', category: 'furniture', subcategory: 'tables', icon: Table, tags: ['table', 'cloth', 'elegant', 'dining'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'table-desk', name: 'Office Desk', category: 'furniture', subcategory: 'tables', icon: Table, tags: ['desk', 'office', 'work'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'table-side', name: 'Side Table', category: 'furniture', subcategory: 'tables', icon: Table, tags: ['table', 'side', 'accent'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // Cabinets
+  { id: 'cabinet-kitchen', name: 'Kitchen Cabinet', category: 'furniture', subcategory: 'cabinets', icon: Box, tags: ['cabinet', 'kitchen', 'storage'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'cabinet-bathroom', name: 'Bathroom Cabinet', category: 'furniture', subcategory: 'cabinets', icon: Box, tags: ['cabinet', 'bathroom', 'vanity'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'cabinet-filing', name: 'Filing Cabinet', category: 'furniture', subcategory: 'cabinets', icon: Box, tags: ['cabinet', 'office', 'files'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'cabinet-china', name: 'China Cabinet', category: 'furniture', subcategory: 'cabinets', icon: Box, tags: ['cabinet', 'display', 'dining'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'wardrobe', name: 'Wardrobe', category: 'furniture', subcategory: 'cabinets', icon: Box, tags: ['wardrobe', 'closet', 'bedroom'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // Beds
+  { id: 'bed-twin', name: 'Twin Bed', category: 'furniture', subcategory: 'beds', icon: Bed, tags: ['bed', 'twin', 'single'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'bed-full', name: 'Full Bed', category: 'furniture', subcategory: 'beds', icon: Bed, tags: ['bed', 'full', 'double'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'bed-queen', name: 'Queen Bed', category: 'furniture', subcategory: 'beds', icon: Bed, tags: ['bed', 'queen', 'master'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'bed-king', name: 'King Size Bed', category: 'furniture', subcategory: 'beds', icon: Bed, tags: ['bed', 'king', 'luxury'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'bed-california-king', name: 'California King Bed', category: 'furniture', subcategory: 'beds', icon: Bed, tags: ['bed', 'california', 'king', 'extra'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'bed-bunk', name: 'Bunk Bed', category: 'furniture', subcategory: 'beds', icon: Bed, tags: ['bed', 'bunk', 'kids', 'double'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'bed-loft', name: 'Loft Bed', category: 'furniture', subcategory: 'beds', icon: Bed, tags: ['bed', 'loft', 'elevated'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'bed-murphy', name: 'Murphy Bed', category: 'furniture', subcategory: 'beds', icon: Bed, tags: ['bed', 'murphy', 'foldable'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'bed-daybed', name: 'Daybed', category: 'furniture', subcategory: 'beds', icon: Bed, tags: ['bed', 'daybed', 'couch'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // Seating
+  { id: 'couch-sectional', name: 'Sectional Couch', category: 'furniture', subcategory: 'seating', icon: Sofa, tags: ['couch', 'sectional', 'living'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'couch-loveseat', name: 'Loveseat', category: 'furniture', subcategory: 'seating', icon: Sofa, tags: ['couch', 'loveseat', 'small'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'couch-sofa', name: 'Sofa', category: 'furniture', subcategory: 'seating', icon: Sofa, tags: ['couch', 'sofa', 'living'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'couch-futon', name: 'Futon', category: 'furniture', subcategory: 'seating', icon: Sofa, tags: ['couch', 'futon', 'convertible'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'armchair', name: 'Armchair', category: 'furniture', subcategory: 'seating', icon: Armchair, tags: ['chair', 'armchair', 'comfortable'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'recliner', name: 'Recliner', category: 'furniture', subcategory: 'seating', icon: Armchair, tags: ['chair', 'recliner', 'lazy'], tier: 'pro', imageUrl: '/placeholder.svg' },
+
+  // ========== ELECTRONICS ==========
+  // Computers
+  { id: 'computer-desktop', name: 'Desktop Computer', category: 'electronics', subcategory: 'computers', icon: Monitor, tags: ['computer', 'desktop', 'pc'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'computer-laptop', name: 'Laptop', category: 'electronics', subcategory: 'computers', icon: Monitor, tags: ['computer', 'laptop', 'portable'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'computer-gaming', name: 'Gaming PC', category: 'electronics', subcategory: 'computers', icon: Monitor, tags: ['computer', 'gaming', 'rgb'], tier: 'pro', imageUrl: '/placeholder.svg' },
+
+  // Monitors
+  { id: 'monitor-standard', name: 'Monitor', category: 'electronics', subcategory: 'monitors', icon: Monitor, tags: ['monitor', 'screen', 'display'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'monitor-ultrawide', name: 'Ultrawide Monitor', category: 'electronics', subcategory: 'monitors', icon: Monitor, tags: ['monitor', 'ultrawide', 'curved'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'monitor-on', name: 'Monitor (Screen On)', category: 'electronics', subcategory: 'monitors', icon: Monitor, tags: ['monitor', 'screen', 'on', 'active'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'monitor-fp-access', name: 'Monitor (First Person)', category: 'electronics', subcategory: 'monitors', icon: Monitor, tags: ['monitor', 'interactive', 'first-person', 'access'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'monitor-dual', name: 'Dual Monitor Setup', category: 'electronics', subcategory: 'monitors', icon: Monitor, tags: ['monitor', 'dual', 'setup'], tier: 'pro', imageUrl: '/placeholder.svg' },
+
+  // TVs
+  { id: 'tv-flatscreen', name: 'Flatscreen TV', category: 'electronics', subcategory: 'tvs', icon: Tv, tags: ['tv', 'flatscreen', 'entertainment'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'tv-curved', name: 'Curved TV', category: 'electronics', subcategory: 'tvs', icon: Tv, tags: ['tv', 'curved', 'premium'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'tv-mounted', name: 'Wall Mounted TV', category: 'electronics', subcategory: 'tvs', icon: Tv, tags: ['tv', 'mounted', 'wall'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'tv-retro', name: 'Retro CRT TV', category: 'electronics', subcategory: 'tvs', icon: Tv, tags: ['tv', 'retro', 'vintage', 'crt'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // Electrical
+  { id: 'outlet-standard', name: 'Power Outlet', category: 'electronics', subcategory: 'electrical', icon: CircleDot, tags: ['outlet', 'power', 'electrical'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'outlet-usb', name: 'USB Outlet', category: 'electronics', subcategory: 'electrical', icon: CircleDot, tags: ['outlet', 'usb', 'charging'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'power-strip', name: 'Power Strip', category: 'electronics', subcategory: 'electrical', icon: CircleDot, tags: ['power', 'strip', 'extension'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // Lights
+  { id: 'light-ceiling', name: 'Ceiling Light', category: 'electronics', subcategory: 'lights', icon: Lightbulb, tags: ['light', 'ceiling', 'fixture'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'light-lamp', name: 'Table Lamp', category: 'electronics', subcategory: 'lights', icon: Lamp, tags: ['light', 'lamp', 'table'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'light-floor', name: 'Floor Lamp', category: 'electronics', subcategory: 'lights', icon: Lamp, tags: ['light', 'floor', 'standing'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'light-chandelier', name: 'Chandelier', category: 'electronics', subcategory: 'lights', icon: Lightbulb, tags: ['light', 'chandelier', 'elegant'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'light-pendant', name: 'Pendant Light', category: 'electronics', subcategory: 'lights', icon: Lightbulb, tags: ['light', 'pendant', 'hanging'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'light-outdoor', name: 'Outdoor Light', category: 'electronics', subcategory: 'lights', icon: Lightbulb, tags: ['light', 'outdoor', 'porch'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // ========== KITCHEN ==========
+  // Appliances
+  { id: 'refrigerator', name: 'Refrigerator', category: 'kitchen', subcategory: 'appliances', icon: Refrigerator, tags: ['appliance', 'refrigerator', 'fridge'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'refrigerator-double', name: 'Double Door Fridge', category: 'kitchen', subcategory: 'appliances', icon: Refrigerator, tags: ['appliance', 'refrigerator', 'double'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'stove', name: 'Stove', category: 'kitchen', subcategory: 'appliances', icon: Flame, tags: ['appliance', 'stove', 'cooking'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'oven', name: 'Oven', category: 'kitchen', subcategory: 'appliances', icon: Flame, tags: ['appliance', 'oven', 'baking'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'microwave', name: 'Microwave', category: 'kitchen', subcategory: 'appliances', icon: Box, tags: ['appliance', 'microwave', 'heating'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'dishwasher', name: 'Dishwasher', category: 'kitchen', subcategory: 'appliances', icon: Box, tags: ['appliance', 'dishwasher', 'cleaning'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'toaster', name: 'Toaster', category: 'kitchen', subcategory: 'appliances', icon: Box, tags: ['appliance', 'toaster', 'breakfast'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'blender', name: 'Blender', category: 'kitchen', subcategory: 'appliances', icon: Box, tags: ['appliance', 'blender', 'smoothie'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'coffee-maker', name: 'Coffee Maker', category: 'kitchen', subcategory: 'appliances', icon: Coffee, tags: ['appliance', 'coffee', 'brewing'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // Cutlery
+  { id: 'cutlery-set', name: 'Cutlery Set', category: 'kitchen', subcategory: 'cutlery', icon: UtensilsCrossed, tags: ['cutlery', 'utensils', 'silverware'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'knife-set', name: 'Knife Set', category: 'kitchen', subcategory: 'cutlery', icon: UtensilsCrossed, tags: ['knife', 'cutting', 'chef'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'spoon-set', name: 'Spoon Set', category: 'kitchen', subcategory: 'cutlery', icon: UtensilsCrossed, tags: ['spoon', 'eating', 'soup'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'fork-set', name: 'Fork Set', category: 'kitchen', subcategory: 'cutlery', icon: UtensilsCrossed, tags: ['fork', 'eating', 'dining'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'chopsticks', name: 'Chopsticks', category: 'kitchen', subcategory: 'cutlery', icon: UtensilsCrossed, tags: ['chopsticks', 'asian', 'eating'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // ========== FOOD ==========
+  // Breakfast
+  { id: 'cereal-box', name: 'Cereal Box', category: 'food', subcategory: 'breakfast', icon: Box, tags: ['food', 'cereal', 'box', 'breakfast'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'cereal-bowl', name: 'Cereal Bowl', category: 'food', subcategory: 'breakfast', icon: Coffee, tags: ['food', 'cereal', 'bowl', 'milk'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'pancakes', name: 'Pancakes', category: 'food', subcategory: 'breakfast', icon: Coffee, tags: ['food', 'pancakes', 'breakfast', 'syrup'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'eggs-bacon', name: 'Eggs & Bacon', category: 'food', subcategory: 'breakfast', icon: Coffee, tags: ['food', 'eggs', 'bacon', 'breakfast'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'toast', name: 'Toast', category: 'food', subcategory: 'breakfast', icon: Coffee, tags: ['food', 'toast', 'bread', 'butter'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'oatmeal', name: 'Oatmeal Bowl', category: 'food', subcategory: 'breakfast', icon: Coffee, tags: ['food', 'oatmeal', 'healthy'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // Lunch
+  { id: 'sandwich', name: 'Sandwich', category: 'food', subcategory: 'lunch', icon: Sandwich, tags: ['food', 'sandwich', 'lunch', 'bread'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'salad', name: 'Salad Bowl', category: 'food', subcategory: 'lunch', icon: Leaf, tags: ['food', 'salad', 'healthy', 'vegetables'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'soup-bowl', name: 'Soup Bowl', category: 'food', subcategory: 'lunch', icon: Soup, tags: ['food', 'soup', 'hot', 'bowl'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'burger', name: 'Burger', category: 'food', subcategory: 'lunch', icon: Sandwich, tags: ['food', 'burger', 'fast-food'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'wrap', name: 'Wrap', category: 'food', subcategory: 'lunch', icon: Sandwich, tags: ['food', 'wrap', 'tortilla'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // Supper/Dinner
+  { id: 'pizza', name: 'Pizza', category: 'food', subcategory: 'dinner', icon: Pizza, tags: ['food', 'pizza', 'italian', 'dinner'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'pasta', name: 'Pasta Plate', category: 'food', subcategory: 'dinner', icon: Pizza, tags: ['food', 'pasta', 'italian', 'dinner'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'steak-dinner', name: 'Steak Dinner', category: 'food', subcategory: 'dinner', icon: UtensilsCrossed, tags: ['food', 'steak', 'meat', 'dinner'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'roast-chicken', name: 'Roast Chicken', category: 'food', subcategory: 'dinner', icon: UtensilsCrossed, tags: ['food', 'chicken', 'roast', 'dinner'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'fish-dinner', name: 'Fish Dinner', category: 'food', subcategory: 'dinner', icon: Fish, tags: ['food', 'fish', 'seafood', 'dinner'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'rice-bowl', name: 'Rice Bowl', category: 'food', subcategory: 'dinner', icon: Soup, tags: ['food', 'rice', 'asian', 'dinner'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // Fruits & Decor
+  { id: 'bowl-fruit', name: 'Bowl of Fruit', category: 'food', subcategory: 'decor', icon: Apple, tags: ['food', 'fruit', 'bowl', 'decor'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'apple', name: 'Apple', category: 'food', subcategory: 'fruits', icon: Apple, tags: ['food', 'apple', 'fruit', 'healthy'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'banana', name: 'Banana', category: 'food', subcategory: 'fruits', icon: Apple, tags: ['food', 'banana', 'fruit', 'yellow'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'orange', name: 'Orange', category: 'food', subcategory: 'fruits', icon: Apple, tags: ['food', 'orange', 'citrus', 'fruit'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // ========== TEXTILES ==========
+  { id: 'apron', name: 'Apron', category: 'textiles', subcategory: 'clothing', icon: User, tags: ['apron', 'cooking', 'kitchen'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'apron-pinned', name: 'Apron (Pinned)', category: 'textiles', subcategory: 'clothing', icon: User, tags: ['apron', 'pinned', 'display'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'tablecloth', name: 'Tablecloth', category: 'textiles', subcategory: 'linens', icon: Table, tags: ['cloth', 'table', 'linen'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // ========== VEHICLES ==========
   { id: 'car-jaguar', name: 'Jaguar F-Type', category: 'vehicles', subcategory: 'sports', icon: Car, tags: ['car', 'sports', 'british'], tier: 'pro', imageUrl: '/placeholder.svg' },
   { id: 'car-nissan-gt', name: 'Nissan GT-R', category: 'vehicles', subcategory: 'sports', icon: Car, tags: ['car', 'jdm', 'godzilla'], tier: 'pro', imageUrl: '/placeholder.svg' },
   { id: 'car-mazda-rx7', name: 'Mazda RX-7', category: 'vehicles', subcategory: 'jdm', icon: Car, tags: ['car', 'rotary', 'drift'], tier: 'pro', imageUrl: '/placeholder.svg' },
@@ -100,23 +277,125 @@ const preloadedAssets: PreloadedAsset[] = [
   { id: 'car-camaro-77', name: '1977 Camaro', category: 'vehicles', subcategory: 'classic', icon: Car, tags: ['car', 'classic', 'muscle'], tier: 'pro', imageUrl: '/placeholder.svg' },
   { id: 'car-bentley', name: 'Bentley Continental', category: 'vehicles', subcategory: 'luxury', icon: Car, tags: ['car', 'british', 'luxury'], tier: 'enterprise', imageUrl: '/placeholder.svg' },
   { id: 'car-chrysler-300', name: 'Chrysler 300', category: 'vehicles', subcategory: 'sedan', icon: Car, tags: ['car', 'american', 'sedan'], tier: 'free', imageUrl: '/placeholder.svg' },
-  
+  { id: 'fire-truck', name: 'Fire Truck', category: 'vehicles', subcategory: 'emergency', icon: Truck, tags: ['truck', 'fire', 'emergency', 'rescue'], tier: 'pro', imageUrl: '/placeholder.svg' },
+
+  // Vehicle Parts
+  { id: 'gear-manual-5', name: '5-Speed Manual', category: 'parts', subcategory: 'gears', icon: Cog, tags: ['transmission', 'manual', 'gearbox'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'gear-manual-6', name: '6-Speed Manual', category: 'parts', subcategory: 'gears', icon: Cog, tags: ['transmission', 'manual', 'racing'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'gear-dct', name: 'Dual-Clutch DCT', category: 'parts', subcategory: 'gears', icon: Cog, tags: ['transmission', 'automatic', 'sport'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'engine-v6', name: 'Twin-Turbo V6', category: 'parts', subcategory: 'engines', icon: Gauge, tags: ['engine', 'turbo', 'v6'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'engine-v8', name: 'V8 Muscle Engine', category: 'parts', subcategory: 'engines', icon: Gauge, tags: ['engine', 'muscle', 'v8'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'engine-rotary', name: '13B Rotary', category: 'parts', subcategory: 'engines', icon: Gauge, tags: ['engine', 'rotary', 'wankel'], tier: 'enterprise', imageUrl: '/placeholder.svg' },
+  { id: 'exhaust-straight', name: 'Straight Pipe', category: 'parts', subcategory: 'exhausts', icon: Wind, tags: ['exhaust', 'performance', 'loud'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'exhaust-quad', name: 'Quad Tip Exhaust', category: 'parts', subcategory: 'exhausts', icon: Wind, tags: ['exhaust', 'sport', 'quad'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'exhaust-titanium', name: 'Titanium Race', category: 'parts', subcategory: 'exhausts', icon: Wind, tags: ['exhaust', 'racing', 'titanium'], tier: 'enterprise', imageUrl: '/placeholder.svg' },
+  { id: 'spoiler-gt', name: 'GT Wing Spoiler', category: 'parts', subcategory: 'spoilers', icon: Sparkles, tags: ['spoiler', 'racing', 'wing'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'spoiler-lip', name: 'Lip Spoiler', category: 'parts', subcategory: 'spoilers', icon: Sparkles, tags: ['spoiler', 'subtle', 'lip'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'spoiler-active', name: 'Active Aero Wing', category: 'parts', subcategory: 'spoilers', icon: Sparkles, tags: ['spoiler', 'hypercar', 'active'], tier: 'enterprise', imageUrl: '/placeholder.svg' },
+
+  // ========== NATURE ==========
+  // Trees
+  { id: 'tree-oak', name: 'Oak Tree', category: 'nature', subcategory: 'trees', icon: TreeDeciduous, tags: ['vegetation', 'forest', 'deciduous'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'tree-pine', name: 'Pine Tree', category: 'nature', subcategory: 'trees', icon: Trees, tags: ['vegetation', 'conifer', 'evergreen'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'tree-willow', name: 'Willow Tree', category: 'nature', subcategory: 'trees', icon: TreeDeciduous, tags: ['vegetation', 'willow', 'weeping'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'tree-apricot', name: 'Apricot Tree', category: 'nature', subcategory: 'trees', icon: TreeDeciduous, tags: ['vegetation', 'apricot', 'fruit', 'orchard'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'tree-palm', name: 'Palm Tree', category: 'nature', subcategory: 'trees', icon: TreePine, tags: ['vegetation', 'tropical', 'palm'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'tree-birch', name: 'Birch Tree', category: 'nature', subcategory: 'trees', icon: TreeDeciduous, tags: ['vegetation', 'birch', 'white'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'tree-maple', name: 'Maple Tree', category: 'nature', subcategory: 'trees', icon: TreeDeciduous, tags: ['vegetation', 'maple', 'fall'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // Bushes
+  { id: 'bush-green', name: 'Green Bush', category: 'nature', subcategory: 'bushes', icon: Shrub, tags: ['vegetation', 'bush', 'green'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'bush-flowering', name: 'Flowering Bush', category: 'nature', subcategory: 'bushes', icon: Flower2, tags: ['vegetation', 'bush', 'flowers'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'bush-hedge', name: 'Hedge Bush', category: 'nature', subcategory: 'bushes', icon: Shrub, tags: ['vegetation', 'hedge', 'trimmed'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'bush-berry', name: 'Berry Bush', category: 'nature', subcategory: 'bushes', icon: Shrub, tags: ['vegetation', 'berry', 'fruit'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'bush-tropical', name: 'Tropical Bush', category: 'nature', subcategory: 'bushes', icon: Shrub, tags: ['vegetation', 'tropical', 'jungle'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // Rocks & Mountains
+  { id: 'rock-large', name: 'Large Rock', category: 'nature', subcategory: 'rocks', icon: Mountain, tags: ['stone', 'boulder', 'natural'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'mountain-peak', name: 'Mountain Peak', category: 'nature', subcategory: 'mountains', icon: Mountain, tags: ['terrain', 'height', 'rocky'], tier: 'pro', imageUrl: '/placeholder.svg' },
+
+  // Gardening Equipment
+  { id: 'garden-shovel', name: 'Garden Shovel', category: 'nature', subcategory: 'gardening', icon: Flower2, tags: ['tool', 'shovel', 'digging'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'garden-rake', name: 'Garden Rake', category: 'nature', subcategory: 'gardening', icon: Flower2, tags: ['tool', 'rake', 'leaves'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'garden-hose', name: 'Garden Hose', category: 'nature', subcategory: 'gardening', icon: Droplets, tags: ['tool', 'hose', 'watering'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'lawn-mower', name: 'Lawn Mower', category: 'nature', subcategory: 'gardening', icon: Flower2, tags: ['tool', 'mower', 'grass'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'wheelbarrow', name: 'Wheelbarrow', category: 'nature', subcategory: 'gardening', icon: Flower2, tags: ['tool', 'wheelbarrow', 'carrying'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'watering-can', name: 'Watering Can', category: 'nature', subcategory: 'gardening', icon: Droplets, tags: ['tool', 'watering', 'plants'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'flower-pot', name: 'Flower Pot', category: 'nature', subcategory: 'gardening', icon: Flower2, tags: ['pot', 'planter', 'flowers'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // ========== ANIMALS ==========
+  // Domestic
+  { id: 'dog-labrador', name: 'Labrador Dog', category: 'animals', subcategory: 'domestic', icon: Dog, tags: ['animal', 'dog', 'pet', 'labrador'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'dog-german-shepherd', name: 'German Shepherd', category: 'animals', subcategory: 'domestic', icon: Dog, tags: ['animal', 'dog', 'pet', 'shepherd'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'dog-husky', name: 'Husky', category: 'animals', subcategory: 'domestic', icon: Dog, tags: ['animal', 'dog', 'pet', 'husky'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'cat-tabby', name: 'Tabby Cat', category: 'animals', subcategory: 'domestic', icon: Cat, tags: ['animal', 'cat', 'pet', 'tabby'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'cat-persian', name: 'Persian Cat', category: 'animals', subcategory: 'domestic', icon: Cat, tags: ['animal', 'cat', 'pet', 'persian'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'cat-siamese', name: 'Siamese Cat', category: 'animals', subcategory: 'domestic', icon: Cat, tags: ['animal', 'cat', 'pet', 'siamese'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // Wild
+  { id: 'wolf', name: 'Wolf', category: 'animals', subcategory: 'wild', icon: Dog, tags: ['animal', 'wolf', 'predator', 'wild'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'wolf-arctic', name: 'Arctic Wolf', category: 'animals', subcategory: 'wild', icon: Dog, tags: ['animal', 'wolf', 'arctic', 'white'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'tiger', name: 'Tiger', category: 'animals', subcategory: 'wild', icon: Cat, tags: ['animal', 'tiger', 'big-cat', 'stripes'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'cougar', name: 'Cougar', category: 'animals', subcategory: 'wild', icon: Cat, tags: ['animal', 'cougar', 'mountain-lion', 'predator'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'snow-leopard', name: 'Snow Leopard', category: 'animals', subcategory: 'wild', icon: Cat, tags: ['animal', 'leopard', 'snow', 'spotted'], tier: 'pro', imageUrl: '/placeholder.svg' },
+
+  // Primates
+  { id: 'gorilla', name: 'Gorilla', category: 'animals', subcategory: 'primates', icon: User, tags: ['animal', 'gorilla', 'ape', 'primate'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'chimpanzee', name: 'Chimpanzee', category: 'animals', subcategory: 'primates', icon: User, tags: ['animal', 'chimpanzee', 'ape', 'primate'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // Birds
+  { id: 'peacock', name: 'Peacock', category: 'animals', subcategory: 'birds', icon: Bird, tags: ['animal', 'peacock', 'bird', 'colorful'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'eagle', name: 'Eagle', category: 'animals', subcategory: 'birds', icon: Bird, tags: ['animal', 'eagle', 'bird', 'predator'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'parrot', name: 'Parrot', category: 'animals', subcategory: 'birds', icon: Bird, tags: ['animal', 'parrot', 'bird', 'tropical'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // Aquatic - Freshwater
+  { id: 'trout', name: 'Trout', category: 'animals', subcategory: 'freshwater', icon: Fish, tags: ['animal', 'fish', 'trout', 'freshwater'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'catfish', name: 'Catfish', category: 'animals', subcategory: 'freshwater', icon: Fish, tags: ['animal', 'fish', 'catfish', 'freshwater'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'bass', name: 'Bass', category: 'animals', subcategory: 'freshwater', icon: Fish, tags: ['animal', 'fish', 'bass', 'freshwater'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // Aquatic - Marine
+  { id: 'jellyfish', name: 'Jellyfish', category: 'animals', subcategory: 'marine', icon: Waves, tags: ['animal', 'jellyfish', 'ocean', 'invertebrate'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'seahorse', name: 'Seahorse', category: 'animals', subcategory: 'marine', icon: Fish, tags: ['animal', 'seahorse', 'ocean', 'tropical'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'sea-urchin', name: 'Sea Urchin', category: 'animals', subcategory: 'marine', icon: CircleDot, tags: ['animal', 'sea-urchin', 'ocean', 'spiny'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'manta-ray', name: 'Manta Ray', category: 'animals', subcategory: 'marine', icon: Fish, tags: ['animal', 'manta', 'ray', 'ocean'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'blue-whale', name: 'Blue Whale', category: 'animals', subcategory: 'marine', icon: Fish, tags: ['animal', 'whale', 'blue', 'ocean', 'mammal'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'orca', name: 'Orca', category: 'animals', subcategory: 'marine', icon: Fish, tags: ['animal', 'orca', 'killer-whale', 'ocean'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'shrimp', name: 'Shrimp', category: 'animals', subcategory: 'marine', icon: Fish, tags: ['animal', 'shrimp', 'crustacean', 'ocean'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'dolphin', name: 'Dolphin', category: 'animals', subcategory: 'marine', icon: Fish, tags: ['animal', 'dolphin', 'ocean', 'mammal'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'algae', name: 'Algae', category: 'animals', subcategory: 'marine', icon: Leaf, tags: ['plant', 'algae', 'ocean', 'seaweed'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // Reptiles
+  { id: 'crocodile', name: 'Crocodile', category: 'animals', subcategory: 'reptiles', icon: Fish, tags: ['animal', 'crocodile', 'reptile', 'swamp'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'alligator', name: 'Alligator', category: 'animals', subcategory: 'reptiles', icon: Fish, tags: ['animal', 'alligator', 'reptile', 'swamp'], tier: 'pro', imageUrl: '/placeholder.svg' },
+
+  // ========== BIOMES ==========
+  // Swamp
+  { id: 'biome-swamp', name: 'Swamp Biome', category: 'terrain', subcategory: 'biomes', icon: Droplets, tags: ['biome', 'swamp', 'wetland', 'murky'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'swamp-tree', name: 'Swamp Tree', category: 'terrain', subcategory: 'biomes', icon: TreeDeciduous, tags: ['tree', 'swamp', 'moss', 'bayou'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'swamp-water', name: 'Swamp Water', category: 'terrain', subcategory: 'biomes', icon: Droplets, tags: ['water', 'swamp', 'murky', 'still'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'lily-pad', name: 'Lily Pad', category: 'terrain', subcategory: 'biomes', icon: Leaf, tags: ['plant', 'lily', 'water', 'swamp'], tier: 'free', imageUrl: '/placeholder.svg' },
+
+  // Marsh
+  { id: 'biome-marsh', name: 'Marsh Biome', category: 'terrain', subcategory: 'biomes', icon: Waves, tags: ['biome', 'marsh', 'wetland', 'grassy'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'marsh-grass', name: 'Marsh Grass', category: 'terrain', subcategory: 'biomes', icon: Leaf, tags: ['grass', 'marsh', 'tall', 'reeds'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'cattails', name: 'Cattails', category: 'terrain', subcategory: 'biomes', icon: Leaf, tags: ['plant', 'cattail', 'marsh', 'wetland'], tier: 'free', imageUrl: '/placeholder.svg' },
+
   // Roads & Paths
   { id: 'road-cobble', name: 'Cobblestone Road', category: 'terrain', subcategory: 'roads', icon: MapPin, tags: ['path', 'stone', 'medieval'], tier: 'free', imageUrl: '/placeholder.svg' },
   { id: 'road-dirt', name: 'Dirt Path', category: 'terrain', subcategory: 'roads', icon: MapPin, tags: ['path', 'earth', 'natural'], tier: 'free', imageUrl: '/placeholder.svg' },
   { id: 'road-asphalt', name: 'Asphalt Road', category: 'terrain', subcategory: 'roads', icon: Car, tags: ['modern', 'street', 'urban'], tier: 'pro', imageUrl: '/placeholder.svg' },
-  
-  // Nature
-  { id: 'tree-oak', name: 'Oak Tree', category: 'nature', subcategory: 'trees', icon: TreeDeciduous, tags: ['vegetation', 'forest', 'deciduous'], tier: 'free', imageUrl: '/placeholder.svg' },
-  { id: 'tree-pine', name: 'Pine Tree', category: 'nature', subcategory: 'trees', icon: Trees, tags: ['vegetation', 'conifer', 'evergreen'], tier: 'free', imageUrl: '/placeholder.svg' },
-  { id: 'rock-large', name: 'Large Rock', category: 'nature', subcategory: 'rocks', icon: Mountain, tags: ['stone', 'boulder', 'natural'], tier: 'free', imageUrl: '/placeholder.svg' },
-  { id: 'mountain-peak', name: 'Mountain Peak', category: 'nature', subcategory: 'mountains', icon: Mountain, tags: ['terrain', 'height', 'rocky'], tier: 'pro', imageUrl: '/placeholder.svg' },
 ];
 
 const categories = [
   { id: 'all', label: 'All', icon: Package },
   { id: 'characters', label: 'Characters', icon: User },
   { id: 'structures', label: 'Structures', icon: Building2 },
+  { id: 'furniture', label: 'Furniture', icon: Sofa },
+  { id: 'electronics', label: 'Electronics', icon: Monitor },
+  { id: 'kitchen', label: 'Kitchen', icon: Refrigerator },
+  { id: 'food', label: 'Food', icon: Apple },
+  { id: 'textiles', label: 'Textiles', icon: User },
+  { id: 'animals', label: 'Animals', icon: Dog },
   { id: 'parts', label: 'Parts', icon: Cog },
   { id: 'vehicles', label: 'Vehicles', icon: Car },
   { id: 'nature', label: 'Nature', icon: Trees },
@@ -167,6 +446,12 @@ export function PreloadedAssets() {
     const categoryToPrimitive: Record<string, PrimitiveType> = {
       'characters': 'cylinder',
       'structures': 'cube',
+      'furniture': 'cube',
+      'electronics': 'cube',
+      'kitchen': 'cube',
+      'food': 'sphere',
+      'textiles': 'plane',
+      'animals': 'cylinder',
       'parts': 'torus',
       'vehicles': 'cube',
       'nature': 'cone',
