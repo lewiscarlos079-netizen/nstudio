@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { 
   Search, 
@@ -20,9 +19,14 @@ import {
   TreeDeciduous,
   MapPin,
   Car,
-  Package
+  Package,
+  Cog,
+  Gauge,
+  Wind,
+  Sparkles
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useProjectStore } from '@/store/projectStore';
 
 interface PreloadedAsset {
   id: string;
@@ -32,56 +36,85 @@ interface PreloadedAsset {
   icon: React.ComponentType<any>;
   tags: string[];
   tier: 'free' | 'pro' | 'enterprise';
+  imageUrl?: string;
 }
 
 const preloadedAssets: PreloadedAsset[] = [
   // Characters - Males
-  { id: 'male-warrior', name: 'Warrior', category: 'characters', subcategory: 'males', icon: Sword, tags: ['human', 'fighter', 'armor'], tier: 'free' },
-  { id: 'male-mage', name: 'Mage', category: 'characters', subcategory: 'males', icon: Flame, tags: ['human', 'magic', 'robes'], tier: 'free' },
-  { id: 'male-knight', name: 'Knight', category: 'characters', subcategory: 'males', icon: Crown, tags: ['human', 'medieval', 'armor'], tier: 'pro' },
-  { id: 'male-peasant', name: 'Peasant', category: 'characters', subcategory: 'males', icon: User, tags: ['human', 'villager', 'simple'], tier: 'free' },
+  { id: 'male-warrior', name: 'Warrior', category: 'characters', subcategory: 'males', icon: Sword, tags: ['human', 'fighter', 'armor'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'male-mage', name: 'Mage', category: 'characters', subcategory: 'males', icon: Flame, tags: ['human', 'magic', 'robes'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'male-knight', name: 'Knight', category: 'characters', subcategory: 'males', icon: Crown, tags: ['human', 'medieval', 'armor'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'male-peasant', name: 'Peasant', category: 'characters', subcategory: 'males', icon: User, tags: ['human', 'villager', 'simple'], tier: 'free', imageUrl: '/placeholder.svg' },
   
   // Characters - Females
-  { id: 'female-archer', name: 'Archer', category: 'characters', subcategory: 'females', icon: User, tags: ['human', 'ranger', 'bow'], tier: 'free' },
-  { id: 'female-sorceress', name: 'Sorceress', category: 'characters', subcategory: 'females', icon: Flame, tags: ['human', 'magic', 'spell'], tier: 'free' },
-  { id: 'female-queen', name: 'Queen', category: 'characters', subcategory: 'females', icon: Crown, tags: ['human', 'royal', 'crown'], tier: 'pro' },
+  { id: 'female-archer', name: 'Archer', category: 'characters', subcategory: 'females', icon: User, tags: ['human', 'ranger', 'bow'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'female-sorceress', name: 'Sorceress', category: 'characters', subcategory: 'females', icon: Flame, tags: ['human', 'magic', 'spell'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'female-queen', name: 'Queen', category: 'characters', subcategory: 'females', icon: Crown, tags: ['human', 'royal', 'crown'], tier: 'pro', imageUrl: '/placeholder.svg' },
   
   // Characters - Creatures
-  { id: 'robot-basic', name: 'Basic Robot', category: 'characters', subcategory: 'robots', icon: RobotIcon, tags: ['mechanical', 'android', 'metal'], tier: 'free' },
-  { id: 'cyborg-soldier', name: 'Cyborg Soldier', category: 'characters', subcategory: 'cyborgs', icon: RobotIcon, tags: ['hybrid', 'combat', 'armor'], tier: 'pro' },
-  { id: 'ogre', name: 'Ogre', category: 'characters', subcategory: 'monsters', icon: Skull, tags: ['monster', 'large', 'brute'], tier: 'free' },
-  { id: 'tree-monster', name: 'Tree Monster', category: 'characters', subcategory: 'monsters', icon: TreeDeciduous, tags: ['nature', 'guardian', 'wood'], tier: 'pro' },
-  { id: 'dragon-red', name: 'Red Dragon', category: 'characters', subcategory: 'dragons', icon: Flame, tags: ['dragon', 'fire', 'flying'], tier: 'enterprise' },
-  { id: 'dragon-ice', name: 'Ice Dragon', category: 'characters', subcategory: 'dragons', icon: Flame, tags: ['dragon', 'ice', 'flying'], tier: 'enterprise' },
+  { id: 'robot-basic', name: 'Basic Robot', category: 'characters', subcategory: 'robots', icon: RobotIcon, tags: ['mechanical', 'android', 'metal'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'cyborg-soldier', name: 'Cyborg Soldier', category: 'characters', subcategory: 'cyborgs', icon: RobotIcon, tags: ['hybrid', 'combat', 'armor'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'ogre', name: 'Ogre', category: 'characters', subcategory: 'monsters', icon: Skull, tags: ['monster', 'large', 'brute'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'tree-monster', name: 'Tree Monster', category: 'characters', subcategory: 'monsters', icon: TreeDeciduous, tags: ['nature', 'guardian', 'wood'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'dragon-red', name: 'Red Dragon', category: 'characters', subcategory: 'dragons', icon: Flame, tags: ['dragon', 'fire', 'flying'], tier: 'enterprise', imageUrl: '/placeholder.svg' },
+  { id: 'dragon-ice', name: 'Ice Dragon', category: 'characters', subcategory: 'dragons', icon: Flame, tags: ['dragon', 'ice', 'flying'], tier: 'enterprise', imageUrl: '/placeholder.svg' },
   
   // Buildings
-  { id: 'house-medieval', name: 'Medieval House', category: 'structures', subcategory: 'houses', icon: Home, tags: ['building', 'wood', 'thatch'], tier: 'free' },
-  { id: 'house-modern', name: 'Modern House', category: 'structures', subcategory: 'houses', icon: Home, tags: ['building', 'contemporary', 'glass'], tier: 'pro' },
-  { id: 'castle', name: 'Castle', category: 'structures', subcategory: 'buildings', icon: Building2, tags: ['fortress', 'medieval', 'stone'], tier: 'pro' },
-  { id: 'tower', name: 'Tower', category: 'structures', subcategory: 'buildings', icon: Building2, tags: ['tall', 'stone', 'defense'], tier: 'free' },
-  { id: 'shop', name: 'Shop', category: 'structures', subcategory: 'buildings', icon: Building2, tags: ['commerce', 'store', 'village'], tier: 'free' },
-  { id: 'tavern', name: 'Tavern', category: 'structures', subcategory: 'buildings', icon: Building2, tags: ['inn', 'medieval', 'social'], tier: 'free' },
+  { id: 'house-medieval', name: 'Medieval House', category: 'structures', subcategory: 'houses', icon: Home, tags: ['building', 'wood', 'thatch'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'house-modern', name: 'Modern House', category: 'structures', subcategory: 'houses', icon: Home, tags: ['building', 'contemporary', 'glass'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'castle', name: 'Castle', category: 'structures', subcategory: 'buildings', icon: Building2, tags: ['fortress', 'medieval', 'stone'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'tower', name: 'Tower', category: 'structures', subcategory: 'buildings', icon: Building2, tags: ['tall', 'stone', 'defense'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'shop', name: 'Shop', category: 'structures', subcategory: 'buildings', icon: Building2, tags: ['commerce', 'store', 'village'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'tavern', name: 'Tavern', category: 'structures', subcategory: 'buildings', icon: Building2, tags: ['inn', 'medieval', 'social'], tier: 'free', imageUrl: '/placeholder.svg' },
+  
+  // Vehicle Parts - Gears
+  { id: 'gear-manual-5', name: '5-Speed Manual', category: 'parts', subcategory: 'gears', icon: Cog, tags: ['transmission', 'manual', 'gearbox'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'gear-manual-6', name: '6-Speed Manual', category: 'parts', subcategory: 'gears', icon: Cog, tags: ['transmission', 'manual', 'racing'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'gear-dct', name: 'Dual-Clutch DCT', category: 'parts', subcategory: 'gears', icon: Cog, tags: ['transmission', 'automatic', 'sport'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  
+  // Vehicle Parts - Engines
+  { id: 'engine-v6', name: 'Twin-Turbo V6', category: 'parts', subcategory: 'engines', icon: Gauge, tags: ['engine', 'turbo', 'v6'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'engine-v8', name: 'V8 Muscle Engine', category: 'parts', subcategory: 'engines', icon: Gauge, tags: ['engine', 'muscle', 'v8'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'engine-rotary', name: '13B Rotary', category: 'parts', subcategory: 'engines', icon: Gauge, tags: ['engine', 'rotary', 'wankel'], tier: 'enterprise', imageUrl: '/placeholder.svg' },
+  
+  // Vehicle Parts - Exhausts
+  { id: 'exhaust-straight', name: 'Straight Pipe', category: 'parts', subcategory: 'exhausts', icon: Wind, tags: ['exhaust', 'performance', 'loud'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'exhaust-quad', name: 'Quad Tip Exhaust', category: 'parts', subcategory: 'exhausts', icon: Wind, tags: ['exhaust', 'sport', 'quad'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'exhaust-titanium', name: 'Titanium Race', category: 'parts', subcategory: 'exhausts', icon: Wind, tags: ['exhaust', 'racing', 'titanium'], tier: 'enterprise', imageUrl: '/placeholder.svg' },
+  
+  // Vehicle Parts - Spoilers
+  { id: 'spoiler-gt', name: 'GT Wing Spoiler', category: 'parts', subcategory: 'spoilers', icon: Sparkles, tags: ['spoiler', 'racing', 'wing'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'spoiler-lip', name: 'Lip Spoiler', category: 'parts', subcategory: 'spoilers', icon: Sparkles, tags: ['spoiler', 'subtle', 'lip'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'spoiler-active', name: 'Active Aero Wing', category: 'parts', subcategory: 'spoilers', icon: Sparkles, tags: ['spoiler', 'hypercar', 'active'], tier: 'enterprise', imageUrl: '/placeholder.svg' },
+  
+  // Vehicles
+  { id: 'car-jaguar', name: 'Jaguar F-Type', category: 'vehicles', subcategory: 'sports', icon: Car, tags: ['car', 'sports', 'british'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'car-nissan-gt', name: 'Nissan GT-R', category: 'vehicles', subcategory: 'sports', icon: Car, tags: ['car', 'jdm', 'godzilla'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'car-mazda-rx7', name: 'Mazda RX-7', category: 'vehicles', subcategory: 'jdm', icon: Car, tags: ['car', 'rotary', 'drift'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'car-ford-f150', name: 'Ford F-150', category: 'vehicles', subcategory: 'trucks', icon: Car, tags: ['truck', 'american', 'pickup'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'car-mercedes-amg', name: 'Mercedes AMG GT', category: 'vehicles', subcategory: 'luxury', icon: Car, tags: ['car', 'german', 'luxury'], tier: 'enterprise', imageUrl: '/placeholder.svg' },
+  { id: 'car-camaro-77', name: '1977 Camaro', category: 'vehicles', subcategory: 'classic', icon: Car, tags: ['car', 'classic', 'muscle'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'car-bentley', name: 'Bentley Continental', category: 'vehicles', subcategory: 'luxury', icon: Car, tags: ['car', 'british', 'luxury'], tier: 'enterprise', imageUrl: '/placeholder.svg' },
+  { id: 'car-chrysler-300', name: 'Chrysler 300', category: 'vehicles', subcategory: 'sedan', icon: Car, tags: ['car', 'american', 'sedan'], tier: 'free', imageUrl: '/placeholder.svg' },
   
   // Roads & Paths
-  { id: 'road-cobble', name: 'Cobblestone Road', category: 'terrain', subcategory: 'roads', icon: MapPin, tags: ['path', 'stone', 'medieval'], tier: 'free' },
-  { id: 'road-dirt', name: 'Dirt Path', category: 'terrain', subcategory: 'roads', icon: MapPin, tags: ['path', 'earth', 'natural'], tier: 'free' },
-  { id: 'road-asphalt', name: 'Asphalt Road', category: 'terrain', subcategory: 'roads', icon: Car, tags: ['modern', 'street', 'urban'], tier: 'pro' },
+  { id: 'road-cobble', name: 'Cobblestone Road', category: 'terrain', subcategory: 'roads', icon: MapPin, tags: ['path', 'stone', 'medieval'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'road-dirt', name: 'Dirt Path', category: 'terrain', subcategory: 'roads', icon: MapPin, tags: ['path', 'earth', 'natural'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'road-asphalt', name: 'Asphalt Road', category: 'terrain', subcategory: 'roads', icon: Car, tags: ['modern', 'street', 'urban'], tier: 'pro', imageUrl: '/placeholder.svg' },
   
   // Nature
-  { id: 'tree-oak', name: 'Oak Tree', category: 'nature', subcategory: 'trees', icon: TreeDeciduous, tags: ['vegetation', 'forest', 'deciduous'], tier: 'free' },
-  { id: 'tree-pine', name: 'Pine Tree', category: 'nature', subcategory: 'trees', icon: Trees, tags: ['vegetation', 'conifer', 'evergreen'], tier: 'free' },
-  { id: 'bush-berry', name: 'Berry Bush', category: 'nature', subcategory: 'bushes', icon: Trees, tags: ['vegetation', 'small', 'berries'], tier: 'free' },
-  { id: 'bush-flowering', name: 'Flowering Bush', category: 'nature', subcategory: 'bushes', icon: Trees, tags: ['vegetation', 'flowers', 'decorative'], tier: 'free' },
-  { id: 'rock-large', name: 'Large Rock', category: 'nature', subcategory: 'rocks', icon: Mountain, tags: ['stone', 'boulder', 'natural'], tier: 'free' },
-  { id: 'rock-formation', name: 'Rock Formation', category: 'nature', subcategory: 'rocks', icon: Mountain, tags: ['stone', 'cluster', 'terrain'], tier: 'free' },
-  { id: 'cave-entrance', name: 'Cave Entrance', category: 'nature', subcategory: 'caves', icon: Mountain, tags: ['underground', 'dark', 'mystery'], tier: 'pro' },
-  { id: 'mountain-peak', name: 'Mountain Peak', category: 'nature', subcategory: 'mountains', icon: Mountain, tags: ['terrain', 'height', 'rocky'], tier: 'pro' },
+  { id: 'tree-oak', name: 'Oak Tree', category: 'nature', subcategory: 'trees', icon: TreeDeciduous, tags: ['vegetation', 'forest', 'deciduous'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'tree-pine', name: 'Pine Tree', category: 'nature', subcategory: 'trees', icon: Trees, tags: ['vegetation', 'conifer', 'evergreen'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'rock-large', name: 'Large Rock', category: 'nature', subcategory: 'rocks', icon: Mountain, tags: ['stone', 'boulder', 'natural'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'mountain-peak', name: 'Mountain Peak', category: 'nature', subcategory: 'mountains', icon: Mountain, tags: ['terrain', 'height', 'rocky'], tier: 'pro', imageUrl: '/placeholder.svg' },
 ];
 
 const categories = [
-  { id: 'all', label: 'All Assets', icon: Package },
+  { id: 'all', label: 'All', icon: Package },
   { id: 'characters', label: 'Characters', icon: User },
   { id: 'structures', label: 'Structures', icon: Building2 },
+  { id: 'parts', label: 'Parts', icon: Cog },
+  { id: 'vehicles', label: 'Vehicles', icon: Car },
   { id: 'nature', label: 'Nature', icon: Trees },
   { id: 'terrain', label: 'Terrain', icon: MapPin },
 ];
@@ -90,6 +123,7 @@ export function PreloadedAssets() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedTier, setSelectedTier] = useState<'all' | 'free' | 'pro' | 'enterprise'>('all');
+  const { addAsset } = useProjectStore();
 
   const filteredAssets = preloadedAssets.filter(asset => {
     const matchesSearch = 
@@ -116,8 +150,16 @@ export function PreloadedAssets() {
       return;
     }
     
+    // Add to project store
+    addAsset({
+      name: asset.name,
+      type: 'model',
+      thumbnail: asset.imageUrl || '',
+      source: 'local',
+    });
+    
     toast.success(`Added ${asset.name}`, {
-      description: 'Asset added to your scene. (Model loading coming soon)',
+      description: 'Asset added to your inventory and scene.',
     });
   };
 
