@@ -5,7 +5,8 @@ export type PrimitiveType = 'cube' | 'sphere' | 'cylinder' | 'cone' | 'plane' | 
 export interface SceneObject {
   id: string;
   name: string;
-  type: PrimitiveType | 'model';
+  type: PrimitiveType | 'model' | 'procedural';
+  modelId?: string; // For procedural models, references the model type
   position: [number, number, number];
   rotation: [number, number, number];
   scale: [number, number, number];
@@ -31,6 +32,7 @@ interface SceneState {
   
   // Actions
   addObject: (type: PrimitiveType, name?: string) => void;
+  addProceduralModel: (modelId: string, name?: string) => void;
   removeObject: (id: string) => void;
   selectObject: (id: string | null) => void;
   updateObject: (id: string, updates: Partial<SceneObject>) => void;
@@ -75,6 +77,29 @@ export const useSceneStore = create<SceneState>((set, get) => ({
         metalness: 0.8,
         roughness: 0.2,
         emissiveIntensity: 0.2,
+        locked: false,
+        visible: true,
+      };
+      return {
+        objects: [...state.objects, newObject],
+        selectedObjectId: newObject.id,
+      };
+    }),
+
+  addProceduralModel: (modelId, name) =>
+    set((state) => {
+      const newObject: SceneObject = {
+        id: crypto.randomUUID(),
+        name: name || `${modelId}_${objectCounter++}`,
+        type: 'procedural',
+        modelId,
+        position: getRandomPosition(),
+        rotation: [0, 0, 0],
+        scale: [1, 1, 1],
+        color: '#00d4ff',
+        metalness: 0.5,
+        roughness: 0.5,
+        emissiveIntensity: 0.1,
         locked: false,
         visible: true,
       };

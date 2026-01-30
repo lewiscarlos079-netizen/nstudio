@@ -1,7 +1,8 @@
 import { useRef, useState, useEffect } from 'react';
-import { Mesh, Vector3, Plane } from 'three';
+import { Mesh, Vector3, Plane, Group } from 'three';
 import { ThreeEvent, useThree, useFrame } from '@react-three/fiber';
 import { useSceneStore, SceneObject } from '@/store/sceneStore';
+import { getProceduralModel } from './ProceduralModels';
 
 interface SceneObjectProps {
   object: SceneObject;
@@ -263,6 +264,46 @@ export function SceneObjectMesh({ object }: SceneObjectProps) {
   };
 
   const isUsingWASD = keysPressed.has('w') || keysPressed.has('a') || keysPressed.has('s') || keysPressed.has('d') || keysPressed.has('q') || keysPressed.has('e');
+
+  // Render procedural model if type is 'procedural'
+  if (object.type === 'procedural' && object.modelId) {
+    const ProceduralModel = getProceduralModel(object.modelId);
+    
+    if (ProceduralModel) {
+      return (
+        <group
+          position={object.position}
+          rotation={object.rotation}
+          scale={object.scale}
+          onClick={handleClick}
+          onPointerDown={handlePointerDown}
+          onPointerOver={() => {
+            if (!object.locked && transformMode !== 'select') {
+              gl.domElement.style.cursor = 'grab';
+            }
+          }}
+          onPointerOut={() => {
+            if (!isDragging) {
+              gl.domElement.style.cursor = 'auto';
+            }
+          }}
+        >
+          <ProceduralModel color={object.color} />
+          {isSelected && (
+            <mesh>
+              <sphereGeometry args={[0.6, 8, 8]} />
+              <meshBasicMaterial 
+                color={isUsingWASD ? "#ff00ff" : (isDragging ? (shiftHeld ? "#00ffff" : "#00ff00") : "#ffff00")} 
+                wireframe 
+                transparent
+                opacity={0.3}
+              />
+            </mesh>
+          )}
+        </group>
+      );
+    }
+  }
 
   return (
     <mesh
