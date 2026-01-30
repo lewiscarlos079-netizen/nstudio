@@ -5,6 +5,7 @@ import { ToolPanel } from '@/components/studio/ToolPanel';
 import { PropertiesPanel } from '@/components/studio/PropertiesPanel';
 import { PreloadedAssets } from '@/components/studio/PreloadedAssets';
 import { AIChatPanel } from '@/components/studio/AIChatPanel';
+import { CameraRecordingPanel } from '@/components/studio/CameraRecordingPanel';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -21,7 +22,8 @@ import {
   PanelRightOpen,
   Save,
   Download,
-  Upload
+  Upload,
+  Camera
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -97,6 +99,10 @@ export default function Studio() {
                 <Layers className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">Assets</span>
               </TabsTrigger>
+              <TabsTrigger value="camera" className="gap-2 text-xs h-7">
+                <Camera className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Record</span>
+              </TabsTrigger>
               <TabsTrigger value="texture" className="gap-2 text-xs h-7">
                 <Image className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">Texture</span>
@@ -146,11 +152,16 @@ export default function Studio() {
 
           {/* Center - Content based on tab */}
           <div className="flex-1 min-w-0 flex gap-4">
-            {activeTab === 'assets' ? (
+            {activeTab === 'assets' && (
               <div className="w-80 flex-shrink-0">
                 <PreloadedAssets />
               </div>
-            ) : null}
+            )}
+            {activeTab === 'camera' && (
+              <div className="w-80 flex-shrink-0">
+                <CameraRecordingPanel />
+              </div>
+            )}
             <div className="flex-1 min-w-0">
               <Viewport3D className="w-full h-full" />
             </div>

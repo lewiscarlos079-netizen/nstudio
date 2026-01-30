@@ -8,7 +8,9 @@ import {
   Settings, 
   Sparkles,
   Menu,
-  X
+  X,
+  Crown,
+  Shield
 } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -18,6 +20,7 @@ const navItems = [
   { label: 'Assets', href: '/assets', icon: Layers },
   { label: 'Render', href: '/render', icon: Film },
   { label: 'Portfolio', href: '/portfolio', icon: FolderOpen },
+  { label: 'Club', href: '/subscription', icon: Crown },
 ];
 
 export function Header() {
