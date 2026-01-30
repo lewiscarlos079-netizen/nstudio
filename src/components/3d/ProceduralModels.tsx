@@ -2328,6 +2328,126 @@ export function DockModel({ color = COLORS.wood, style = 'standard' }: ModelProp
   );
 }
 
+// ==================== ROADS & PATHS ====================
+
+export function DirtPathModel({ color = '#8B7355', style = 'standard' }: ModelProps) {
+  // Natural dirt path - flat on ground with rough edges
+  return (
+    <group>
+      {/* Main path surface - flat on ground */}
+      <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[1.5, 0.6]} />
+        <StyledMaterial color={color} style={style} />
+      </mesh>
+      {/* Dirt texture variation - darker patches */}
+      <mesh position={[-0.3, 0.012, 0.1]} rotation={[-Math.PI / 2, 0, 0.2]}>
+        <circleGeometry args={[0.12, 8]} />
+        <StyledMaterial color="#6B5344" style={style} />
+      </mesh>
+      <mesh position={[0.25, 0.012, -0.08]} rotation={[-Math.PI / 2, 0, 0.5]}>
+        <circleGeometry args={[0.08, 6]} />
+        <StyledMaterial color="#7A6350" style={style} />
+      </mesh>
+      <mesh position={[0.5, 0.012, 0.15]} rotation={[-Math.PI / 2, 0, 0.8]}>
+        <circleGeometry args={[0.1, 7]} />
+        <StyledMaterial color="#5C4535" style={style} />
+      </mesh>
+      {/* Small pebbles along path */}
+      {[[-0.4, 0.2], [0.1, -0.22], [0.55, 0.18], [-0.2, -0.2], [0.35, 0.22]].map(([x, z], i) => (
+        <mesh key={i} position={[x, 0.015, z]} scale={[1, 0.4, 1]}>
+          <sphereGeometry args={[0.025 + Math.random() * 0.015, 6, 6]} />
+          <StyledMaterial color={COLORS.stoneDark} style={style} />
+        </mesh>
+      ))}
+      {/* Grass tufts at edges */}
+      {[[-0.6, 0.25], [0.65, -0.2], [-0.5, -0.28], [0.7, 0.22]].map(([x, z], i) => (
+        <mesh key={`grass-${i}`} position={[x, 0.02, z]}>
+          <coneGeometry args={[0.02, 0.05, 4]} />
+          <StyledMaterial color={COLORS.grass} style={style} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+export function CobblestoneRoadModel({ color = '#696969', style = 'standard' }: ModelProps) {
+  // Medieval cobblestone road - flat with stone pattern
+  const stoneColors = ['#606060', '#707070', '#585858', '#686868', '#555555'];
+  
+  return (
+    <group>
+      {/* Base layer */}
+      <mesh position={[0, 0.005, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[1.5, 0.7]} />
+        <StyledMaterial color="#4a4a4a" style={style} />
+      </mesh>
+      {/* Cobblestones - arranged in rows */}
+      {[-0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6].map((x, col) => 
+        [-0.25, 0, 0.25].map((z, row) => {
+          const offsetX = row % 2 === 0 ? 0 : 0.1;
+          const stoneColor = stoneColors[(col + row) % stoneColors.length];
+          return (
+            <mesh 
+              key={`stone-${col}-${row}`} 
+              position={[x + offsetX, 0.02, z]} 
+              rotation={[-Math.PI / 2, 0, Math.random() * 0.3]}
+              scale={[0.9 + Math.random() * 0.2, 0.9 + Math.random() * 0.2, 1]}
+            >
+              <circleGeometry args={[0.08, 6]} />
+              <StyledMaterial color={stoneColor} style={style} />
+            </mesh>
+          );
+        })
+      )}
+      {/* Edge stones - border */}
+      {[-0.7, 0.7].map((x, i) => (
+        <mesh key={`edge-${i}`} position={[x, 0.025, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <boxGeometry args={[0.05, 0.08, 0.7]} />
+          <StyledMaterial color="#505050" style={style} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+export function AsphaltRoadModel({ color = '#2F2F2F', style = 'standard' }: ModelProps) {
+  // Modern asphalt road with lane markings
+  return (
+    <group>
+      {/* Main road surface */}
+      <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[1.8, 0.8]} />
+        <StyledMaterial color={color} style={style} />
+      </mesh>
+      {/* Center lane marking (dashed) */}
+      {[-0.6, -0.2, 0.2, 0.6].map((x, i) => (
+        <mesh key={`dash-${i}`} position={[x, 0.015, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[0.2, 0.04]} />
+          <StyledMaterial color="#F0E68C" style={style} />
+        </mesh>
+      ))}
+      {/* Edge lines */}
+      <mesh position={[0, 0.015, 0.35]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[1.8, 0.03]} />
+        <StyledMaterial color="#FFFFFF" style={style} />
+      </mesh>
+      <mesh position={[0, 0.015, -0.35]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[1.8, 0.03]} />
+        <StyledMaterial color="#FFFFFF" style={style} />
+      </mesh>
+      {/* Road texture - subtle cracks/patches */}
+      <mesh position={[0.3, 0.012, 0.15]} rotation={[-Math.PI / 2, 0, 0.5]}>
+        <planeGeometry args={[0.15, 0.08]} />
+        <StyledMaterial color="#383838" style={style} />
+      </mesh>
+      <mesh position={[-0.5, 0.012, -0.1]} rotation={[-Math.PI / 2, 0, -0.3]}>
+        <planeGeometry args={[0.12, 0.06]} />
+        <StyledMaterial color="#353535" style={style} />
+      </mesh>
+    </group>
+  );
+}
+
 export function PoolModel({ color = COLORS.water, style = 'standard' }: ModelProps) {
   return (
     <group>
@@ -3032,6 +3152,11 @@ export const ProceduralModelRegistry: Record<string, React.ComponentType<ModelPr
   'roof': RoofModel,
   'dock': DockModel,
   'pool': PoolModel,
+  
+  // Roads & Paths
+  'road-dirt': DirtPathModel,
+  'road-cobble': CobblestoneRoadModel,
+  'road-asphalt': AsphaltRoadModel,
   
   // Furniture
   'table': TableModel,

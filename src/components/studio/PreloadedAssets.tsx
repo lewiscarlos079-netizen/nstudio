@@ -726,9 +726,9 @@ export function PreloadedAssets() {
       'biome-marsh': 'bush',
       'marsh-grass': 'bush',
       'cattails': 'flower',
-      'road-cobble': 'dock',
-      'road-dirt': 'dock',
-      'road-asphalt': 'dock',
+      'road-cobble': 'road-cobble',
+      'road-dirt': 'road-dirt',
+      'road-asphalt': 'road-asphalt',
     };
     
     // Get the procedural model ID or fallback
