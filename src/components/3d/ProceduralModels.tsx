@@ -3,25 +3,110 @@ import { Group } from 'three';
 import { BodyPartType, BodyPartConfig, ModelStyle } from '@/store/sceneStore';
 import { StyledMaterial } from './ToonMaterials';
 
-// Color palettes for different asset types
+// Realistic color palettes for different asset types
 const COLORS = {
-  wood: '#8B4513',
-  woodLight: '#DEB887',
-  metal: '#708090',
-  metalDark: '#2F4F4F',
-  glass: '#87CEEB',
-  fabric: '#DC143C',
-  fabricDark: '#8B0000',
-  leaf: '#228B22',
-  leafDark: '#006400',
-  trunk: '#654321',
-  skin: '#FFDAB9',
+  // Wood & Materials
+  wood: '#8B4513',           // Saddle brown
+  woodLight: '#DEB887',      // Burlywood
+  woodDark: '#5D3A1A',       // Dark wood
+  metal: '#708090',          // Slate gray
+  metalDark: '#2F4F4F',      // Dark slate gray
+  metalShiny: '#C0C0C0',     // Silver
+  glass: '#87CEEB',          // Sky blue
+  
+  // Fabrics
+  fabric: '#DC143C',         // Crimson
+  fabricDark: '#8B0000',     // Dark red
+  fabricBlue: '#4169E1',     // Royal blue
+  
+  // Nature
+  leaf: '#228B22',           // Forest green
+  leafLight: '#90EE90',      // Light green
+  leafDark: '#006400',       // Dark green
+  leafAutumn: '#D2691E',     // Chocolate (autumn leaves)
+  trunk: '#654321',          // Dark brown
+  trunkBirch: '#F5F5DC',     // Beige (birch bark)
+  grass: '#7CFC00',          // Lawn green
+  
+  // Animal colors - Dogs
+  dogGolden: '#DAA520',      // Goldenrod (Golden Retriever)
+  dogBrown: '#8B4513',       // Saddle brown (Chocolate Lab)
+  dogBlack: '#1a1a1a',       // Black (Black Lab)
+  dogWhite: '#F5F5F5',       // White smoke (White dogs)
+  dogTan: '#D2B48C',         // Tan (Beagle)
+  
+  // Animal colors - Cats
+  catOrange: '#FF8C00',      // Dark orange (Tabby)
+  catGray: '#808080',        // Gray (Russian Blue)
+  catBlack: '#1a1a1a',       // Black cat
+  catWhite: '#FFFAF0',       // Floral white
+  catSiamese: '#F5DEB3',     // Wheat (Siamese body)
+  
+  // Animal colors - Wild animals
+  wolfGray: '#696969',       // Dim gray
+  wolfWhite: '#DCDCDC',      // Gainsboro (Arctic wolf)
+  tigerOrange: '#FF6600',    // Bright orange
+  tigerStripe: '#1a1a1a',    // Black stripes
+  lionTan: '#C19A6B',        // Camel
+  bearBrown: '#8B4513',      // Saddle brown
+  bearPolar: '#F0F0F0',      // White smoke
+  
+  // Animal colors - Birds
+  birdBlue: '#4169E1',       // Royal blue (Bluebird)
+  birdRed: '#DC143C',        // Crimson (Cardinal)
+  birdYellow: '#FFD700',     // Gold (Canary)
+  birdGreen: '#32CD32',      // Lime green (Parrot)
+  birdBrown: '#8B4513',      // Brown (Sparrow)
+  birdBlack: '#1a1a1a',      // Black (Crow)
+  
+  // Animal colors - Sea creatures
+  fishOrange: '#FF7F00',     // Orange (Goldfish/Clownfish)
+  fishBlue: '#1E90FF',       // Dodger blue (Tropical)
+  fishSilver: '#C0C0C0',     // Silver (Salmon)
+  fishYellow: '#FFD700',     // Gold (Angelfish)
+  dolphinGray: '#708090',    // Slate gray
+  whaleBlue: '#2F4F4F',      // Dark slate gray
+  sharkGray: '#808080',      // Gray
+  
+  // Animal colors - Reptiles
+  crocodileGreen: '#2E8B57', // Sea green
+  snakeGreen: '#228B22',     // Forest green
+  turtleGreen: '#556B2F',    // Dark olive green
+  
+  // Fantasy creatures
+  dragonGreen: '#228B22',    // Forest green
+  dragonRed: '#B22222',      // Firebrick
+  dragonBlue: '#4169E1',     // Royal blue
+  dragonGold: '#FFD700',     // Gold
+  dragonBlack: '#2F2F2F',    // Dark gray
+  
+  // Primate colors
+  gorillaBlack: '#1a1a1a',   // Black
+  gorillaGray: '#696969',    // Dim gray (silverback)
+  chimpBrown: '#8B4513',     // Saddle brown
+  
+  // Human
+  skin: '#FFDAB9',           // Peach puff
+  skinLight: '#FFE4C4',      // Bisque
+  skinDark: '#D2691E',       // Chocolate
+  hair: '#4A3C2A',           // Dark brown
+  hairBlonde: '#F0E68C',     // Khaki
+  hairBlack: '#1a1a1a',      // Black
+  hairRed: '#8B0000',        // Dark red
+  
+  // General colors
   fur: '#D2691E',
   furDark: '#8B4513',
   water: '#4169E1',
+  waterLight: '#87CEEB',
+  waterDeep: '#000080',
   stone: '#696969',
+  stoneDark: '#404040',
+  stoneLight: '#A9A9A9',
   brick: '#B22222',
   concrete: '#A9A9A9',
+  
+  // Basic colors
   white: '#FFFFFF',
   black: '#1a1a1a',
   orange: '#FF8C00',
@@ -32,6 +117,15 @@ const COLORS = {
   pink: '#FF69B4',
   purple: '#9932CC',
   gray: '#808080',
+  
+  // Vehicle colors (most popular car colors)
+  carWhite: '#FFFFFF',       // White (most popular)
+  carBlack: '#1a1a1a',       // Black
+  carSilver: '#C0C0C0',      // Silver
+  carGray: '#808080',        // Gray
+  carRed: '#CC0000',         // Red
+  carBlue: '#0047AB',        // Cobalt blue
+  carNavy: '#000080',        // Navy
 };
 
 export interface ModelProps {
@@ -173,13 +267,21 @@ export function RobotModel({ color = COLORS.metal, style = 'standard' }: ModelPr
   );
 }
 
-export function DragonModel({ color = COLORS.red, style = 'standard' }: ModelProps) {
+export function DragonModel({ color = COLORS.dragonGreen, style = 'standard' }: ModelProps) {
+  const wingColor = COLORS.dragonGold; // Golden wing membranes
+  const bellyColor = COLORS.leafLight; // Lighter underbelly
+  
   return (
     <group>
       {/* Body */}
       <mesh position={[0, 0.3, 0]} rotation={[0.3, 0, 0]}>
         <sphereGeometry args={[0.4, 16, 16]} />
         <StyledMaterial color={color} style={style} />
+      </mesh>
+      {/* Underbelly */}
+      <mesh position={[0, 0.25, 0.15]} rotation={[0.3, 0, 0]} scale={[0.8, 0.5, 0.6]}>
+        <sphereGeometry args={[0.35, 16, 16]} />
+        <StyledMaterial color={bellyColor} style={style} />
       </mesh>
       {/* Neck */}
       <mesh position={[0, 0.6, 0.3]} rotation={[-0.5, 0, 0]}>
@@ -191,19 +293,42 @@ export function DragonModel({ color = COLORS.red, style = 'standard' }: ModelPro
         <boxGeometry args={[0.25, 0.2, 0.35]} />
         <StyledMaterial color={color} style={style} />
       </mesh>
+      {/* Eyes */}
+      <mesh position={[-0.08, 0.88, 0.6]}>
+        <sphereGeometry args={[0.04, 8, 8]} />
+        <StyledMaterial color={COLORS.yellow} style={style} emissive={COLORS.yellow} emissiveIntensity={0.3} />
+      </mesh>
+      <mesh position={[0.08, 0.88, 0.6]}>
+        <sphereGeometry args={[0.04, 8, 8]} />
+        <StyledMaterial color={COLORS.yellow} style={style} emissive={COLORS.yellow} emissiveIntensity={0.3} />
+      </mesh>
+      {/* Horns */}
+      <mesh position={[-0.1, 0.98, 0.4]} rotation={[0.5, 0.2, -0.3]}>
+        <coneGeometry args={[0.03, 0.15, 6]} />
+        <StyledMaterial color={COLORS.woodDark} style={style} />
+      </mesh>
+      <mesh position={[0.1, 0.98, 0.4]} rotation={[0.5, -0.2, 0.3]}>
+        <coneGeometry args={[0.03, 0.15, 6]} />
+        <StyledMaterial color={COLORS.woodDark} style={style} />
+      </mesh>
       {/* Wings */}
       <mesh position={[-0.5, 0.5, 0]} rotation={[0, 0, -0.5]}>
         <coneGeometry args={[0.4, 0.6, 4]} />
-        <StyledMaterial color={color} style={style} opacity={0.8} transparent />
+        <StyledMaterial color={wingColor} style={style} opacity={0.8} transparent />
       </mesh>
       <mesh position={[0.5, 0.5, 0]} rotation={[0, 0, 0.5]}>
         <coneGeometry args={[0.4, 0.6, 4]} />
-        <StyledMaterial color={color} style={style} opacity={0.8} transparent />
+        <StyledMaterial color={wingColor} style={style} opacity={0.8} transparent />
       </mesh>
       {/* Tail */}
       <mesh position={[0, 0.1, -0.5]} rotation={[0.3, 0, 0]}>
         <coneGeometry args={[0.15, 0.6, 8]} />
         <StyledMaterial color={color} style={style} />
+      </mesh>
+      {/* Tail spike */}
+      <mesh position={[0, 0.05, -0.78]} rotation={[0.3, 0, 0]}>
+        <coneGeometry args={[0.08, 0.15, 4]} />
+        <StyledMaterial color={COLORS.woodDark} style={style} />
       </mesh>
     </group>
   );
@@ -211,7 +336,9 @@ export function DragonModel({ color = COLORS.red, style = 'standard' }: ModelPro
 
 // ==================== ANIMALS ====================
 
-export function DogModel({ color = COLORS.furDark, bodyParts, style = 'standard' }: ModelProps) {
+export function DogModel({ color = COLORS.dogGolden, bodyParts, style = 'standard' }: ModelProps) {
+  const noseColor = COLORS.black;
+  const eyeColor = COLORS.woodDark;
   const headConfig = getPartConfig(bodyParts, 'head');
   const torsoConfig = getPartConfig(bodyParts, 'torso');
   const snoutConfig = getPartConfig(bodyParts, 'snout');
@@ -248,6 +375,20 @@ export function DogModel({ color = COLORS.furDark, bodyParts, style = 'standard'
       >
         <boxGeometry args={[0.12, 0.08, 0.1]} />
         <StyledMaterial color={snoutConfig.color || color} style={style} />
+      </mesh>
+      {/* Nose */}
+      <mesh position={[0.54, 0.34, 0]}>
+        <sphereGeometry args={[0.025, 8, 8]} />
+        <StyledMaterial color={noseColor} style={style} />
+      </mesh>
+      {/* Eyes */}
+      <mesh position={[0.4, 0.4, 0.06]}>
+        <sphereGeometry args={[0.025, 8, 8]} />
+        <StyledMaterial color={eyeColor} style={style} />
+      </mesh>
+      <mesh position={[0.4, 0.4, -0.06]}>
+        <sphereGeometry args={[0.025, 8, 8]} />
+        <StyledMaterial color={eyeColor} style={style} />
       </mesh>
       {/* Ears */}
       <group scale={earsConfig.scale} position={applyPartTransform([0, 0, 0], earsConfig)}>
@@ -305,7 +446,11 @@ export function DogModel({ color = COLORS.furDark, bodyParts, style = 'standard'
   );
 }
 
-export function CatModel({ color = COLORS.orange, style = 'standard' }: ModelProps) {
+export function CatModel({ color = COLORS.catOrange, style = 'standard' }: ModelProps) {
+  const noseColor = COLORS.pink;
+  const eyeColor = COLORS.green;
+  const innerEarColor = COLORS.pink;
+  
   return (
     <group>
       {/* Body */}
@@ -318,6 +463,20 @@ export function CatModel({ color = COLORS.orange, style = 'standard' }: ModelPro
         <sphereGeometry args={[0.12, 16, 16]} />
         <StyledMaterial color={color} style={style} />
       </mesh>
+      {/* Eyes */}
+      <mesh position={[0.34, 0.32, 0.04]}>
+        <sphereGeometry args={[0.02, 8, 8]} />
+        <StyledMaterial color={eyeColor} style={style} />
+      </mesh>
+      <mesh position={[0.34, 0.32, -0.04]}>
+        <sphereGeometry args={[0.02, 8, 8]} />
+        <StyledMaterial color={eyeColor} style={style} />
+      </mesh>
+      {/* Nose */}
+      <mesh position={[0.39, 0.26, 0]}>
+        <sphereGeometry args={[0.015, 8, 8]} />
+        <StyledMaterial color={noseColor} style={style} />
+      </mesh>
       {/* Ears */}
       <mesh position={[0.25, 0.42, -0.06]} rotation={[0, 0, 0.2]}>
         <coneGeometry args={[0.04, 0.1, 3]} />
@@ -326,6 +485,15 @@ export function CatModel({ color = COLORS.orange, style = 'standard' }: ModelPro
       <mesh position={[0.25, 0.42, 0.06]} rotation={[0, 0, 0.2]}>
         <coneGeometry args={[0.04, 0.1, 3]} />
         <StyledMaterial color={color} style={style} />
+      </mesh>
+      {/* Inner Ears */}
+      <mesh position={[0.26, 0.41, -0.06]} rotation={[0, 0, 0.2]}>
+        <coneGeometry args={[0.02, 0.06, 3]} />
+        <StyledMaterial color={innerEarColor} style={style} />
+      </mesh>
+      <mesh position={[0.26, 0.41, 0.06]} rotation={[0, 0, 0.2]}>
+        <coneGeometry args={[0.02, 0.06, 3]} />
+        <StyledMaterial color={innerEarColor} style={style} />
       </mesh>
       {/* Legs */}
       <mesh position={[0.12, 0.06, 0.06]}>
@@ -353,7 +521,7 @@ export function CatModel({ color = COLORS.orange, style = 'standard' }: ModelPro
   );
 }
 
-export function WolfModel({ color = COLORS.gray, style = 'standard' }: ModelProps) {
+export function WolfModel({ color = COLORS.wolfGray, style = 'standard' }: ModelProps) {
   return (
     <group scale={[1.3, 1.3, 1.3]}>
       <DogModel color={color} style={style} />
@@ -361,7 +529,7 @@ export function WolfModel({ color = COLORS.gray, style = 'standard' }: ModelProp
   );
 }
 
-export function TigerModel({ color = COLORS.orange, style = 'standard' }: ModelProps) {
+export function TigerModel({ color = COLORS.tigerOrange, style = 'standard' }: ModelProps) {
   return (
     <group scale={[1.5, 1.5, 1.5]}>
       <CatModel color={color} style={style} />
@@ -369,7 +537,12 @@ export function TigerModel({ color = COLORS.orange, style = 'standard' }: ModelP
   );
 }
 
-export function BirdModel({ color = COLORS.blue, style = 'standard' }: ModelProps) {
+export function BirdModel({ color = COLORS.birdBlue, style = 'standard' }: ModelProps) {
+  const beakColor = COLORS.yellow;
+  const legColor = COLORS.yellow;
+  const eyeColor = COLORS.black;
+  const bellyColor = COLORS.white;
+  
   return (
     <group>
       {/* Body */}
@@ -414,7 +587,7 @@ export function BirdModel({ color = COLORS.blue, style = 'standard' }: ModelProp
   );
 }
 
-export function FishModel({ color = COLORS.blue, bodyParts, style = 'standard' }: ModelProps) {
+export function FishModel({ color = COLORS.fishOrange, bodyParts, style = 'standard' }: ModelProps) {
   const headConfig = getPartConfig(bodyParts, 'head');
   const torsoConfig = getPartConfig(bodyParts, 'torso');
   const tailFinConfig = getPartConfig(bodyParts, 'tailFin');
@@ -457,7 +630,7 @@ export function FishModel({ color = COLORS.blue, bodyParts, style = 'standard' }
   );
 }
 
-export function DolphinModel({ color = COLORS.gray, style = 'standard' }: ModelProps) {
+export function DolphinModel({ color = COLORS.dolphinGray, style = 'standard' }: ModelProps) {
   return (
     <group scale={[1.5, 1.5, 1.5]}>
       <FishModel color={color} style={style} />
@@ -465,7 +638,7 @@ export function DolphinModel({ color = COLORS.gray, style = 'standard' }: ModelP
   );
 }
 
-export function WhaleModel({ color = COLORS.blue, style = 'standard' }: ModelProps) {
+export function WhaleModel({ color = COLORS.whaleBlue, style = 'standard' }: ModelProps) {
   return (
     <group scale={[3, 3, 3]}>
       <FishModel color={color} style={style} />
@@ -473,85 +646,109 @@ export function WhaleModel({ color = COLORS.blue, style = 'standard' }: ModelPro
   );
 }
 
-export function CrocodileModel({ color = COLORS.leafDark }: ModelProps) {
+export function CrocodileModel({ color = COLORS.crocodileGreen, style = 'standard' }: ModelProps) {
+  const bellyColor = COLORS.leafLight;
+  const eyeColor = COLORS.yellow;
+  
   return (
     <group>
       {/* Body */}
       <mesh position={[0, 0.1, 0]}>
         <boxGeometry args={[0.8, 0.15, 0.25]} />
-        <meshStandardMaterial color={color} />
+        <StyledMaterial color={color} style={style} />
+      </mesh>
+      {/* Underbelly */}
+      <mesh position={[0, 0.05, 0]}>
+        <boxGeometry args={[0.75, 0.05, 0.2]} />
+        <StyledMaterial color={bellyColor} style={style} />
       </mesh>
       {/* Head */}
       <mesh position={[0.5, 0.12, 0]}>
         <boxGeometry args={[0.3, 0.1, 0.2]} />
-        <meshStandardMaterial color={color} />
+        <StyledMaterial color={color} style={style} />
       </mesh>
       {/* Snout */}
       <mesh position={[0.7, 0.1, 0]}>
         <boxGeometry args={[0.15, 0.06, 0.12]} />
-        <meshStandardMaterial color={color} />
+        <StyledMaterial color={color} style={style} />
+      </mesh>
+      {/* Eyes */}
+      <mesh position={[0.45, 0.18, 0.08]}>
+        <sphereGeometry args={[0.025, 8, 8]} />
+        <StyledMaterial color={eyeColor} style={style} />
+      </mesh>
+      <mesh position={[0.45, 0.18, -0.08]}>
+        <sphereGeometry args={[0.025, 8, 8]} />
+        <StyledMaterial color={eyeColor} style={style} />
       </mesh>
       {/* Tail */}
       <mesh position={[-0.55, 0.08, 0]} rotation={[0, 0, 0.1]}>
         <coneGeometry args={[0.1, 0.4, 4]} />
-        <meshStandardMaterial color={color} />
+        <StyledMaterial color={color} style={style} />
       </mesh>
       {/* Legs */}
       <mesh position={[0.2, 0.02, 0.15]} rotation={[0, 0, 0.5]}>
         <boxGeometry args={[0.08, 0.1, 0.06]} />
-        <meshStandardMaterial color={color} />
+        <StyledMaterial color={color} style={style} />
       </mesh>
       <mesh position={[0.2, 0.02, -0.15]} rotation={[0, 0, 0.5]}>
         <boxGeometry args={[0.08, 0.1, 0.06]} />
-        <meshStandardMaterial color={color} />
+        <StyledMaterial color={color} style={style} />
       </mesh>
       <mesh position={[-0.2, 0.02, 0.15]} rotation={[0, 0, 0.5]}>
         <boxGeometry args={[0.08, 0.1, 0.06]} />
-        <meshStandardMaterial color={color} />
+        <StyledMaterial color={color} style={style} />
       </mesh>
       <mesh position={[-0.2, 0.02, -0.15]} rotation={[0, 0, 0.5]}>
         <boxGeometry args={[0.08, 0.1, 0.06]} />
-        <meshStandardMaterial color={color} />
+        <StyledMaterial color={color} style={style} />
       </mesh>
     </group>
   );
 }
 
-export function GorillaModel({ color = COLORS.black }: ModelProps) {
+export function GorillaModel({ color = COLORS.gorillaBlack, style = 'standard' }: ModelProps) {
+  const faceColor = COLORS.gorillaGray;
+  
   return (
     <group>
       {/* Body */}
       <mesh position={[0, 0.35, 0]}>
         <sphereGeometry args={[0.3, 16, 16]} />
-        <meshStandardMaterial color={color} />
+        <StyledMaterial color={color} style={style} />
       </mesh>
       {/* Head */}
       <mesh position={[0, 0.7, 0.05]}>
         <sphereGeometry args={[0.18, 16, 16]} />
-        <meshStandardMaterial color={color} />
+        <StyledMaterial color={color} style={style} />
       </mesh>
       {/* Face */}
       <mesh position={[0, 0.65, 0.18]}>
         <sphereGeometry args={[0.08, 8, 8]} />
-        <meshStandardMaterial color={COLORS.gray} />
+        <StyledMaterial color={faceColor} style={style} />
+      </mesh>
+      {/* Silverback patch */}
+      <mesh position={[0, 0.4, -0.15]} scale={[1, 0.8, 0.5]}>
+        <sphereGeometry args={[0.2, 12, 12]} />
+        <StyledMaterial color={COLORS.gorillaGray} style={style} />
       </mesh>
       {/* Arms */}
       <mesh position={[-0.35, 0.25, 0]} rotation={[0, 0, 0.3]}>
         <capsuleGeometry args={[0.08, 0.35, 8, 16]} />
-        <meshStandardMaterial color={color} />
+        <StyledMaterial color={color} style={style} />
       </mesh>
       <mesh position={[0.35, 0.25, 0]} rotation={[0, 0, -0.3]}>
         <capsuleGeometry args={[0.08, 0.35, 8, 16]} />
-        <meshStandardMaterial color={color} />
+        <StyledMaterial color={color} style={style} />
       </mesh>
       {/* Legs */}
       <mesh position={[-0.12, 0, 0]}>
         <cylinderGeometry args={[0.08, 0.1, 0.25, 8]} />
-        <meshStandardMaterial color={color} />
+        <StyledMaterial color={color} style={style} />
       </mesh>
       <mesh position={[0.12, 0, 0]}>
         <cylinderGeometry args={[0.08, 0.1, 0.25, 8]} />
-        <meshStandardMaterial color={color} />
+        <StyledMaterial color={color} style={style} />
       </mesh>
     </group>
   );
@@ -1273,7 +1470,7 @@ export function PizzaModel({ color = COLORS.orange }: ModelProps) {
 
 // ==================== VEHICLES ====================
 
-export function CarModel({ color = COLORS.red, style = 'standard' }: ModelProps) {
+export function CarModel({ color = COLORS.carRed, style = 'standard' }: ModelProps) {
   return (
     <group>
       {/* Body */}
@@ -1315,7 +1512,7 @@ export function CarModel({ color = COLORS.red, style = 'standard' }: ModelProps)
   );
 }
 
-export function TruckModel({ color = COLORS.blue, style = 'standard' }: ModelProps) {
+export function TruckModel({ color = COLORS.carBlue, style = 'standard' }: ModelProps) {
   return (
     <group>
       {/* Cab */}
