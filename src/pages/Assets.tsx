@@ -17,19 +17,15 @@ import {
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { SketchfabBrowser } from '@/components/assets/SketchfabBrowser';
+import { FileUploader } from '@/components/assets/FileUploader';
+import { useProjectStore } from '@/store/projectStore';
 
 const assetSources = [
-  { id: 'local', label: 'Local', count: 12 },
-  { id: 'unity', label: 'Unity Store', count: 0 },
-  { id: 'google', label: 'Google', count: 0 },
-  { id: 'reddit', label: 'Reddit', count: 0 },
-];
-
-const demoAssets = [
-  { id: '1', name: 'Sci-Fi Crate', type: 'model', source: 'local', thumbnail: '' },
-  { id: '2', name: 'Metal Material', type: 'material', source: 'local', thumbnail: '' },
-  { id: '3', name: 'Neon Texture', type: 'texture', source: 'local', thumbnail: '' },
-  { id: '4', name: 'Walk Cycle', type: 'animation', source: 'local', thumbnail: '' },
+  { id: 'local', label: 'Local' },
+  { id: 'upload', label: 'Upload' },
+  { id: 'sketchfab', label: 'Sketchfab' },
+  { id: 'unity', label: 'Unity Store' },
 ];
 
 const typeIcons = {
@@ -40,6 +36,9 @@ const typeIcons = {
 };
 
 export default function Assets() {
+  const assets = useProjectStore((s) => s.assets);
+  const localAssets = assets.filter((a) => a.source === 'local');
+
   return (
     <Layout>
       <div className="min-h-[calc(100vh-4rem)] p-6">
@@ -66,21 +65,6 @@ export default function Assets() {
             </div>
           </div>
 
-          {/* Search & Filter */}
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input 
-                placeholder="Search assets..." 
-                className="pl-10 bg-card border-primary/20"
-              />
-            </div>
-            <Button variant="outline" className="gap-2">
-              <Filter className="w-4 h-4" />
-              Filters
-            </Button>
-          </div>
-
           {/* Source Tabs */}
           <Tabs defaultValue="local" className="w-full">
             <TabsList className="bg-card border border-primary/20 p-1">
@@ -91,18 +75,35 @@ export default function Assets() {
                   className="gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                 >
                   {source.label}
-                  <Badge variant="secondary" className="ml-1 text-xs">
-                    {source.count}
-                  </Badge>
+                  {source.id === 'local' && (
+                    <Badge variant="secondary" className="ml-1 text-xs">
+                      {localAssets.length}
+                    </Badge>
+                  )}
                 </TabsTrigger>
               ))}
             </TabsList>
 
             <TabsContent value="local" className="mt-6">
+              {/* Search & Filter */}
+              <div className="flex flex-col sm:flex-row gap-4 mb-6">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input 
+                    placeholder="Search assets..." 
+                    className="pl-10 bg-card border-primary/20"
+                  />
+                </div>
+                <Button variant="outline" className="gap-2">
+                  <Filter className="w-4 h-4" />
+                  Filters
+                </Button>
+              </div>
+
               {/* Asset Grid */}
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                {demoAssets.map((asset, index) => {
-                  const Icon = typeIcons[asset.type as keyof typeof typeIcons];
+                {localAssets.map((asset, index) => {
+                  const Icon = typeIcons[asset.type as keyof typeof typeIcons] || Box;
                   return (
                     <motion.div
                       key={asset.id}
@@ -137,14 +138,22 @@ export default function Assets() {
                   );
                 })}
 
-                {/* Add New Asset Card */}
-                <Card className="bg-card/50 border-dashed border-primary/30 hover:border-primary/50 transition-all cursor-pointer">
-                  <div className="aspect-square flex flex-col items-center justify-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
-                    <Upload className="w-8 h-8" />
-                    <span className="text-sm">Add Asset</span>
+                {localAssets.length === 0 && (
+                  <div className="col-span-full text-center py-16">
+                    <Box className="w-16 h-16 text-muted-foreground/30 mx-auto mb-4" />
+                    <h3 className="font-display text-xl font-semibold mb-2">No Local Assets</h3>
+                    <p className="text-muted-foreground">Upload files or import from Sketchfab to get started</p>
                   </div>
-                </Card>
+                )}
               </div>
+            </TabsContent>
+
+            <TabsContent value="upload" className="mt-6">
+              <FileUploader />
+            </TabsContent>
+
+            <TabsContent value="sketchfab" className="mt-6">
+              <SketchfabBrowser />
             </TabsContent>
 
             <TabsContent value="unity" className="mt-6">
@@ -158,38 +167,6 @@ export default function Assets() {
                   <a href="https://assetstore.unity.com/" target="_blank" rel="noopener noreferrer" className="gap-2">
                     <ExternalLink className="w-4 h-4" />
                     Open Unity Store
-                  </a>
-                </Button>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="google" className="mt-6">
-              <div className="text-center py-16">
-                <Search className="w-16 h-16 text-muted-foreground/30 mx-auto mb-4" />
-                <h3 className="font-display text-xl font-semibold mb-2">Google Search</h3>
-                <p className="text-muted-foreground max-w-md mx-auto mb-6">
-                  Search for 3D models and assets across the web
-                </p>
-                <Button variant="cyber" asChild>
-                  <a href="https://www.google.com/search?q=free+3d+models" target="_blank" rel="noopener noreferrer" className="gap-2">
-                    <ExternalLink className="w-4 h-4" />
-                    Search Google
-                  </a>
-                </Button>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="reddit" className="mt-6">
-              <div className="text-center py-16">
-                <Box className="w-16 h-16 text-muted-foreground/30 mx-auto mb-4" />
-                <h3 className="font-display text-xl font-semibold mb-2">Reddit Communities</h3>
-                <p className="text-muted-foreground max-w-md mx-auto mb-6">
-                  Discover assets shared by the 3D community on Reddit
-                </p>
-                <Button variant="cyber" asChild>
-                  <a href="https://www.reddit.com/r/3Dmodeling/" target="_blank" rel="noopener noreferrer" className="gap-2">
-                    <ExternalLink className="w-4 h-4" />
-                    Browse Reddit
                   </a>
                 </Button>
               </div>

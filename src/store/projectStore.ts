@@ -20,7 +20,7 @@ export interface Asset {
   name: string;
   type: 'model' | 'texture' | 'material' | 'animation';
   thumbnail: string;
-  source: 'local' | 'google' | 'reddit' | 'unity';
+  source: 'local' | 'google' | 'reddit' | 'unity' | 'sketchfab';
   createdAt: Date;
 }
 
