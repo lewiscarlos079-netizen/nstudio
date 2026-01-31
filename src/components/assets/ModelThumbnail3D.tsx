@@ -18,6 +18,16 @@ import {
   FlowerModel,
   RockModel,
 } from '@/components/3d/ProceduralModels';
+import {
+  NathanDrakeModel,
+  ElenaFisherModel,
+  VictorSullivanModel,
+  ChloeFrazerModel,
+  AncientTempleModel,
+  TreasureChestModel,
+  StoneArtifactModel,
+  JungleRuinsModel,
+} from '@/components/3d/UnchartedModels';
 import { ModelStyle } from '@/store/sceneStore';
 
 interface ModelThumbnail3DProps {
@@ -30,8 +40,17 @@ const STYLE_CYCLE: ModelStyle[] = ['toon', 'standard', 'wireframe'];
 
 // Map model IDs to their procedural components
 const MODEL_COMPONENTS: Record<string, React.FC<{ style?: ModelStyle }>> = {
+  // Standard characters
   'humanoid_male': HumanoidModel,
   'humanoid_female': HumanoidModel,
+  
+  // Uncharted characters
+  'nathan_drake': NathanDrakeModel,
+  'elena_fisher': ElenaFisherModel,
+  'victor_sullivan': VictorSullivanModel,
+  'chloe_frazer': ChloeFrazerModel,
+  
+  // Animals
   'dog': DogModel,
   'cat': CatModel,
   'domestic_cat': CatModel,
@@ -47,20 +66,28 @@ const MODEL_COMPONENTS: Record<string, React.FC<{ style?: ModelStyle }>> = {
   'bottlenose_dolphin': DolphinModel,
   'eagle': BirdModel,
   'bald_eagle': BirdModel,
+  'fish': FishModel,
+  'bird': BirdModel,
+  'whale': WhaleModel,
+  
+  // Nature
   'oak_tree': TreeModel,
   'pine_tree': TreeModel,
   'palm_tree': PalmTreeModel,
+  'tree': TreeModel,
   'rose': FlowerModel,
   'rose_bush': FlowerModel,
+  'flower': FlowerModel,
+  'rock': RockModel,
   'lake': RockModel,
   'river': RockModel,
   'fountain': RockModel,
-  'fish': FishModel,
-  'bird': BirdModel,
-  'tree': TreeModel,
-  'flower': FlowerModel,
-  'rock': RockModel,
-  'whale': WhaleModel,
+  
+  // Uncharted environments
+  'ancient_temple': AncientTempleModel,
+  'treasure_chest': TreasureChestModel,
+  'stone_artifact': StoneArtifactModel,
+  'jungle_ruins': JungleRuinsModel,
 };
 
 // Fallback primitive for unknown models
@@ -81,11 +108,20 @@ function ModelScene({ modelId, style }: { modelId: string; style: ModelStyle }) 
   
   // Calculate appropriate scale based on model type
   const scale = useMemo(() => {
+    // Environment models - larger structures
+    if (modelId.includes('temple') || modelId.includes('ruins')) {
+      return 0.5;
+    }
     if (modelId.includes('tree') || modelId.includes('lake') || modelId.includes('river')) {
       return 0.3;
     }
+    // Larger animals
     if (modelId.includes('elephant') || modelId.includes('horse')) {
       return 0.8;
+    }
+    // Props and artifacts
+    if (modelId.includes('chest') || modelId.includes('artifact')) {
+      return 1.5;
     }
     if (modelId.includes('fountain')) {
       return 0.5;
