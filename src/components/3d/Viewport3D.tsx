@@ -73,24 +73,48 @@ function Scene() {
     selectObject(null);
   };
 
-  // Keyboard shortcuts
+  // Keyboard shortcuts - Fixed Q/E for vertical movement
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Ignore if typing in input
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
 
-      switch (e.key.toLowerCase()) {
+      const key = e.key.toLowerCase();
+      const selectedObject = selectedObjectId ? objects.find(o => o.id === selectedObjectId) : null;
+
+      switch (key) {
+        // Q and E are now for vertical movement (up/down)
         case 'q':
-          setTransformMode('select');
-          break;
-        case 'w':
-          setTransformMode('translate');
+          if (selectedObject && !selectedObject.locked) {
+            const newPos: [number, number, number] = [
+              selectedObject.position[0],
+              selectedObject.position[1] - 0.5, // Move down
+              selectedObject.position[2]
+            ];
+            // Direct update via store if available
+            useSceneStore.getState().updateObject(selectedObject.id, { position: newPos });
+          }
           break;
         case 'e':
-          setTransformMode('rotate');
+          if (selectedObject && !selectedObject.locked) {
+            const newPos: [number, number, number] = [
+              selectedObject.position[0],
+              selectedObject.position[1] + 0.5, // Move up
+              selectedObject.position[2]
+            ];
+            useSceneStore.getState().updateObject(selectedObject.id, { position: newPos });
+          }
+          break;
+        case 't':
+          setTransformMode('translate');
           break;
         case 'r':
-          setTransformMode('scale');
+          setTransformMode('rotate');
+          break;
+        case 's':
+          if (!e.ctrlKey && !e.metaKey) {
+            setTransformMode('scale');
+          }
           break;
         case 'delete':
         case 'backspace':
@@ -116,7 +140,7 @@ function Scene() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [setTransformMode, selectedObjectId, removeObject, duplicateObject, toggleObjectLock, toggleObjectVisibility, toggleGrid]);
+  }, [setTransformMode, selectedObjectId, removeObject, duplicateObject, toggleObjectLock, toggleObjectVisibility, toggleGrid, objects]);
 
   return (
     <>
@@ -250,8 +274,8 @@ export function Viewport3D({ className }: Viewport3DProps) {
       {/* Viewport controls hint - pushed forward */}
       <div className="absolute bottom-4 left-4 text-xs text-foreground/80 font-mono z-20 pointer-events-none bg-background/70 px-3 py-1.5 rounded-lg backdrop-blur-md shadow-lg">
         {cameraMode === '3D' 
-          ? 'LMB: Rotate View | RMB: Pan | WASD: Move | QE: Up/Down | Scroll: Rotate Y | Shift+Scroll: Rotate X'
-          : 'LMB: Pan | Scroll: Zoom | Click objects to select'
+          ? 'LMB: Rotate | RMB: Pan | Q: Down | E: Up | T: Move | R: Rotate | S: Scale | Scroll: Zoom'
+          : 'LMB: Pan | Scroll: Zoom | Click to select | Q/E: Vertical movement'
         }
       </div>
     </motion.div>
