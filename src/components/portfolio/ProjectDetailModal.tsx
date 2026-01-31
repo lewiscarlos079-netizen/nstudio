@@ -31,6 +31,7 @@ interface ProjectDetailModalProps {
   onExport: () => void;
   onDelete: () => void;
   onOpenInStudio: () => void;
+  onPreview?: () => void;
 }
 
 export function ProjectDetailModal({
@@ -40,7 +41,8 @@ export function ProjectDetailModal({
   onEdit,
   onExport,
   onDelete,
-  onOpenInStudio
+  onOpenInStudio,
+  onPreview
 }: ProjectDetailModalProps) {
   if (!project) return null;
 
@@ -104,11 +106,11 @@ export function ProjectDetailModal({
             </div>
 
             {/* Play button overlay for movies */}
-            {(project.type === 'movie-2d' || project.type === 'movie-3d') && (
+            {(project.type === 'movie-2d' || project.type === 'movie-3d') && onPreview && (
               <Button
                 size="lg"
                 className="absolute bottom-4 left-1/2 -translate-x-1/2 gap-2 shadow-xl"
-                onClick={onOpenInStudio}
+                onClick={onPreview}
               >
                 <Play className="w-5 h-5" />
                 Play Preview

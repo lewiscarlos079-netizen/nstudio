@@ -19,6 +19,9 @@ import { useProjectStore, Project3D } from '@/store/projectStore';
 import { VideoEditor } from '@/components/portfolio/VideoEditor';
 import { ProjectCard } from '@/components/portfolio/ProjectCard';
 import { ProjectDetailModal } from '@/components/portfolio/ProjectDetailModal';
+import { ProjectPreviewModal } from '@/components/portfolio/ProjectPreviewModal';
+import { ExportModal } from '@/components/portfolio/ExportModal';
+import { useVideoEditorStore } from '@/store/videoEditorStore';
 import { toast } from 'sonner';
 
 const demoProjects: Partial<Project3D>[] = [
@@ -91,8 +94,11 @@ export default function Portfolio() {
   const [activeTab, setActiveTab] = useState<'projects' | 'editor'>('projects');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProject, setSelectedProject] = useState<Partial<Project3D> | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const { projects, deleteProject } = useProjectStore();
+  const { loadProject } = useVideoEditorStore();
   
   const allProjects = projects.length > 0 ? projects : demoProjects;
   
@@ -103,19 +109,33 @@ export default function Portfolio() {
 
   const handleOpenProject = (project: Partial<Project3D>) => {
     setSelectedProject(project);
-    setIsModalOpen(true);
+    setIsDetailModalOpen(true);
+  };
+
+  const handlePreviewProject = (project: Partial<Project3D>) => {
+    setSelectedProject(project);
+    setIsPreviewModalOpen(true);
   };
 
   const handleEditProject = (project: Partial<Project3D>) => {
     setSelectedProject(project);
+    // Load the project into the video editor
+    loadProject({
+      id: project.id || '',
+      name: project.name || 'Untitled',
+      description: project.description,
+      type: project.type,
+      resolution: project.resolution,
+    });
     setActiveTab('editor');
-    toast.success(`Opened ${project.name} in editor`);
+    setIsDetailModalOpen(false);
+    toast.success(`Loaded ${project.name} in editor`);
   };
 
   const handleExportProject = (project: Partial<Project3D>) => {
-    toast.success(`Exporting ${project.name}...`, {
-      description: 'Your project will be ready for download shortly.'
-    });
+    setSelectedProject(project);
+    setIsExportModalOpen(true);
+    setIsDetailModalOpen(false);
   };
 
   const handleDeleteProject = (project: Partial<Project3D>) => {
@@ -123,12 +143,16 @@ export default function Portfolio() {
       deleteProject(project.id);
       toast.success(`Deleted ${project.name}`);
     }
-    setIsModalOpen(false);
+    setIsDetailModalOpen(false);
   };
 
   const handleOpenInStudio = () => {
+    if (selectedProject) {
+      // Store project info for studio to load
+      toast.success(`Opening ${selectedProject.name} in Studio`);
+    }
     navigate('/studio');
-    setIsModalOpen(false);
+    setIsDetailModalOpen(false);
   };
 
   return (
@@ -261,12 +285,27 @@ export default function Portfolio() {
       {/* Project Detail Modal */}
       <ProjectDetailModal
         project={selectedProject}
-        open={isModalOpen}
-        onOpenChange={setIsModalOpen}
+        open={isDetailModalOpen}
+        onOpenChange={setIsDetailModalOpen}
         onEdit={() => handleEditProject(selectedProject!)}
         onExport={() => handleExportProject(selectedProject!)}
         onDelete={() => handleDeleteProject(selectedProject!)}
         onOpenInStudio={handleOpenInStudio}
+        onPreview={() => handlePreviewProject(selectedProject!)}
+      />
+
+      {/* Project Preview Modal */}
+      <ProjectPreviewModal
+        project={selectedProject}
+        open={isPreviewModalOpen}
+        onOpenChange={setIsPreviewModalOpen}
+      />
+
+      {/* Export Modal */}
+      <ExportModal
+        project={selectedProject}
+        open={isExportModalOpen}
+        onOpenChange={setIsExportModalOpen}
       />
     </Layout>
   );
