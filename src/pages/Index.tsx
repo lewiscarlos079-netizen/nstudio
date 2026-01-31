@@ -14,7 +14,9 @@ import {
   Globe,
   Zap,
   Download,
-  Play
+  Play,
+  Wand2,
+  Bone,
 } from 'lucide-react';
 import { IntroVideo } from '@/components/landing/IntroVideo';
 import { StoragePrompt, useStoragePrompt } from '@/components/landing/StoragePrompt';
@@ -131,10 +133,16 @@ export default function Index() {
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>
-              <Link to="/portfolio">
+              <Link to="/character-creator">
                 <Button variant="outline" size="xl" className="gap-2">
-                  <FolderOpen className="w-5 h-5" />
-                  View Portfolio
+                  <Wand2 className="w-5 h-5" />
+                  Character Creator
+                </Button>
+              </Link>
+              <Link to="/character-sandbox">
+                <Button variant="outline" size="xl" className="gap-2">
+                  <Bone className="w-5 h-5" />
+                  Sandbox
                 </Button>
               </Link>
             </div>
