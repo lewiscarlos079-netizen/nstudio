@@ -3,6 +3,7 @@ import { Group } from 'three';
 import { useFrame } from '@react-three/fiber';
 import { BodyPartType, BodyPartConfig, ModelStyle } from '@/store/sceneStore';
 import { StyledMaterial, SurfaceType } from './Materials';
+import { WaterModelRegistry } from './WaterSystems';
 
 // Photorealistic color palettes based on real-world references
 // Colors are desaturated and natural for realistic rendering
@@ -4508,6 +4509,9 @@ export const ProceduralModelRegistry: Record<string, React.ComponentType<ModelPr
   
   // Urban models (buildings, roads, street furniture)
   ...UrbanModelRegistry,
+  
+  // Water systems (streams, waterfalls, ponds, oceans)
+  ...WaterModelRegistry,
 };
 
 // Helper function to get the appropriate model component

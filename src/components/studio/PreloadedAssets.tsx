@@ -362,6 +362,13 @@ const preloadedAssets: PreloadedAsset[] = [
   { id: 'rock-large', name: 'Large Rock', category: 'nature', subcategory: 'rocks', icon: Mountain, tags: ['stone', 'boulder', 'natural'], tier: 'free', imageUrl: '/placeholder.svg' },
   { id: 'mountain-peak', name: 'Mountain Peak', category: 'nature', subcategory: 'mountains', icon: Mountain, tags: ['terrain', 'height', 'rocky'], tier: 'pro', imageUrl: '/placeholder.svg' },
 
+  // ========== WATER FEATURES ==========
+  // Streams & Rivers
+  { id: 'flowing_stream', name: 'Flowing Stream', category: 'water', subcategory: 'rivers', icon: Waves, tags: ['water', 'stream', 'river', 'flowing', 'animated'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'waterfall', name: 'Waterfall', category: 'water', subcategory: 'waterfalls', icon: Droplets, tags: ['water', 'waterfall', 'cascade', 'flowing', 'mist'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'pond', name: 'Pond', category: 'water', subcategory: 'ponds', icon: Waves, tags: ['water', 'pond', 'lake', 'lily', 'calm'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'ocean_waves', name: 'Ocean Waves', category: 'water', subcategory: 'oceans', icon: Anchor, tags: ['water', 'ocean', 'sea', 'waves', 'beach'], tier: 'free', imageUrl: '/placeholder.svg' },
+
   // Gardening Equipment
   { id: 'garden-shovel', name: 'Garden Shovel', category: 'nature', subcategory: 'gardening', icon: Flower2, tags: ['tool', 'shovel', 'digging'], tier: 'free', imageUrl: '/placeholder.svg' },
   { id: 'garden-rake', name: 'Garden Rake', category: 'nature', subcategory: 'gardening', icon: Flower2, tags: ['tool', 'rake', 'leaves'], tier: 'free', imageUrl: '/placeholder.svg' },

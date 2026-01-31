@@ -1,4 +1,4 @@
-// 3D Systems Barrel Export
+// 3D Systems Barrel Export - Desktop-first, Unity-inspired rendering
 // Export all advanced 3D systems for easy imports
 
 // Cloth physics simulation system
@@ -47,3 +47,12 @@ export {
   type ModelStyle,
   type SurfaceType,
 } from './Materials';
+
+// Water systems - flowing streams, waterfalls, ponds, oceans
+export {
+  FlowingStream,
+  Waterfall,
+  Pond,
+  OceanWaves,
+  WaterModelRegistry,
+} from './WaterSystems';
