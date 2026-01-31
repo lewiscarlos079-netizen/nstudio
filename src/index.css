@@ -6,78 +6,78 @@
 
 @layer base {
   :root {
-    /* Core backgrounds - Modern slate with warm undertones */
-    --background: 240 10% 6%;
-    --foreground: 60 10% 95%;
+    /* Core backgrounds - Clean, professional slate */
+    --background: 220 15% 8%;
+    --foreground: 220 10% 92%;
 
-    /* Card surfaces with warm glow */
-    --card: 240 12% 10%;
-    --card-foreground: 60 10% 95%;
+    /* Card surfaces - Subtle elevation */
+    --card: 220 14% 11%;
+    --card-foreground: 220 10% 92%;
 
     /* Popover/dropdown surfaces */
-    --popover: 240 15% 8%;
-    --popover-foreground: 60 10% 95%;
+    --popover: 220 16% 9%;
+    --popover-foreground: 220 10% 92%;
 
-    /* Primary - Vibrant Amber/Gold */
-    --primary: 38 95% 55%;
-    --primary-foreground: 240 10% 6%;
-    --primary-glow: 38 100% 65%;
+    /* Primary - Professional Blue accent */
+    --primary: 210 80% 55%;
+    --primary-foreground: 220 15% 98%;
+    --primary-glow: 210 85% 60%;
 
-    /* Secondary - Rich Violet */
-    --secondary: 270 70% 55%;
-    --secondary-foreground: 60 10% 98%;
+    /* Secondary - Neutral Gray */
+    --secondary: 220 12% 22%;
+    --secondary-foreground: 220 10% 90%;
 
     /* Muted surfaces */
-    --muted: 240 8% 14%;
-    --muted-foreground: 240 5% 55%;
+    --muted: 220 12% 16%;
+    --muted-foreground: 220 8% 55%;
 
-    /* Accent - Emerald for CTAs */
-    --accent: 160 80% 45%;
-    --accent-foreground: 240 10% 6%;
+    /* Accent - Teal for CTAs */
+    --accent: 175 60% 45%;
+    --accent-foreground: 220 15% 98%;
 
     /* Destructive/Error */
-    --destructive: 0 75% 55%;
+    --destructive: 0 65% 50%;
     --destructive-foreground: 0 0% 100%;
 
     /* Success state */
-    --success: 150 80% 45%;
-    --success-foreground: 240 10% 6%;
+    --success: 145 60% 42%;
+    --success-foreground: 220 15% 98%;
 
     /* Warning state */
-    --warning: 38 95% 55%;
-    --warning-foreground: 240 10% 6%;
+    --warning: 40 85% 50%;
+    --warning-foreground: 220 15% 10%;
 
     /* Borders and inputs */
-    --border: 240 8% 18%;
-    --input: 240 10% 15%;
-    --ring: 38 95% 55%;
+    --border: 220 12% 20%;
+    --input: 220 14% 14%;
+    --ring: 210 80% 55%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
-    /* Custom gradients - Modern warm palette */
-    --gradient-primary: linear-gradient(135deg, hsl(38 95% 55%), hsl(270 70% 55%));
-    --gradient-surface: linear-gradient(180deg, hsl(240 12% 12%), hsl(240 12% 8%));
-    --gradient-glow: radial-gradient(ellipse at center, hsl(38 95% 55% / 0.15), transparent 70%);
-    --gradient-hero: linear-gradient(135deg, hsl(240 15% 8%) 0%, hsl(270 30% 12%) 50%, hsl(240 15% 8%) 100%);
+    /* Custom gradients - Professional palette */
+    --gradient-primary: linear-gradient(135deg, hsl(210 80% 55%), hsl(175 60% 45%));
+    --gradient-surface: linear-gradient(180deg, hsl(220 14% 12%), hsl(220 14% 9%));
+    --gradient-glow: radial-gradient(ellipse at center, hsl(210 80% 55% / 0.12), transparent 70%);
+    --gradient-hero: linear-gradient(135deg, hsl(220 16% 9%) 0%, hsl(220 18% 12%) 50%, hsl(220 16% 9%) 100%);
 
-    /* Shadows - Warm glow */
-    --shadow-glow: 0 0 30px hsl(38 95% 55% / 0.3);
-    --shadow-glow-sm: 0 0 15px hsl(38 95% 55% / 0.2);
-    --shadow-card: 0 8px 32px hsl(240 50% 4% / 0.5);
-    --shadow-elevated: 0 20px 60px hsl(240 50% 4% / 0.6);
+    /* Shadows - Clean, subtle */
+    --shadow-glow: 0 0 24px hsl(210 80% 55% / 0.2);
+    --shadow-glow-sm: 0 0 12px hsl(210 80% 55% / 0.15);
+    --shadow-card: 0 4px 24px hsl(220 50% 4% / 0.4);
+    --shadow-elevated: 0 12px 40px hsl(220 50% 4% / 0.5);
 
     /* Grid overlay */
-    --grid-color: hsl(38 95% 55% / 0.03);
+    --grid-color: hsl(210 80% 55% / 0.02);
 
     /* Sidebar */
-    --sidebar-background: 240 12% 8%;
-    --sidebar-foreground: 240 5% 75%;
-    --sidebar-primary: 38 95% 55%;
-    --sidebar-primary-foreground: 240 10% 6%;
-    --sidebar-accent: 240 8% 14%;
-    --sidebar-accent-foreground: 60 10% 95%;
-    --sidebar-border: 240 8% 15%;
-    --sidebar-ring: 38 95% 55%;
+    --sidebar-background: 220 14% 9%;
+    --sidebar-foreground: 220 8% 70%;
+    --sidebar-primary: 210 80% 55%;
+    --sidebar-primary-foreground: 220 15% 98%;
+    --sidebar-accent: 220 12% 16%;
+    --sidebar-accent-foreground: 220 10% 92%;
+    --sidebar-border: 220 12% 18%;
+    --sidebar-ring: 210 80% 55%;
   }
 }
 
@@ -101,7 +101,7 @@
 }
 
 @layer utilities {
-  /* Glow effects - Updated for amber */
+  /* Glow effects - Professional blue */
   .glow-primary {
     box-shadow: var(--shadow-glow);
   }
@@ -111,7 +111,7 @@
   }
 
   .text-glow {
-    text-shadow: 0 0 20px hsl(38 95% 55% / 0.5);
+    text-shadow: 0 0 16px hsl(210 80% 55% / 0.4);
   }
 
   /* Grid background */
@@ -130,11 +130,11 @@
     background-clip: text;
   }
 
-  /* Glass effect */
+  /* Glass effect - Cleaner */
   .glass {
-    background: hsl(220 25% 8% / 0.8);
-    backdrop-filter: blur(20px);
-    border: 1px solid hsl(185 100% 50% / 0.1);
+    background: hsl(220 15% 10% / 0.85);
+    backdrop-filter: blur(16px);
+    border: 1px solid hsl(210 80% 55% / 0.1);
   }
 
   /* Cyber border */
@@ -155,7 +155,7 @@
     mask-composite: exclude;
   }
 
-  /* Scan line effect */
+  /* Scan line effect - Subtle */
   .scanlines::after {
     content: '';
     position: absolute;
@@ -164,8 +164,8 @@
       0deg,
       transparent,
       transparent 2px,
-      hsl(38 95% 55% / 0.02) 2px,
-      hsl(38 95% 55% / 0.02) 4px
+      hsl(210 80% 55% / 0.01) 2px,
+      hsl(210 80% 55% / 0.01) 4px
     );
     pointer-events: none;
   }
@@ -198,17 +198,17 @@
     animation: float 6s ease-in-out infinite;
   }
 
-  /* Pulse glow - Updated for amber */
+  /* Pulse glow - Professional blue */
   @keyframes pulseGlow {
     0%, 100% {
-      box-shadow: 0 0 20px hsl(38 95% 55% / 0.3);
+      box-shadow: 0 0 16px hsl(210 80% 55% / 0.25);
     }
     50% {
-      box-shadow: 0 0 40px hsl(38 95% 55% / 0.5);
+      box-shadow: 0 0 32px hsl(210 80% 55% / 0.4);
     }
   }
 
   .animate-pulse-glow {
-    animation: pulseGlow 2s ease-in-out infinite;
+    animation: pulseGlow 2.5s ease-in-out infinite;
   }
 }

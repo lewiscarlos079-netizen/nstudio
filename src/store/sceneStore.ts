@@ -122,10 +122,10 @@ export const useSceneStore = create<SceneState>((set, get) => ({
         position: getRandomPosition(),
         rotation: [0, 0, 0],
         scale: [1, 1, 1],
-        color: '#00d4ff',
-        metalness: 0.8,
-        roughness: 0.2,
-        emissiveIntensity: 0.2,
+        color: '#7a8a9a', // Neutral gray - better default than bright blue
+        metalness: 0.3,
+        roughness: 0.6,
+        emissiveIntensity: 0.1,
         locked: false,
         visible: true,
       };
@@ -148,10 +148,10 @@ export const useSceneStore = create<SceneState>((set, get) => ({
         position: getProceduralModelPosition(),
         rotation: [0, 0, 0],
         scale: defaultScale,
-        color: '#00d4ff',
-        metalness: 0.5,
-        roughness: 0.5,
-        emissiveIntensity: 0.1,
+        color: '#D4A574', // Realistic skin tone default for characters
+        metalness: 0.1,
+        roughness: 0.6,
+        emissiveIntensity: 0.05,
         locked: false,
         visible: true,
       };

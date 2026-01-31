@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -49,8 +50,10 @@ import {
   Mountain,
   Trees,
   PawPrint,
+  Upload,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useSceneStore } from '@/store/sceneStore';
 
 // Character Templates - Tropico/SimCity/Jurassic World inspired
 const CHARACTER_TEMPLATES = [
@@ -209,6 +212,17 @@ export function CharacterCreationSidebar() {
     toast.success('Character reset');
   };
 
+  const { addProceduralModel } = useSceneStore();
+
+  const handleAddToScene = () => {
+    // Add character to scene based on template
+    addProceduralModel('humanoid', `${character.template}_${Date.now()}`);
+    toast.success('Character added to scene!', {
+      description: `${CHARACTER_TEMPLATES.find(t => t.id === character.template)?.name} placed in viewport.`
+    });
+    setIsOpen(false);
+  };
+
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
@@ -224,13 +238,17 @@ export function CharacterCreationSidebar() {
             <User className="w-5 h-5 text-primary" />
             Character Creation
           </SheetTitle>
-          <p className="text-xs text-muted-foreground">
+          <SheetDescription className="text-xs text-muted-foreground">
             Build unique characters with full customization
-          </p>
+          </SheetDescription>
         </SheetHeader>
 
         {/* Action Bar */}
-        <div className="p-3 border-b border-border/50 flex items-center gap-2">
+        <div className="p-3 border-b border-border/50 flex items-center gap-2 flex-wrap">
+          <Button variant="default" size="sm" onClick={handleAddToScene} className="gap-1">
+            <Upload className="w-4 h-4" />
+            Add to Scene
+          </Button>
           <Button variant="outline" size="sm" onClick={handleSave}>
             <Save className="w-4 h-4 mr-1" />
             Save

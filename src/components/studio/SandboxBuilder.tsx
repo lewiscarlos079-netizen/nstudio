@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, forwardRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -37,8 +38,10 @@ import {
   Move,
   ZoomIn,
   Spline,
+  Upload,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useSceneStore } from '@/store/sceneStore';
 
 interface JointBall {
   id: string;
@@ -174,6 +177,8 @@ export function SandboxBuilder() {
     toast.success(`${type} layer added`);
   };
 
+  const { addProceduralModel } = useSceneStore();
+
   const handleSave = () => {
     const data = { joints, bones, clayLayers };
     localStorage.setItem('sandbox-character', JSON.stringify(data));
@@ -200,6 +205,20 @@ export function SandboxBuilder() {
     toast.success('Character reset');
   };
 
+  // Add character to scene
+  const handleAddToScene = () => {
+    if (joints.length === 0) {
+      toast.error('Add at least one joint to create a character');
+      return;
+    }
+    // Add a humanoid model to scene
+    addProceduralModel('humanoid', `Custom_Character_${Date.now()}`);
+    toast.success('Character added to scene!', {
+      description: 'Your character has been placed in the 3D viewport.'
+    });
+    setIsOpen(false);
+  };
+
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
@@ -215,13 +234,17 @@ export function SandboxBuilder() {
             <Bone className="w-5 h-5 text-primary" />
             Character Sandbox Builder
           </SheetTitle>
-          <p className="text-xs text-muted-foreground">
+          <SheetDescription className="text-xs text-muted-foreground">
             Create characters with joint balls, bones, and clay layers
-          </p>
+          </SheetDescription>
         </SheetHeader>
 
         {/* Toolbar */}
-        <div className="p-3 border-b border-border/50 flex items-center gap-2">
+        <div className="p-3 border-b border-border/50 flex items-center gap-2 flex-wrap">
+          <Button variant="default" size="sm" onClick={handleAddToScene} className="gap-1">
+            <Upload className="w-4 h-4" />
+            Add to Scene
+          </Button>
           <Button variant="outline" size="sm" onClick={handleSave}>
             <Save className="w-4 h-4 mr-1" />
             Save

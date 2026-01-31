@@ -9,11 +9,12 @@ import {
   GizmoViewport,
   ContactShadows
 } from '@react-three/drei';
-import { Suspense, useEffect, useRef } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useSceneStore } from '@/store/sceneStore';
 import { SceneObjectMesh } from './SceneObject';
 import { SceneTransformGizmos } from './TransformGizmo';
+import { WeatherParticles, WeatherType } from './WeatherParticles';
 import * as THREE from 'three';
 
 // Lighting presets for different times of day
@@ -66,7 +67,13 @@ function SceneLighting({ timeOfDay }: { timeOfDay: 'day' | 'night' | 'sunset' })
   );
 }
 
-function Scene() {
+// Weather state for viewport
+interface SceneProps {
+  weather?: WeatherType;
+  weatherIntensity?: number;
+}
+
+function Scene({ weather = 'clear', weatherIntensity = 0.5 }: SceneProps) {
   const { objects, selectObject, showGrid, setTransformMode, selectedObjectId, removeObject, duplicateObject, toggleObjectLock, toggleObjectVisibility, toggleGrid, timeOfDay } = useSceneStore();
 
   const handleMissedClick = () => {
@@ -147,6 +154,11 @@ function Scene() {
       {/* Dynamic lighting based on time of day */}
       <SceneLighting timeOfDay={timeOfDay} />
       
+      {/* Weather particles */}
+      {weather !== 'clear' && (
+        <WeatherParticles weather={weather} intensity={weatherIntensity} />
+      )}
+      
       {/* Render all scene objects */}
       {objects.map((object) => (
         <SceneObjectMesh key={object.id} object={object} />
@@ -172,10 +184,10 @@ function Scene() {
           infiniteGrid 
           cellSize={0.5}
           cellThickness={0.5}
-          cellColor="hsl(38, 95%, 55%)"
+          cellColor="hsl(220, 10%, 40%)"
           sectionSize={2}
           sectionThickness={1}
-          sectionColor="hsl(270, 70%, 55%)"
+          sectionColor="hsl(220, 15%, 50%)"
           fadeDistance={30}
           fadeStrength={1}
           followCamera={false}
@@ -210,6 +222,18 @@ interface Viewport3DProps {
 
 export function Viewport3D({ className }: Viewport3DProps) {
   const { transformMode, objects, cameraMode, timeOfDay } = useSceneStore();
+  const [weather, setWeather] = useState<WeatherType>('clear');
+  const [weatherIntensity, setWeatherIntensity] = useState(0.5);
+
+  // Listen for weather changes from WeatherSystem
+  useEffect(() => {
+    const handleWeatherChange = (e: CustomEvent) => {
+      setWeather(e.detail.weather || 'clear');
+      setWeatherIntensity(e.detail.intensity || 0.5);
+    };
+    window.addEventListener('weatherChange' as any, handleWeatherChange);
+    return () => window.removeEventListener('weatherChange' as any, handleWeatherChange);
+  }, []);
 
   const timeLabels = {
     day: '☀️ Day',
@@ -245,7 +269,7 @@ export function Viewport3D({ className }: Viewport3DProps) {
             maxZoom={cameraMode === '2D' ? 200 : undefined}
             enableRotate={cameraMode === '3D'}
           />
-          <Scene />
+          <Scene weather={weather} weatherIntensity={weatherIntensity} />
           <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
             <GizmoViewport 
               axisColors={['#ff4444', '#44ff44', '#4444ff']} 
