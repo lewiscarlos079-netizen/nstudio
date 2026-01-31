@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Dialog,
@@ -21,14 +21,15 @@ import {
   Layers,
   Camera,
   Sun,
-  Moon,
   Zap,
   Music,
   SkipBack,
   SkipForward,
+  Box,
 } from 'lucide-react';
 import { Project3D } from '@/store/projectStore';
 import { Slider } from '@/components/ui/slider';
+import { ScenePreview3D } from './ScenePreview3D';
 
 interface ProjectPreviewModalProps {
   project: Partial<Project3D> | null;
@@ -231,72 +232,41 @@ export function ProjectPreviewModal({
         </DialogHeader>
 
         <div className="p-4 space-y-4">
-          {/* Main Preview Area */}
-          <div className="relative aspect-video rounded-xl overflow-hidden border border-border/50">
-            {/* Dynamic gradient background based on active scene */}
-            <motion.div
-              key={activeSceneIndex}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className={`absolute inset-0 bg-gradient-to-br ${sceneData.scenes[activeSceneIndex]?.color || 'from-primary/20 to-secondary/20'}`}
-            />
-            
-            {/* Animated visual elements */}
-            <div className="absolute inset-0">
-              {/* Floating particles */}
-              {isPlaying && [...Array(12)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute w-2 h-2 rounded-full bg-white/30"
-                  initial={{ 
-                    x: Math.random() * 100 + '%', 
-                    y: '100%',
-                    opacity: 0 
-                  }}
-                  animate={{ 
-                    y: '-10%',
-                    opacity: [0, 0.8, 0],
-                  }}
-                  transition={{
-                    duration: 3 + Math.random() * 2,
-                    repeat: Infinity,
-                    delay: i * 0.3,
-                    ease: 'easeOut',
-                  }}
-                />
-              ))}
-              
-              {/* Scene visualization */}
+          {/* Main Preview Area with 3D Scene */}
+          <div className="relative aspect-video rounded-xl overflow-hidden border border-border/50 bg-gradient-to-br from-slate-900 to-slate-800">
+            {/* 3D Scene Canvas */}
+            <Suspense fallback={
               <div className="absolute inset-0 flex items-center justify-center">
-                <motion.div
-                  animate={{ 
-                    scale: isPlaying ? [1, 1.1, 1] : 1,
-                    rotate: isPlaying ? [0, 5, -5, 0] : 0,
-                  }}
-                  transition={{ duration: 2, repeat: isPlaying ? Infinity : 0 }}
-                  className="relative"
-                >
-                  <div className="p-8 rounded-3xl bg-background/20 backdrop-blur-md border border-white/10">
-                    <ActiveSceneIcon className="w-16 h-16 text-white/80" />
-                  </div>
-                  
-                  {/* Scene name overlay */}
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={activeSceneIndex}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap"
-                    >
-                      <span className="text-white/90 font-medium text-sm bg-black/30 px-3 py-1 rounded-full backdrop-blur-sm">
-                        {sceneData.scenes[activeSceneIndex]?.name}
-                      </span>
-                    </motion.div>
-                  </AnimatePresence>
-                </motion.div>
+                <div className="flex flex-col items-center gap-3">
+                  <Box className="w-10 h-10 text-primary animate-pulse" />
+                  <span className="text-sm text-muted-foreground">Loading 3D scene...</span>
+                </div>
               </div>
-            </div>
+            }>
+              <div className="absolute inset-0">
+                <ScenePreview3D
+                  sceneIndex={activeSceneIndex}
+                  projectType={project.type}
+                  isPlaying={isPlaying}
+                />
+              </div>
+            </Suspense>
+            
+            {/* Scene name overlay */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeSceneIndex}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="absolute bottom-4 left-1/2 -translate-x-1/2"
+              >
+                <span className="text-white/90 font-medium text-sm bg-black/50 px-4 py-2 rounded-full backdrop-blur-sm flex items-center gap-2">
+                  <ActiveSceneIcon className="w-4 h-4" />
+                  {sceneData.scenes[activeSceneIndex]?.name}
+                </span>
+              </motion.div>
+            </AnimatePresence>
 
             {/* Playback indicator */}
             {isPlaying && (
