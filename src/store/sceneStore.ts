@@ -107,7 +107,7 @@ export const useSceneStore = create<SceneState>((set, get) => ({
   designModePopout: true, // Enable popout by default
   cameraMode: '3D',
   timeOfDay: 'day',
-  modelStyle: 'toon',
+  modelStyle: 'standard',
   transformMode: 'translate',
   gridSize: 1,
   showGrid: true,

@@ -37,7 +37,7 @@ interface ModelThumbnail3DProps {
 }
 
 // Style cycle order for the 20-second refresh
-const STYLE_CYCLE: ModelStyle[] = ['toon', 'standard', 'wireframe'];
+const STYLE_CYCLE: ModelStyle[] = ['standard', 'toon', 'wireframe'];
 
 // Map model IDs to their procedural components
 const MODEL_COMPONENTS: Record<string, React.FC<{ style?: ModelStyle }>> = {
@@ -216,12 +216,16 @@ export function ModelThumbnail3D({ modelId, className = '' }: ModelThumbnail3DPr
         >
           <PerspectiveCamera makeDefault position={[1.5, 1, 1.5]} fov={40} />
           
-          <ambientLight intensity={currentStyle === 'wireframe' ? 0.8 : 0.6} />
+          {/* Far Cry Primal-style natural lighting */}
+          <ambientLight intensity={currentStyle === 'wireframe' ? 0.8 : 0.4} color="#ffeedd" />
           <directionalLight 
-            position={[5, 5, 5]} 
-            intensity={currentStyle === 'standard' ? 1.0 : 0.8} 
+            position={[5, 8, 5]} 
+            intensity={currentStyle === 'standard' ? 1.4 : 0.8}
+            color="#fff5e6"
+            castShadow
           />
-          <directionalLight position={[-3, 3, -3]} intensity={0.3} />
+          <directionalLight position={[-3, 3, -3]} intensity={0.25} color="#aaccff" />
+          <hemisphereLight args={['#87ceeb', '#8b4513', 0.3]} />
           
           <Suspense fallback={null}>
             <ModelScene modelId={modelId} style={currentStyle} />
