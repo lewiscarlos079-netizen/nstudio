@@ -18,6 +18,7 @@ import {
   PalmTreeModel,
   FlowerModel,
   RockModel,
+  RaccoonModel,
 } from '@/components/3d/ProceduralModels';
 import {
   NathanDrakeModel,
@@ -82,6 +83,7 @@ const MODEL_COMPONENTS: Record<string, React.FC<{ style?: ModelStyle }>> = {
   'fish': FishModel,
   'bird': BirdModel,
   'whale': WhaleModel,
+  'raccoon': RaccoonModel,
   
   // Plants - Database IDs
   'tree_oak': TreeModel,
