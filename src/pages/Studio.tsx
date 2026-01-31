@@ -13,6 +13,8 @@ import { SceneSettings } from '@/components/studio/SceneSettings';
 import { SandboxBuilder } from '@/components/studio/SandboxBuilder';
 import { PDFUploader } from '@/components/studio/PDFUploader';
 import { BodyPartEditor } from '@/components/studio/BodyPartEditor';
+import { CharacterCreationSidebar } from '@/components/studio/CharacterCreationSidebar';
+import { WeatherSystem } from '@/components/studio/WeatherSystem';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -32,9 +34,12 @@ import {
   Activity,
   Package,
   Bone,
-  RefreshCw
+  RefreshCw,
+  ArrowUp,
+  ArrowDown
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useSceneStore } from '@/store/sceneStore';
 
 export default function Studio() {
   const [showLeftPanel, setShowLeftPanel] = useState(true);
@@ -141,11 +146,13 @@ export default function Studio() {
           </Tabs>
 
           <div className="flex items-center gap-2">
+            <CharacterCreationSidebar />
+            <WeatherSystem />
             <PDFUploader />
             <SandboxBuilder />
             <InventorySidebar />
             <SceneSettings />
-            <Button 
+            <Button
               variant={autoSaveEnabled ? "default" : "ghost"} 
               size="sm" 
               className={`gap-2 h-8 ${autoSaveEnabled ? 'bg-primary/20 hover:bg-primary/30' : ''}`}

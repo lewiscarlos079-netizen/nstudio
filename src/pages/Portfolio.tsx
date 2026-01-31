@@ -11,16 +11,20 @@ import {
   Filter,
   Scissors,
   FolderOpen,
-  Sparkles
+  Sparkles,
+  FileUp,
+  Trophy
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
 import { useProjectStore, Project3D } from '@/store/projectStore';
 import { VideoEditor } from '@/components/portfolio/VideoEditor';
 import { ProjectCard } from '@/components/portfolio/ProjectCard';
 import { ProjectDetailModal } from '@/components/portfolio/ProjectDetailModal';
 import { ProjectPreviewModal } from '@/components/portfolio/ProjectPreviewModal';
 import { ExportModal } from '@/components/portfolio/ExportModal';
+import { PDFUploader } from '@/components/studio/PDFUploader';
 import { useVideoEditorStore } from '@/store/videoEditorStore';
 import { toast } from 'sonner';
 
@@ -173,6 +177,7 @@ export default function Portfolio() {
               <p className="text-muted-foreground mt-1">Your creative projects and exports</p>
             </div>
             <div className="flex items-center gap-2">
+              <PDFUploader />
               <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'projects' | 'editor')}>
                 <TabsList className="bg-muted/50 backdrop-blur-sm">
                   <TabsTrigger value="projects" className="gap-2 data-[state=active]:bg-primary/20">
