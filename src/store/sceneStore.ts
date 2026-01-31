@@ -138,7 +138,7 @@ export const useSceneStore = create<SceneState>((set, get) => ({
   addProceduralModel: (modelId, name) =>
     set((state) => {
       // Use larger scale for better visibility of detailed models
-      const defaultScale: [number, number, number] = [2, 2, 2];
+      const defaultScale: [number, number, number] = [6, 6, 6];
       
       const newObject: SceneObject = {
         id: crypto.randomUUID(),
