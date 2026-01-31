@@ -433,8 +433,8 @@ export default function CharacterSandbox() {
               transition={{ delay: 0.3 }}
             >
               <Card className="h-[500px] flex flex-col">
-                <CardHeader className="pb-2">
-                  <Tabs value={activeTab} onValueChange={setActiveTab}>
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col h-full">
+                  <CardHeader className="pb-2">
                     <TabsList className="grid grid-cols-3">
                       <TabsTrigger value="joints" className="text-xs">
                         <Circle className="w-3 h-3 mr-1" />
@@ -449,96 +449,96 @@ export default function CharacterSandbox() {
                         Clay
                       </TabsTrigger>
                     </TabsList>
-                  </Tabs>
-                </CardHeader>
-                <CardContent className="flex-1 overflow-hidden">
-                  <ScrollArea className="h-full pr-2">
-                    <TabsContent value="joints" className="mt-0 space-y-2">
-                      <Button onClick={addJoint} size="sm" className="w-full">
-                        <Plus className="w-4 h-4 mr-2" />
-                        Add Joint
-                      </Button>
-                      {joints.map((joint) => (
-                        <div
-                          key={joint.id}
-                          className={`p-2 rounded-lg border cursor-pointer transition-colors ${
-                            selectedJoint === joint.id 
-                              ? 'border-primary bg-primary/10' 
-                              : 'border-border/50 bg-card/50 hover:bg-muted/30'
-                          }`}
-                          onClick={() => setSelectedJoint(joint.id)}
-                        >
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs font-medium">{joint.name}</span>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-6 w-6"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                removeJoint(joint.id);
-                              }}
-                            >
-                              <Trash2 className="w-3 h-3" />
-                            </Button>
-                          </div>
-                          <div className="text-[10px] text-muted-foreground mt-1">
-                            r: {joint.radius.toFixed(2)}
-                          </div>
-                        </div>
-                      ))}
-                    </TabsContent>
-
-                    <TabsContent value="bones" className="mt-0 space-y-2">
-                      <Button onClick={addBone} size="sm" className="w-full">
-                        <Plus className="w-4 h-4 mr-2" />
-                        Add Bone
-                      </Button>
-                      {bones.map((bone) => (
-                        <div
-                          key={bone.id}
-                          className="p-2 rounded-lg border border-border/50 bg-card/50"
-                        >
-                          <span className="text-xs font-medium">{bone.name}</span>
-                          <div className="text-[10px] text-muted-foreground mt-1">
-                            {joints.find(j => j.id === bone.startJoint)?.name} → {joints.find(j => j.id === bone.endJoint)?.name}
-                          </div>
-                        </div>
-                      ))}
-                    </TabsContent>
-
-                    <TabsContent value="clay" className="mt-0 space-y-2">
-                      <div className="grid grid-cols-2 gap-1">
-                        {['muscle', 'skin', 'tissue', 'fat'].map((type) => (
-                          <Button
-                            key={type}
-                            onClick={() => addClayLayer(type as ClayLayer['type'])}
-                            size="sm"
-                            variant="outline"
-                            className="text-xs"
+                  </CardHeader>
+                  <CardContent className="flex-1 overflow-hidden">
+                    <ScrollArea className="h-full pr-2">
+                      <TabsContent value="joints" className="mt-0 space-y-2">
+                        <Button onClick={addJoint} size="sm" className="w-full">
+                          <Plus className="w-4 h-4 mr-2" />
+                          Add Joint
+                        </Button>
+                        {joints.map((joint) => (
+                          <div
+                            key={joint.id}
+                            className={`p-2 rounded-lg border cursor-pointer transition-colors ${
+                              selectedJoint === joint.id 
+                                ? 'border-primary bg-primary/10' 
+                                : 'border-border/50 bg-card/50 hover:bg-muted/30'
+                            }`}
+                            onClick={() => setSelectedJoint(joint.id)}
                           >
-                            <Plus className="w-3 h-3 mr-1" />
-                            {type}
-                          </Button>
-                        ))}
-                      </div>
-                      {clayLayers.map((layer) => (
-                        <div
-                          key={layer.id}
-                          className="p-2 rounded-lg border border-border/50 bg-card/50"
-                        >
-                          <div className="flex items-center gap-2">
-                            <div
-                              className="w-4 h-4 rounded-full"
-                              style={{ backgroundColor: layer.color }}
-                            />
-                            <span className="text-xs font-medium">{layer.name}</span>
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-medium">{joint.name}</span>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  removeJoint(joint.id);
+                                }}
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </Button>
+                            </div>
+                            <div className="text-[10px] text-muted-foreground mt-1">
+                              r: {joint.radius.toFixed(2)}
+                            </div>
                           </div>
+                        ))}
+                      </TabsContent>
+
+                      <TabsContent value="bones" className="mt-0 space-y-2">
+                        <Button onClick={addBone} size="sm" className="w-full">
+                          <Plus className="w-4 h-4 mr-2" />
+                          Add Bone
+                        </Button>
+                        {bones.map((bone) => (
+                          <div
+                            key={bone.id}
+                            className="p-2 rounded-lg border border-border/50 bg-card/50"
+                          >
+                            <span className="text-xs font-medium">{bone.name}</span>
+                            <div className="text-[10px] text-muted-foreground mt-1">
+                              {joints.find(j => j.id === bone.startJoint)?.name} → {joints.find(j => j.id === bone.endJoint)?.name}
+                            </div>
+                          </div>
+                        ))}
+                      </TabsContent>
+
+                      <TabsContent value="clay" className="mt-0 space-y-2">
+                        <div className="grid grid-cols-2 gap-1">
+                          {['muscle', 'skin', 'tissue', 'fat'].map((type) => (
+                            <Button
+                              key={type}
+                              onClick={() => addClayLayer(type as ClayLayer['type'])}
+                              size="sm"
+                              variant="outline"
+                              className="text-xs"
+                            >
+                              <Plus className="w-3 h-3 mr-1" />
+                              {type}
+                            </Button>
+                          ))}
                         </div>
-                      ))}
-                    </TabsContent>
-                  </ScrollArea>
-                </CardContent>
+                        {clayLayers.map((layer) => (
+                          <div
+                            key={layer.id}
+                            className="p-2 rounded-lg border border-border/50 bg-card/50"
+                          >
+                            <div className="flex items-center gap-2">
+                              <div
+                                className="w-4 h-4 rounded-full"
+                                style={{ backgroundColor: layer.color }}
+                              />
+                              <span className="text-xs font-medium">{layer.name}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </TabsContent>
+                    </ScrollArea>
+                  </CardContent>
+                </Tabs>
               </Card>
             </motion.div>
           </div>
