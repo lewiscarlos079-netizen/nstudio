@@ -1,78 +1,135 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { 
-  FolderOpen, 
-  Download, 
-  Eye, 
-  MoreHorizontal,
   Plus,
   Grid3X3,
   List,
   Search,
   Filter,
-  Scissors
+  Scissors,
+  FolderOpen,
+  Sparkles
 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { useProjectStore, Project3D } from '@/store/projectStore';
 import { VideoEditor } from '@/components/portfolio/VideoEditor';
+import { ProjectCard } from '@/components/portfolio/ProjectCard';
+import { ProjectDetailModal } from '@/components/portfolio/ProjectDetailModal';
+import { toast } from 'sonner';
 
 const demoProjects: Partial<Project3D>[] = [
   {
     id: '1',
     name: 'Sci-Fi Corridor',
-    description: 'Futuristic corridor environment',
+    description: 'Futuristic corridor environment with volumetric lighting',
     type: 'model',
     resolution: '4k',
     status: 'completed',
     thumbnail: '',
+    createdAt: new Date('2024-01-15'),
   },
   {
     id: '2',
     name: 'Character Animation',
-    description: 'Walk cycle demo',
+    description: 'Realistic walk cycle with motion capture data',
     type: 'movie-3d',
     resolution: '1080p',
     status: 'completed',
     thumbnail: '',
+    createdAt: new Date('2024-01-20'),
   },
   {
     id: '3',
     name: 'Product Visualization',
-    description: 'Tech gadget render',
+    description: 'Tech gadget render with studio lighting setup',
     type: 'model',
     resolution: '4k',
     status: 'rendering',
     renderProgress: 45,
     thumbnail: '',
+    createdAt: new Date('2024-01-25'),
   },
   {
     id: '4',
     name: 'Game Level',
-    description: 'Platformer prototype',
+    description: 'Platformer prototype with dynamic obstacles',
     type: 'game',
     resolution: '1080p',
     status: 'draft',
     thumbnail: '',
+    createdAt: new Date('2024-01-28'),
+  },
+  {
+    id: '5',
+    name: 'Nature Documentary',
+    description: 'Wildlife scene with procedural animals',
+    type: 'movie-3d',
+    resolution: '4k',
+    status: 'completed',
+    thumbnail: '',
+    createdAt: new Date('2024-02-01'),
+  },
+  {
+    id: '6',
+    name: 'Vehicle Showroom',
+    description: 'Sports car presentation with reflections',
+    type: 'model',
+    resolution: '4k',
+    status: 'completed',
+    thumbnail: '',
+    createdAt: new Date('2024-02-05'),
   },
 ];
 
 export default function Portfolio() {
+  const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [activeTab, setActiveTab] = useState<'projects' | 'editor'>('projects');
-  const { projects } = useProjectStore();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedProject, setSelectedProject] = useState<Partial<Project3D> | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { projects, deleteProject } = useProjectStore();
   
-  const displayProjects = projects.length > 0 ? projects : demoProjects;
+  const allProjects = projects.length > 0 ? projects : demoProjects;
+  
+  const filteredProjects = allProjects.filter(project =>
+    project.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    project.description?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleOpenProject = (project: Partial<Project3D>) => {
+    setSelectedProject(project);
+    setIsModalOpen(true);
+  };
+
+  const handleEditProject = (project: Partial<Project3D>) => {
+    setSelectedProject(project);
+    setActiveTab('editor');
+    toast.success(`Opened ${project.name} in editor`);
+  };
+
+  const handleExportProject = (project: Partial<Project3D>) => {
+    toast.success(`Exporting ${project.name}...`, {
+      description: 'Your project will be ready for download shortly.'
+    });
+  };
+
+  const handleDeleteProject = (project: Partial<Project3D>) => {
+    if (project.id) {
+      deleteProject(project.id);
+      toast.success(`Deleted ${project.name}`);
+    }
+    setIsModalOpen(false);
+  };
+
+  const handleOpenInStudio = () => {
+    navigate('/studio');
+    setIsModalOpen(false);
+  };
 
   return (
     <Layout>
@@ -85,23 +142,26 @@ export default function Portfolio() {
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <h1 className="font-display text-3xl font-bold gradient-text">Portfolio</h1>
-              <p className="text-muted-foreground mt-1">Your saved projects, exports, and video editor</p>
+              <h1 className="font-display text-3xl font-bold gradient-text flex items-center gap-3">
+                <Sparkles className="w-8 h-8 text-primary" />
+                Portfolio
+              </h1>
+              <p className="text-muted-foreground mt-1">Your creative projects and exports</p>
             </div>
             <div className="flex items-center gap-2">
               <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'projects' | 'editor')}>
-                <TabsList>
-                  <TabsTrigger value="projects" className="gap-2">
+                <TabsList className="bg-muted/50 backdrop-blur-sm">
+                  <TabsTrigger value="projects" className="gap-2 data-[state=active]:bg-primary/20">
                     <FolderOpen className="w-4 h-4" />
                     Projects
                   </TabsTrigger>
-                  <TabsTrigger value="editor" className="gap-2">
+                  <TabsTrigger value="editor" className="gap-2 data-[state=active]:bg-primary/20">
                     <Scissors className="w-4 h-4" />
                     Editor
                   </TabsTrigger>
                 </TabsList>
               </Tabs>
-              <Button variant="cyber" className="gap-2">
+              <Button className="gap-2 shadow-lg shadow-primary/20" onClick={() => navigate('/studio')}>
                 <Plus className="w-4 h-4" />
                 New Project
               </Button>
@@ -111,22 +171,29 @@ export default function Portfolio() {
           {activeTab === 'projects' ? (
             <>
               {/* Toolbar */}
-              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between"
+              >
                 <div className="flex gap-3 flex-1 w-full sm:w-auto">
                   <div className="relative flex-1 sm:max-w-xs">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input 
                       placeholder="Search projects..." 
-                      className="pl-10 bg-card border-primary/20"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-10 bg-card/60 backdrop-blur-sm border-border/40 focus:border-primary/50"
                     />
                   </div>
-                  <Button variant="outline" className="gap-2">
+                  <Button variant="outline" className="gap-2 bg-card/60 backdrop-blur-sm border-border/40 hover:border-primary/50">
                     <Filter className="w-4 h-4" />
                     <span className="hidden sm:inline">Filter</span>
                   </Button>
                 </div>
                 
-                <div className="flex gap-1 p-1 bg-muted/50 rounded-lg">
+                <div className="flex gap-1 p-1 bg-muted/30 backdrop-blur-sm rounded-lg border border-border/40">
                   <Button
                     variant={viewMode === 'grid' ? 'default' : 'ghost'}
                     size="icon"
@@ -144,125 +211,63 @@ export default function Portfolio() {
                     <List className="w-4 h-4" />
                   </Button>
                 </div>
-              </div>
+              </motion.div>
 
               {/* Projects Grid */}
-              <div className={viewMode === 'grid' 
-                ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4' 
-                : 'space-y-3'
-              }>
-                {displayProjects.map((project, index) => (
-                  <motion.div
-                    key={project.id}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: index * 0.05 }}
-                  >
-                    <Card className="group bg-card border-primary/10 hover:border-primary/30 transition-all overflow-hidden">
-                      {viewMode === 'grid' ? (
-                        <>
-                          <div className="aspect-video bg-gradient-to-br from-muted to-muted/50 relative overflow-hidden">
-                            <div className="absolute inset-0 grid-bg opacity-50" />
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <FolderOpen className="w-12 h-12 text-primary/30" />
-                            </div>
-                            
-                            {/* Hover Actions */}
-                            <div className="absolute inset-0 bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                              <Button size="sm" variant="glass" className="gap-1">
-                                <Eye className="w-3 h-3" />
-                                View
-                              </Button>
-                              <Button size="sm" variant="cyber" className="gap-1">
-                                <Download className="w-3 h-3" />
-                                Export
-                              </Button>
-                            </div>
-
-                            {/* Status Badge */}
-                            {project.status === 'rendering' && (
-                              <div className="absolute top-2 right-2">
-                                <Badge className="bg-primary/90 text-primary-foreground animate-pulse">
-                                  Rendering {project.renderProgress}%
-                                </Badge>
-                              </div>
-                            )}
-                          </div>
-                          <CardContent className="p-4">
-                            <div className="flex items-start justify-between">
-                              <div>
-                                <h3 className="font-medium truncate">{project.name}</h3>
-                                <p className="text-sm text-muted-foreground truncate">{project.description}</p>
-                              </div>
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
-                                    <MoreHorizontal className="w-4 h-4" />
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                  <DropdownMenuItem>Open</DropdownMenuItem>
-                                  <DropdownMenuItem>Duplicate</DropdownMenuItem>
-                                  <DropdownMenuItem>Export</DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => setActiveTab('editor')}>
-                                    <Scissors className="w-4 h-4 mr-2" />
-                                    Edit Video
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            </div>
-                            <div className="flex gap-2 mt-3">
-                              <Badge variant="outline" className="text-xs capitalize">
-                                {project.type?.replace('-', ' ')}
-                              </Badge>
-                              <Badge variant="outline" className="text-xs">
-                                {project.resolution?.toUpperCase()}
-                              </Badge>
-                            </div>
-                          </CardContent>
-                        </>
-                      ) : (
-                        <CardContent className="p-4 flex items-center gap-4">
-                          <div className="w-16 h-16 bg-muted rounded-lg flex items-center justify-center shrink-0">
-                            <FolderOpen className="w-6 h-6 text-primary/50" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h3 className="font-medium">{project.name}</h3>
-                            <p className="text-sm text-muted-foreground truncate">{project.description}</p>
-                            <div className="flex gap-2 mt-2">
-                              <Badge variant="outline" className="text-xs capitalize">
-                                {project.type?.replace('-', ' ')}
-                              </Badge>
-                              <Badge variant="outline" className="text-xs">
-                                {project.resolution?.toUpperCase()}
-                              </Badge>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Button size="sm" variant="ghost">
-                              <Eye className="w-4 h-4" />
-                            </Button>
-                            <Button size="sm" variant="ghost" onClick={() => setActiveTab('editor')}>
-                              <Scissors className="w-4 h-4" />
-                            </Button>
-                            <Button size="sm" variant="outline" className="gap-1">
-                              <Download className="w-4 h-4" />
-                              Export
-                            </Button>
-                          </div>
-                        </CardContent>
-                      )}
-                    </Card>
-                  </motion.div>
-                ))}
-              </div>
+              {filteredProjects.length > 0 ? (
+                <div className={viewMode === 'grid' 
+                  ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5' 
+                  : 'space-y-3'
+                }>
+                  {filteredProjects.map((project, index) => (
+                    <ProjectCard
+                      key={project.id}
+                      project={project}
+                      index={index}
+                      viewMode={viewMode}
+                      onOpen={handleOpenProject}
+                      onEdit={handleEditProject}
+                      onExport={handleExportProject}
+                      onDelete={handleDeleteProject}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-center py-16"
+                >
+                  <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                    <FolderOpen className="w-10 h-10 text-primary/50" />
+                  </div>
+                  <h3 className="text-lg font-medium text-foreground mb-2">No projects found</h3>
+                  <p className="text-muted-foreground text-sm mb-4">
+                    {searchQuery ? 'Try adjusting your search' : 'Create your first project to get started'}
+                  </p>
+                  <Button onClick={() => navigate('/studio')} className="gap-2">
+                    <Plus className="w-4 h-4" />
+                    Create Project
+                  </Button>
+                </motion.div>
+              )}
             </>
           ) : (
             <VideoEditor />
           )}
         </motion.div>
       </div>
+
+      {/* Project Detail Modal */}
+      <ProjectDetailModal
+        project={selectedProject}
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        onEdit={() => handleEditProject(selectedProject!)}
+        onExport={() => handleExportProject(selectedProject!)}
+        onDelete={() => handleDeleteProject(selectedProject!)}
+        onOpenInStudio={handleOpenInStudio}
+      />
     </Layout>
   );
 }
