@@ -15,6 +15,7 @@ import { PDFUploader } from '@/components/studio/PDFUploader';
 import { BodyPartEditor } from '@/components/studio/BodyPartEditor';
 import { CharacterCreationSidebar } from '@/components/studio/CharacterCreationSidebar';
 import { WeatherSystem } from '@/components/studio/WeatherSystem';
+import { TerrainBuilder } from '@/components/studio/TerrainBuilder';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -36,7 +37,8 @@ import {
   Bone,
   RefreshCw,
   ArrowUp,
-  ArrowDown
+  ArrowDown,
+  Map
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useSceneStore } from '@/store/sceneStore';
@@ -138,6 +140,10 @@ export default function Studio() {
                 <Image className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">Texture</span>
               </TabsTrigger>
+              <TabsTrigger value="terrain" className="gap-2 text-xs h-7">
+                <Map className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Terrain</span>
+              </TabsTrigger>
               <TabsTrigger value="render" className="gap-2 text-xs h-7">
                 <Settings2 className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">Render</span>
@@ -213,6 +219,15 @@ export default function Studio() {
             {activeTab === 'mocap' && (
               <div className="w-80 flex-shrink-0">
                 <MotionCapturePanel />
+              </div>
+            )}
+            {activeTab === 'terrain' && (
+              <div className="w-80 flex-shrink-0">
+                <TerrainBuilder 
+                  onTerrainGenerate={(cells) => {
+                    toast.success(`Generated ${cells.length} terrain cells`);
+                  }}
+                />
               </div>
             )}
             
