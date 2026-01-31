@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
@@ -13,11 +13,16 @@ import {
   FolderOpen,
   Sparkles,
   FileUp,
-  Trophy
+  Trophy,
+  Film,
+  Play,
+  Pause,
+  RotateCcw,
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useProjectStore, Project3D } from '@/store/projectStore';
 import { VideoEditor } from '@/components/portfolio/VideoEditor';
 import { ProjectCard } from '@/components/portfolio/ProjectCard';
@@ -25,7 +30,10 @@ import { ProjectDetailModal } from '@/components/portfolio/ProjectDetailModal';
 import { ProjectPreviewModal } from '@/components/portfolio/ProjectPreviewModal';
 import { ExportModal } from '@/components/portfolio/ExportModal';
 import { PDFUploader } from '@/components/studio/PDFUploader';
+import { CaptureTools } from '@/components/studio/CaptureTools';
 import { useVideoEditorStore } from '@/store/videoEditorStore';
+import { ScenePreview3D } from '@/components/portfolio/ScenePreview3D';
+import { IntroTrailer3D } from '@/components/3d/IntroScenes3D';
 import { toast } from 'sonner';
 
 const demoProjects: Partial<Project3D>[] = [
@@ -95,12 +103,14 @@ const demoProjects: Partial<Project3D>[] = [
 export default function Portfolio() {
   const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [activeTab, setActiveTab] = useState<'projects' | 'editor'>('projects');
+  const [activeTab, setActiveTab] = useState<'projects' | 'editor' | 'trailer'>('projects');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProject, setSelectedProject] = useState<Partial<Project3D> | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [trailerPlaying, setTrailerPlaying] = useState(true);
+  const [currentTrailerScene, setCurrentTrailerScene] = useState<'robots-farming' | 'skydiving' | 'surfing' | 'racing' | 'space'>('robots-farming');
   const { projects, deleteProject } = useProjectStore();
   const { loadProject } = useVideoEditorStore();
   
@@ -177,8 +187,8 @@ export default function Portfolio() {
               <p className="text-muted-foreground mt-1">Your creative projects and exports</p>
             </div>
             <div className="flex items-center gap-2">
-              <PDFUploader />
-              <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'projects' | 'editor')}>
+              <CaptureTools />
+              <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'projects' | 'editor' | 'trailer')}>
                 <TabsList className="bg-muted/50 backdrop-blur-sm">
                   <TabsTrigger value="projects" className="gap-2 data-[state=active]:bg-primary/20">
                     <FolderOpen className="w-4 h-4" />
@@ -187,6 +197,10 @@ export default function Portfolio() {
                   <TabsTrigger value="editor" className="gap-2 data-[state=active]:bg-primary/20">
                     <Scissors className="w-4 h-4" />
                     Editor
+                  </TabsTrigger>
+                  <TabsTrigger value="trailer" className="gap-2 data-[state=active]:bg-primary/20">
+                    <Film className="w-4 h-4" />
+                    Trailer
                   </TabsTrigger>
                 </TabsList>
               </Tabs>
@@ -281,8 +295,100 @@ export default function Portfolio() {
                 </motion.div>
               )}
             </>
-          ) : (
+          ) : activeTab === 'editor' ? (
             <VideoEditor />
+          ) : (
+            /* Trailer Tab */
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-6"
+            >
+              {/* Trailer Viewport */}
+              <Card className="overflow-hidden">
+                <CardHeader className="pb-2">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center gap-2">
+                      <Film className="w-5 h-5 text-primary" />
+                      Platform Trailer
+                    </CardTitle>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setTrailerPlaying(!trailerPlaying)}
+                      >
+                        {trailerPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCurrentTrailerScene('robots-farming')}
+                      >
+                        <RotateCcw className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <div className="aspect-video bg-gradient-to-br from-background to-muted/50 relative">
+                    <Suspense fallback={
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+                      </div>
+                    }>
+                      <IntroTrailer3D sceneType={currentTrailerScene} isPlaying={trailerPlaying} />
+                    </Suspense>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Scene Selection */}
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                {[
+                  { id: 'robots-farming', label: 'Robot Farming', icon: '🤖' },
+                  { id: 'skydiving', label: 'Skydiving', icon: '🪂' },
+                  { id: 'surfing', label: 'Surfing', icon: '🏄' },
+                  { id: 'racing', label: 'Racing', icon: '🏎️' },
+                  { id: 'space', label: 'Space', icon: '🚀' },
+                ].map(scene => (
+                  <Button
+                    key={scene.id}
+                    variant={currentTrailerScene === scene.id ? 'default' : 'outline'}
+                    className="h-auto py-4 flex-col gap-2"
+                    onClick={() => setCurrentTrailerScene(scene.id as typeof currentTrailerScene)}
+                  >
+                    <span className="text-2xl">{scene.icon}</span>
+                    <span className="text-xs">{scene.label}</span>
+                  </Button>
+                ))}
+              </div>
+
+              {/* Demo Scenes Grid */}
+              <div>
+                <h3 className="font-medium mb-4 flex items-center gap-2">
+                  <Trophy className="w-5 h-5 text-amber-500" />
+                  Example Scenes
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {demoProjects.slice(0, 6).map((project, index) => (
+                    <Card key={project.id} className="overflow-hidden group cursor-pointer" onClick={() => handlePreviewProject(project)}>
+                      <div className="aspect-video bg-gradient-to-br from-muted to-muted/50 relative">
+                        <Suspense fallback={null}>
+                          <ScenePreview3D sceneIndex={index} projectType={project.type} isPlaying={false} />
+                        </Suspense>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                          <div>
+                            <p className="text-white font-medium">{project.name}</p>
+                            <p className="text-white/70 text-sm">{project.description}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
           )}
         </motion.div>
       </div>

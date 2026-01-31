@@ -1,9 +1,18 @@
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { X, Crown, Code, Volume2, VolumeX } from 'lucide-react';
+import { X, Crown, Code, Volume2, VolumeX, Camera, RotateCcw, Settings2 } from 'lucide-react';
 import { IntroTrailer3D, IntroSceneType } from '@/components/3d/IntroScenes3D';
+import { CaptureTools } from '@/components/studio/CaptureTools';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Slider } from '@/components/ui/slider';
 
 interface IntroVideoProps {
   onClose: () => void;
@@ -15,6 +24,13 @@ interface Scene {
   subtitle: string;
   bgGradient: string;
   duration: number;
+}
+
+interface TrailerSettings {
+  motionBlur: boolean;
+  hdr: boolean;
+  bloomIntensity: number;
+  seamlessTransitions: boolean;
 }
 
 const scenes: Scene[] = [
@@ -60,6 +76,18 @@ export function IntroVideo({ onClose }: IntroVideoProps) {
   const [muted, setMuted] = useState(true);
   const [currentSceneIndex, setCurrentSceneIndex] = useState(0);
   const [progress, setProgress] = useState(0);
+
+  const [trailerSettings, setTrailerSettings] = useState<TrailerSettings>({
+    motionBlur: true,
+    hdr: true,
+    bloomIntensity: 1.5,
+    seamlessTransitions: true,
+  });
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Seamless scene transitions with cross-fade
+  const [nextSceneIndex, setNextSceneIndex] = useState<number | null>(null);
+  const [transitionProgress, setTransitionProgress] = useState(0);
 
   const currentScene = scenes[currentSceneIndex];
 
@@ -288,6 +316,61 @@ export function IntroVideo({ onClose }: IntroVideoProps) {
 
         {/* Controls */}
         <div className="absolute top-6 right-6 flex items-center gap-2">
+          {/* Capture Tools */}
+          <CaptureTools />
+          
+          {/* Trailer Settings */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
+                <Settings2 className="w-5 h-5" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-64" align="end">
+              <div className="space-y-4">
+                <div className="font-medium">Trailer Settings</div>
+                
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm">Motion Blur</Label>
+                  <Switch
+                    checked={trailerSettings.motionBlur}
+                    onCheckedChange={(v) => setTrailerSettings(s => ({ ...s, motionBlur: v }))}
+                  />
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm">HDR Mode</Label>
+                  <Switch
+                    checked={trailerSettings.hdr}
+                    onCheckedChange={(v) => setTrailerSettings(s => ({ ...s, hdr: v }))}
+                  />
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm">Seamless Transitions</Label>
+                  <Switch
+                    checked={trailerSettings.seamlessTransitions}
+                    onCheckedChange={(v) => setTrailerSettings(s => ({ ...s, seamlessTransitions: v }))}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm">Bloom</Label>
+                    <span className="text-xs text-muted-foreground">{trailerSettings.bloomIntensity.toFixed(1)}</span>
+                  </div>
+                  <Slider
+                    value={[trailerSettings.bloomIntensity]}
+                    onValueChange={([v]) => setTrailerSettings(s => ({ ...s, bloomIntensity: v }))}
+                    min={0}
+                    max={3}
+                    step={0.1}
+                  />
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
+          
           <Button
             variant="ghost"
             size="icon"

@@ -264,6 +264,26 @@ export default function CharacterCreator() {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setCharacter({
+                    role: 'knight',
+                    name: 'New Character',
+                    skinTone: '#D4A574',
+                    bodyScale: { x: 1, y: 1, z: 1 },
+                    boneAdjustments: {},
+                    bloodEffects: false,
+                    clothing: [],
+                    equipment: [],
+                  });
+                  setSelectedBone(null);
+                  toast.success('Character reset to default');
+                }}
+              >
+                <RotateCcw className="w-4 h-4 mr-2" />
+                Reset
+              </Button>
               <Button variant="outline" onClick={handleSaveToInventory}>
                 <Save className="w-4 h-4 mr-2" />
                 Save to Inventory

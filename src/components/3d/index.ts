@@ -76,3 +76,23 @@ export {
 
 // Skeleton viewport for character sandbox
 export { SkeletonViewport3D } from './SkeletonViewport3D';
+
+// Sculpting tools
+export { 
+  BrushCursor3D,
+  calculateFalloff,
+  applySculptOperation,
+  applySmoothOperation,
+  applyPinchOperation,
+  applyInflateOperation,
+  applyFlattenOperation,
+  useSculpting,
+} from './SculptingTools';
+
+// Trailer effects (motion blur, HDR, etc.)
+export {
+  TrailerEffects,
+  useSceneTransition,
+  useSmoothCameraPath,
+  FilmGrain,
+} from './TrailerEffects';
