@@ -78,6 +78,15 @@ export function WeatherSystem({ onWeatherChange }: WeatherSystemProps) {
     setState(newState);
     onWeatherChange?.(newState);
     
+    // Dispatch custom event for viewport
+    window.dispatchEvent(new CustomEvent('weatherChange', { 
+      detail: { 
+        weather: key === 'weather' ? value : newState.weather, 
+        intensity: key === 'intensity' ? value : newState.intensity / 100,
+        windSpeed: key === 'windSpeed' ? value : newState.windSpeed / 100,
+      } 
+    }));
+    
     if (key === 'weather') {
       toast.success(`Weather set to ${value}`);
     }

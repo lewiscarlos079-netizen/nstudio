@@ -57,6 +57,12 @@ export {
   WaterModelRegistry,
 } from './WaterSystems';
 
+// Weather particle systems
+export {
+  WeatherParticles,
+  type WeatherType,
+} from './WeatherParticles';
+
 // Scientific animal models with ROM
 export {
   ScientificElephant,
