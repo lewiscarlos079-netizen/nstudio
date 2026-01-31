@@ -143,6 +143,7 @@ const EQUIPMENT_CATEGORIES = [
     items: [
       { id: 'backpack', name: 'Backpack', icon: Backpack, slot: 'back' },
       { id: 'flashlight', name: 'Flashlight', icon: Flashlight, slot: 'rightHand' },
+      { id: 'metal_detector', name: 'Metal Detector', icon: Wrench, slot: 'rightHand' },
       { id: 'camera', name: 'Camera', icon: Camera, slot: 'neck' },
       { id: 'binoculars', name: 'Binoculars', icon: Camera, slot: 'neck' },
       { id: 'compass', name: 'Compass', icon: Camera, slot: 'leftHand' },
