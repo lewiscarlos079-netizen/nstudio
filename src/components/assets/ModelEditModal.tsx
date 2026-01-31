@@ -21,7 +21,20 @@ import {
   User,
   Footprints,
   Hand,
-  Circle
+  Circle,
+  Wrench,
+  Hammer,
+  Fish,
+  Axe,
+  Pickaxe,
+  Sword,
+  Shield,
+  Camera,
+  Flashlight,
+  Briefcase,
+  HardHat,
+  Backpack,
+  Check
 } from 'lucide-react';
 import { ModelAsset } from '@/hooks/useModelAssets';
 import { 
@@ -74,7 +87,80 @@ const COLOR_PRESETS = {
   clothing: ['#1E3A5F', '#8B0000', '#006400', '#4B0082', '#2F2F2F', '#F5F5DC'],
   fur: ['#D2691E', '#8B4513', '#A0522D', '#696969', '#F5F5DC', '#2F2F2F'],
   accent: ['#FF6B6B', '#4ECDC4', '#FFE66D', '#95E1D3', '#F38181', '#AA96DA'],
+  metal: ['#C0C0C0', '#FFD700', '#CD7F32', '#2F2F2F', '#708090', '#B87333'],
 };
+
+// Equipment categories and items
+const EQUIPMENT_CATEGORIES = [
+  {
+    id: 'tools',
+    label: 'Tools',
+    icon: Wrench,
+    items: [
+      { id: 'hammer', name: 'Hammer', icon: Hammer, slot: 'rightHand' },
+      { id: 'pickaxe', name: 'Pickaxe', icon: Pickaxe, slot: 'rightHand' },
+      { id: 'axe', name: 'Axe', icon: Axe, slot: 'rightHand' },
+      { id: 'wrench', name: 'Wrench', icon: Wrench, slot: 'rightHand' },
+      { id: 'shovel', name: 'Shovel', icon: Wrench, slot: 'rightHand' },
+    ]
+  },
+  {
+    id: 'fishing',
+    label: 'Fishing',
+    icon: Fish,
+    items: [
+      { id: 'fishing_rod', name: 'Fishing Rod', icon: Fish, slot: 'rightHand' },
+      { id: 'tackle_box', name: 'Tackle Box', icon: Briefcase, slot: 'leftHand' },
+      { id: 'fishing_net', name: 'Fishing Net', icon: Fish, slot: 'back' },
+    ]
+  },
+  {
+    id: 'construction',
+    label: 'Construction',
+    icon: HardHat,
+    items: [
+      { id: 'hard_hat', name: 'Hard Hat', icon: HardHat, slot: 'head' },
+      { id: 'tool_belt', name: 'Tool Belt', icon: Wrench, slot: 'waist' },
+      { id: 'blueprints', name: 'Blueprints', icon: Briefcase, slot: 'leftHand' },
+      { id: 'measuring_tape', name: 'Measuring Tape', icon: Wrench, slot: 'waist' },
+    ]
+  },
+  {
+    id: 'combat',
+    label: 'Combat',
+    icon: Sword,
+    items: [
+      { id: 'sword', name: 'Sword', icon: Sword, slot: 'rightHand' },
+      { id: 'shield', name: 'Shield', icon: Shield, slot: 'leftHand' },
+      { id: 'bow', name: 'Bow', icon: Sword, slot: 'back' },
+      { id: 'quiver', name: 'Quiver', icon: Sword, slot: 'back' },
+    ]
+  },
+  {
+    id: 'exploration',
+    label: 'Exploration',
+    icon: Backpack,
+    items: [
+      { id: 'backpack', name: 'Backpack', icon: Backpack, slot: 'back' },
+      { id: 'flashlight', name: 'Flashlight', icon: Flashlight, slot: 'rightHand' },
+      { id: 'camera', name: 'Camera', icon: Camera, slot: 'neck' },
+      { id: 'binoculars', name: 'Binoculars', icon: Camera, slot: 'neck' },
+      { id: 'compass', name: 'Compass', icon: Camera, slot: 'leftHand' },
+      { id: 'map', name: 'Map', icon: Briefcase, slot: 'leftHand' },
+    ]
+  },
+  {
+    id: 'sports',
+    label: 'Sports',
+    icon: Circle,
+    items: [
+      { id: 'baseball_bat', name: 'Baseball Bat', icon: Wrench, slot: 'rightHand' },
+      { id: 'tennis_racket', name: 'Tennis Racket', icon: Wrench, slot: 'rightHand' },
+      { id: 'golf_club', name: 'Golf Club', icon: Wrench, slot: 'rightHand' },
+      { id: 'skateboard', name: 'Skateboard', icon: Wrench, slot: 'leftHand' },
+    ]
+  },
+];
 
 // Map model IDs to components for preview
 const MODEL_PREVIEW: Record<string, React.FC<any>> = {
@@ -114,6 +200,10 @@ export function ModelEditModal({ model, open, onOpenChange }: ModelEditModalProp
   const [pantsColor, setPantsColor] = useState('#2F2F2F');
   const [skinColor, setSkinColor] = useState('#DEB887');
   const [furColor, setFurColor] = useState('#D2691E');
+  
+  // Equipment state
+  const [selectedEquipmentCategory, setSelectedEquipmentCategory] = useState<string>('tools');
+  const [equippedItems, setEquippedItems] = useState<Record<string, string>>({});
 
   const bodyParts = useMemo(() => {
     if (!model) return [];
@@ -123,6 +213,8 @@ export function ModelEditModal({ model, open, onOpenChange }: ModelEditModalProp
   }, [model]);
 
   const currentPartConfig = selectedPart ? customizations[selectedPart] : null;
+  
+  const currentEquipmentCategory = EQUIPMENT_CATEGORIES.find(c => c.id === selectedEquipmentCategory);
 
   const handleScaleChange = (axis: 0 | 1 | 2, value: number) => {
     if (!selectedPart) return;
@@ -151,6 +243,20 @@ export function ModelEditModal({ model, open, onOpenChange }: ModelEditModalProp
       }
     }));
   };
+  
+  const handleEquipItem = (itemId: string, slot: string) => {
+    setEquippedItems(prev => {
+      // If already equipped, unequip
+      if (prev[slot] === itemId) {
+        const next = { ...prev };
+        delete next[slot];
+        return next;
+      }
+      // Equip item to slot
+      return { ...prev, [slot]: itemId };
+    });
+    toast.success(`Equipment updated`);
+  };
 
   const handleReset = () => {
     setCustomizations({});
@@ -160,6 +266,7 @@ export function ModelEditModal({ model, open, onOpenChange }: ModelEditModalProp
     setSkinColor('#DEB887');
     setFurColor('#D2691E');
     setSelectedPart(null);
+    setEquippedItems({});
   };
 
   const handleSave = () => {
@@ -253,6 +360,13 @@ export function ModelEditModal({ model, open, onOpenChange }: ModelEditModalProp
                 >
                   <Shirt className="w-4 h-4 mr-2" />
                   Clothing
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="equipment"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+                >
+                  <Wrench className="w-4 h-4 mr-2" />
+                  Equipment
                 </TabsTrigger>
               </TabsList>
 
@@ -444,6 +558,107 @@ export function ModelEditModal({ model, open, onOpenChange }: ModelEditModalProp
                       />
                     </div>
                   </div>
+                </TabsContent>
+
+                {/* Equipment Tab */}
+                <TabsContent value="equipment" className="p-4 space-y-4 mt-0">
+                  {/* Category Selection */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Category</Label>
+                    <div className="flex gap-1 flex-wrap">
+                      {EQUIPMENT_CATEGORIES.map((category) => {
+                        const Icon = category.icon;
+                        return (
+                          <Button
+                            key={category.id}
+                            variant={selectedEquipmentCategory === category.id ? "default" : "outline"}
+                            size="sm"
+                            className="gap-1.5 h-8 text-xs"
+                            onClick={() => setSelectedEquipmentCategory(category.id)}
+                          >
+                            <Icon className="w-3.5 h-3.5" />
+                            {category.label}
+                          </Button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  {/* Equipment Items */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm font-medium">{currentEquipmentCategory?.label} Items</Label>
+                      <Badge variant="outline" className="text-xs">
+                        {Object.keys(equippedItems).length} equipped
+                      </Badge>
+                    </div>
+                    <div className="grid grid-cols-1 gap-2">
+                      {currentEquipmentCategory?.items.map((item) => {
+                        const Icon = item.icon;
+                        const isEquipped = equippedItems[item.slot] === item.id;
+                        return (
+                          <motion.button
+                            key={item.id}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            className={`flex items-center gap-3 p-3 rounded-lg border transition-all text-left ${
+                              isEquipped 
+                                ? 'border-primary bg-primary/10' 
+                                : 'border-border hover:border-muted-foreground bg-card'
+                            }`}
+                            onClick={() => handleEquipItem(item.id, item.slot)}
+                          >
+                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                              isEquipped ? 'bg-primary text-primary-foreground' : 'bg-muted'
+                            }`}>
+                              <Icon className="w-5 h-5" />
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-medium text-sm">{item.name}</p>
+                              <p className="text-xs text-muted-foreground capitalize">
+                                Slot: {item.slot.replace(/([A-Z])/g, ' $1').trim()}
+                              </p>
+                            </div>
+                            {isEquipped && (
+                              <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
+                                <Check className="w-4 h-4 text-primary-foreground" />
+                              </div>
+                            )}
+                          </motion.button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {Object.keys(equippedItems).length > 0 && (
+                    <>
+                      <Separator />
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">Currently Equipped</Label>
+                        <div className="flex flex-wrap gap-2">
+                          {Object.entries(equippedItems).map(([slot, itemId]) => {
+                            const allItems = EQUIPMENT_CATEGORIES.flatMap(c => c.items);
+                            const item = allItems.find(i => i.id === itemId);
+                            if (!item) return null;
+                            const Icon = item.icon;
+                            return (
+                              <Badge 
+                                key={slot} 
+                                variant="secondary" 
+                                className="gap-1.5 py-1 cursor-pointer hover:bg-destructive/20"
+                                onClick={() => handleEquipItem(itemId, slot)}
+                              >
+                                <Icon className="w-3 h-3" />
+                                {item.name}
+                              </Badge>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </TabsContent>
               </ScrollArea>
             </Tabs>
