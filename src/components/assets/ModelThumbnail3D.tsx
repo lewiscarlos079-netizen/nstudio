@@ -178,11 +178,9 @@ export function ModelThumbnail3D({ modelId, className = '' }: ModelThumbnail3DPr
             powerPreference: 'high-performance',
             failIfMajorPerformanceCaveat: false,
           }}
-          dpr={[1, 1.5]}
-          frameloop="demand"
-          onCreated={({ gl }) => {
-            gl.setAnimationLoop(null);
-          }}
+          dpr={2}
+          frameloop="always"
+          performance={{ min: 0.8, max: 1 }}
         >
           <PerspectiveCamera makeDefault position={[1.5, 1, 1.5]} fov={40} />
           
