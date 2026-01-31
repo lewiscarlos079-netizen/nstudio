@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,7 +14,8 @@ import {
   MoreHorizontal,
   ExternalLink,
   Download,
-  RefreshCw
+  RefreshCw,
+  Pencil
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -21,8 +23,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SketchfabBrowser } from '@/components/assets/SketchfabBrowser';
 import { FileUploader } from '@/components/assets/FileUploader';
 import { ModelThumbnail3D } from '@/components/assets/ModelThumbnail3D';
+import { ModelEditModal } from '@/components/assets/ModelEditModal';
 import { useProjectStore } from '@/store/projectStore';
-import { useModelAssets, useRefreshModels, detectHardwareTier } from '@/hooks/useModelAssets';
+import { useModelAssets, useRefreshModels, detectHardwareTier, ModelAsset } from '@/hooks/useModelAssets';
 
 const assetSources = [
   { id: 'local', label: 'Local' },
@@ -47,6 +50,15 @@ export default function Assets() {
   const { data: modelAssets, isLoading: modelsLoading } = useModelAssets();
   const refreshModels = useRefreshModels();
   const hardwareTier = detectHardwareTier();
+  
+  // Edit modal state
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<ModelAsset | null>(null);
+
+  const handleEditModel = (model: ModelAsset) => {
+    setSelectedModel(model);
+    setEditModalOpen(true);
+  };
 
   return (
     <Layout>
@@ -159,6 +171,18 @@ export default function Assets() {
                           {/* Overlay on hover */}
                           <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-4">
                             <div className="flex gap-2">
+                              <Button 
+                                size="sm" 
+                                variant="glass" 
+                                className="h-8 gap-1"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEditModel(model);
+                                }}
+                              >
+                                <Pencil className="w-3 h-3" />
+                                Edit
+                              </Button>
                               <Button size="sm" variant="glass" className="h-8">
                                 <Download className="w-3 h-3" />
                               </Button>
@@ -302,6 +326,13 @@ export default function Assets() {
           </Tabs>
         </motion.div>
       </div>
+      
+      {/* Edit Modal */}
+      <ModelEditModal 
+        model={selectedModel}
+        open={editModalOpen}
+        onOpenChange={setEditModalOpen}
+      />
     </Layout>
   );
 }
