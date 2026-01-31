@@ -1,6 +1,6 @@
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
-import { Suspense, useMemo } from 'react';
+import { Suspense, useMemo, useState, useEffect } from 'react';
 import { 
   HumanoidModel, 
   DogModel, 
@@ -18,14 +18,18 @@ import {
   FlowerModel,
   RockModel,
 } from '@/components/3d/ProceduralModels';
+import { ModelStyle } from '@/store/sceneStore';
 
 interface ModelThumbnail3DProps {
   modelId: string;
   className?: string;
 }
 
+// Style cycle order for the 20-second refresh
+const STYLE_CYCLE: ModelStyle[] = ['toon', 'standard', 'wireframe'];
+
 // Map model IDs to their procedural components
-const MODEL_COMPONENTS: Record<string, React.FC<{ style?: 'standard' | 'toon' | 'wireframe' }>> = {
+const MODEL_COMPONENTS: Record<string, React.FC<{ style?: ModelStyle }>> = {
   'humanoid_male': HumanoidModel,
   'humanoid_female': HumanoidModel,
   'dog': DogModel,
@@ -37,18 +41,18 @@ const MODEL_COMPONENTS: Record<string, React.FC<{ style?: 'standard' | 'toon' | 
   'arabian_horse': HorseModel,
   'wolf': WolfModel,
   'gray_wolf': WolfModel,
-  'shark': WhaleModel, // Use whale as fallback
+  'shark': WhaleModel,
   'great_white_shark': WhaleModel,
   'dolphin': DolphinModel,
   'bottlenose_dolphin': DolphinModel,
-  'eagle': BirdModel, // Use bird as fallback
+  'eagle': BirdModel,
   'bald_eagle': BirdModel,
   'oak_tree': TreeModel,
   'pine_tree': TreeModel,
   'palm_tree': PalmTreeModel,
   'rose': FlowerModel,
   'rose_bush': FlowerModel,
-  'lake': RockModel, // Use rock as water placeholder
+  'lake': RockModel,
   'river': RockModel,
   'fountain': RockModel,
   'fish': FishModel,
@@ -60,16 +64,19 @@ const MODEL_COMPONENTS: Record<string, React.FC<{ style?: 'standard' | 'toon' | 
 };
 
 // Fallback primitive for unknown models
-function FallbackModel() {
+function FallbackModel({ style = 'toon' }: { style?: ModelStyle }) {
   return (
     <mesh>
       <boxGeometry args={[0.5, 0.5, 0.5]} />
-      <meshStandardMaterial color="#00d4ff" />
+      <meshStandardMaterial 
+        color="#00d4ff" 
+        wireframe={style === 'wireframe'}
+      />
     </mesh>
   );
 }
 
-function ModelScene({ modelId }: { modelId: string }) {
+function ModelScene({ modelId, style }: { modelId: string; style: ModelStyle }) {
   const ModelComponent = MODEL_COMPONENTS[modelId] || FallbackModel;
   
   // Calculate appropriate scale based on model type
@@ -88,14 +95,37 @@ function ModelScene({ modelId }: { modelId: string }) {
 
   return (
     <group scale={scale}>
-      <ModelComponent style="toon" />
+      <ModelComponent style={style} />
     </group>
   );
 }
 
 export function ModelThumbnail3D({ modelId, className = '' }: ModelThumbnail3DProps) {
+  // Cycle through styles every 20 seconds
+  const [styleIndex, setStyleIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Start transition
+      setIsTransitioning(true);
+      
+      // After fade out, change style
+      setTimeout(() => {
+        setStyleIndex((prev) => (prev + 1) % STYLE_CYCLE.length);
+        setIsTransitioning(false);
+      }, 300);
+    }, 20000); // 20 seconds
+    
+    return () => clearInterval(interval);
+  }, []);
+  
+  const currentStyle = STYLE_CYCLE[styleIndex];
+
   return (
-    <div className={`w-full h-full ${className}`}>
+    <div 
+      className={`w-full h-full transition-opacity duration-300 ${isTransitioning ? 'opacity-50' : 'opacity-100'} ${className}`}
+    >
       <Canvas
         gl={{ 
           antialias: true,
@@ -106,13 +136,16 @@ export function ModelThumbnail3D({ modelId, className = '' }: ModelThumbnail3DPr
       >
         <PerspectiveCamera makeDefault position={[1.5, 1, 1.5]} fov={40} />
         
-        {/* Lighting */}
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[5, 5, 5]} intensity={0.8} />
+        {/* Lighting - adjust based on style */}
+        <ambientLight intensity={currentStyle === 'wireframe' ? 0.8 : 0.6} />
+        <directionalLight 
+          position={[5, 5, 5]} 
+          intensity={currentStyle === 'standard' ? 1.0 : 0.8} 
+        />
         <directionalLight position={[-3, 3, -3]} intensity={0.3} />
         
         <Suspense fallback={null}>
-          <ModelScene modelId={modelId} />
+          <ModelScene modelId={modelId} style={currentStyle} />
         </Suspense>
         
         <OrbitControls 
@@ -122,6 +155,11 @@ export function ModelThumbnail3D({ modelId, className = '' }: ModelThumbnail3DPr
           autoRotateSpeed={2}
         />
       </Canvas>
+      
+      {/* Style indicator badge */}
+      <div className="absolute bottom-1 right-1 px-1.5 py-0.5 text-[10px] font-medium bg-background/80 backdrop-blur-sm rounded border border-primary/20 capitalize">
+        {currentStyle}
+      </div>
     </div>
   );
 }
