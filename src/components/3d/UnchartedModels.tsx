@@ -55,11 +55,11 @@ const COLORS = {
   metal: '#708090',
 };
 
-// Nathan Drake - Adventure explorer
+// Nathan Drake - Adventure explorer with proper joint mapping
 export function NathanDrakeModel({ style = 'standard' }: ModelProps) {
   return (
     <group>
-      {/* Head */}
+      {/* HEAD */}
       <group position={[0, 0.95, 0]}>
         <mesh>
           <sphereGeometry args={[0.13, 24, 24]} />
@@ -117,13 +117,17 @@ export function NathanDrakeModel({ style = 'standard' }: ModelProps) {
         </mesh>
       </group>
       
-      {/* Neck */}
+      {/* NECK JOINT - connects head to torso */}
       <mesh position={[0, 0.8, 0]}>
-        <cylinderGeometry args={[0.04, 0.045, 0.06, 12]} />
+        <sphereGeometry args={[0.045, 12, 12]} />
+        <StyledMaterial color={COLORS.drakeSkin} style={style} />
+      </mesh>
+      <mesh position={[0, 0.78, 0]}>
+        <cylinderGeometry args={[0.04, 0.045, 0.08, 12]} />
         <StyledMaterial color={COLORS.drakeSkin} style={style} />
       </mesh>
       
-      {/* Torso - Henley shirt */}
+      {/* TORSO - Henley shirt */}
       <group position={[0, 0.58, 0]}>
         <mesh>
           <capsuleGeometry args={[0.11, 0.16, 10, 20]} />
@@ -136,16 +140,22 @@ export function NathanDrakeModel({ style = 'standard' }: ModelProps) {
           <StyledMaterial color={COLORS.drakeSkin} style={style} />
         </mesh>
         
-        {/* Shoulders */}
+        {/* SHOULDER JOINTS */}
         <mesh position={[-0.14, 0.06, 0]}>
-          <sphereGeometry args={[0.05, 10, 10]} />
+          <sphereGeometry args={[0.05, 12, 12]} />
           <StyledMaterial color={COLORS.drakeHenley} style={style} />
         </mesh>
         <mesh position={[0.14, 0.06, 0]}>
-          <sphereGeometry args={[0.05, 10, 10]} />
+          <sphereGeometry args={[0.05, 12, 12]} />
           <StyledMaterial color={COLORS.drakeHenley} style={style} />
         </mesh>
       </group>
+      
+      {/* SPINE CONNECTION - torso to pelvis */}
+      <mesh position={[0, 0.44, 0]}>
+        <sphereGeometry args={[0.06, 10, 10]} />
+        <StyledMaterial color={COLORS.drakeHenley} style={style} />
+      </mesh>
       
       {/* Belt with holster */}
       <mesh position={[0, 0.4, 0]}>
@@ -157,64 +167,140 @@ export function NathanDrakeModel({ style = 'standard' }: ModelProps) {
         <StyledMaterial color={COLORS.leather} style={style} />
       </mesh>
       
-      {/* Arms */}
-      <group position={[-0.18, 0.6, 0]}>
+      {/* LEFT ARM with joints */}
+      <group position={[-0.18, 0.64, 0]}>
+        {/* Upper arm */}
         <mesh position={[0, -0.08, 0]} rotation={[0, 0, 0.15]}>
           <capsuleGeometry args={[0.035, 0.12, 8, 12]} />
           <StyledMaterial color={COLORS.drakeHenley} style={style} />
         </mesh>
-        <mesh position={[-0.02, -0.22, 0]}>
-          <capsuleGeometry args={[0.03, 0.1, 8, 12]} />
+        {/* ELBOW JOINT */}
+        <mesh position={[-0.02, -0.16, 0]}>
+          <sphereGeometry args={[0.032, 10, 10]} />
           <StyledMaterial color={COLORS.drakeSkin} style={style} />
         </mesh>
+        {/* Forearm */}
+        <mesh position={[-0.02, -0.24, 0]}>
+          <capsuleGeometry args={[0.028, 0.1, 8, 12]} />
+          <StyledMaterial color={COLORS.drakeSkin} style={style} />
+        </mesh>
+        {/* WRIST JOINT */}
         <mesh position={[-0.02, -0.32, 0]}>
-          <sphereGeometry args={[0.025, 8, 8]} />
+          <sphereGeometry args={[0.025, 10, 10]} />
+          <StyledMaterial color={COLORS.drakeSkin} style={style} />
+        </mesh>
+        {/* Hand */}
+        <mesh position={[-0.02, -0.38, 0]}>
+          <boxGeometry args={[0.04, 0.05, 0.02]} />
           <StyledMaterial color={COLORS.drakeSkin} style={style} />
         </mesh>
       </group>
-      <group position={[0.18, 0.6, 0]}>
+      
+      {/* RIGHT ARM with joints */}
+      <group position={[0.18, 0.64, 0]}>
+        {/* Upper arm */}
         <mesh position={[0, -0.08, 0]} rotation={[0, 0, -0.15]}>
           <capsuleGeometry args={[0.035, 0.12, 8, 12]} />
           <StyledMaterial color={COLORS.drakeHenley} style={style} />
         </mesh>
-        <mesh position={[0.02, -0.22, 0]}>
-          <capsuleGeometry args={[0.03, 0.1, 8, 12]} />
+        {/* ELBOW JOINT */}
+        <mesh position={[0.02, -0.16, 0]}>
+          <sphereGeometry args={[0.032, 10, 10]} />
           <StyledMaterial color={COLORS.drakeSkin} style={style} />
         </mesh>
+        {/* Forearm */}
+        <mesh position={[0.02, -0.24, 0]}>
+          <capsuleGeometry args={[0.028, 0.1, 8, 12]} />
+          <StyledMaterial color={COLORS.drakeSkin} style={style} />
+        </mesh>
+        {/* WRIST JOINT */}
         <mesh position={[0.02, -0.32, 0]}>
-          <sphereGeometry args={[0.025, 8, 8]} />
+          <sphereGeometry args={[0.025, 10, 10]} />
+          <StyledMaterial color={COLORS.drakeSkin} style={style} />
+        </mesh>
+        {/* Hand */}
+        <mesh position={[0.02, -0.38, 0]}>
+          <boxGeometry args={[0.04, 0.05, 0.02]} />
           <StyledMaterial color={COLORS.drakeSkin} style={style} />
         </mesh>
       </group>
       
-      {/* Legs - Jeans */}
-      <mesh position={[-0.055, 0.2, 0]}>
-        <capsuleGeometry args={[0.045, 0.2, 8, 12]} />
+      {/* HIP JOINTS */}
+      <mesh position={[-0.055, 0.34, 0]}>
+        <sphereGeometry args={[0.04, 10, 10]} />
         <StyledMaterial color={COLORS.drakePants} style={style} />
       </mesh>
-      <mesh position={[0.055, 0.2, 0]}>
-        <capsuleGeometry args={[0.045, 0.2, 8, 12]} />
+      <mesh position={[0.055, 0.34, 0]}>
+        <sphereGeometry args={[0.04, 10, 10]} />
         <StyledMaterial color={COLORS.drakePants} style={style} />
       </mesh>
       
-      {/* Boots */}
-      <mesh position={[-0.055, 0.03, 0.02]}>
-        <boxGeometry args={[0.06, 0.08, 0.1]} />
-        <StyledMaterial color={COLORS.drakeBoots} style={style} />
-      </mesh>
-      <mesh position={[0.055, 0.03, 0.02]}>
-        <boxGeometry args={[0.06, 0.08, 0.1]} />
-        <StyledMaterial color={COLORS.drakeBoots} style={style} />
-      </mesh>
+      {/* LEFT LEG with joints */}
+      <group position={[-0.055, 0.34, 0]}>
+        {/* Thigh */}
+        <mesh position={[0, -0.1, 0]}>
+          <capsuleGeometry args={[0.045, 0.12, 8, 12]} />
+          <StyledMaterial color={COLORS.drakePants} style={style} />
+        </mesh>
+        {/* KNEE JOINT */}
+        <mesh position={[0, -0.18, 0.01]}>
+          <sphereGeometry args={[0.038, 10, 10]} />
+          <StyledMaterial color={COLORS.drakePants} style={style} />
+        </mesh>
+        {/* Shin */}
+        <mesh position={[0, -0.28, 0]}>
+          <capsuleGeometry args={[0.035, 0.12, 8, 12]} />
+          <StyledMaterial color={COLORS.drakePants} style={style} />
+        </mesh>
+        {/* ANKLE JOINT */}
+        <mesh position={[0, -0.36, 0]}>
+          <sphereGeometry args={[0.028, 10, 10]} />
+          <StyledMaterial color={COLORS.drakeBoots} style={style} />
+        </mesh>
+        {/* Boot */}
+        <mesh position={[0, -0.4, 0.02]}>
+          <boxGeometry args={[0.06, 0.06, 0.1]} />
+          <StyledMaterial color={COLORS.drakeBoots} style={style} />
+        </mesh>
+      </group>
+      
+      {/* RIGHT LEG with joints */}
+      <group position={[0.055, 0.34, 0]}>
+        {/* Thigh */}
+        <mesh position={[0, -0.1, 0]}>
+          <capsuleGeometry args={[0.045, 0.12, 8, 12]} />
+          <StyledMaterial color={COLORS.drakePants} style={style} />
+        </mesh>
+        {/* KNEE JOINT */}
+        <mesh position={[0, -0.18, 0.01]}>
+          <sphereGeometry args={[0.038, 10, 10]} />
+          <StyledMaterial color={COLORS.drakePants} style={style} />
+        </mesh>
+        {/* Shin */}
+        <mesh position={[0, -0.28, 0]}>
+          <capsuleGeometry args={[0.035, 0.12, 8, 12]} />
+          <StyledMaterial color={COLORS.drakePants} style={style} />
+        </mesh>
+        {/* ANKLE JOINT */}
+        <mesh position={[0, -0.36, 0]}>
+          <sphereGeometry args={[0.028, 10, 10]} />
+          <StyledMaterial color={COLORS.drakeBoots} style={style} />
+        </mesh>
+        {/* Boot */}
+        <mesh position={[0, -0.4, 0.02]}>
+          <boxGeometry args={[0.06, 0.06, 0.1]} />
+          <StyledMaterial color={COLORS.drakeBoots} style={style} />
+        </mesh>
+      </group>
     </group>
   );
 }
 
-// Elena Fisher - Journalist explorer
+// Elena Fisher - Journalist explorer with proper joint mapping
 export function ElenaFisherModel({ style = 'standard' }: ModelProps) {
   return (
     <group>
-      {/* Head */}
+      {/* HEAD */}
       <group position={[0, 0.92, 0]}>
         <mesh>
           <sphereGeometry args={[0.12, 24, 24]} />
@@ -226,7 +312,6 @@ export function ElenaFisherModel({ style = 'standard' }: ModelProps) {
           <sphereGeometry args={[0.13, 20, 20, 0, Math.PI * 2, 0, Math.PI / 2]} />
           <StyledMaterial color={COLORS.elenaHair} style={style} />
         </mesh>
-        {/* Hair sides */}
         <mesh position={[-0.08, 0.02, 0]}>
           <sphereGeometry args={[0.06, 10, 10]} />
           <StyledMaterial color={COLORS.elenaHair} style={style} />
@@ -235,7 +320,6 @@ export function ElenaFisherModel({ style = 'standard' }: ModelProps) {
           <sphereGeometry args={[0.06, 10, 10]} />
           <StyledMaterial color={COLORS.elenaHair} style={style} />
         </mesh>
-        {/* Ponytail */}
         <mesh position={[0, 0, -0.12]} rotation={[0.5, 0, 0]}>
           <capsuleGeometry args={[0.03, 0.12, 8, 12]} />
           <StyledMaterial color={COLORS.elenaHair} style={style} />
@@ -266,27 +350,38 @@ export function ElenaFisherModel({ style = 'standard' }: ModelProps) {
         </mesh>
       </group>
       
-      {/* Neck */}
+      {/* NECK JOINT */}
       <mesh position={[0, 0.78, 0]}>
-        <cylinderGeometry args={[0.03, 0.035, 0.05, 12]} />
+        <sphereGeometry args={[0.035, 12, 12]} />
+        <StyledMaterial color={COLORS.elenaSkin} style={style} />
+      </mesh>
+      <mesh position={[0, 0.76, 0]}>
+        <cylinderGeometry args={[0.03, 0.035, 0.06, 12]} />
         <StyledMaterial color={COLORS.elenaSkin} style={style} />
       </mesh>
       
-      {/* Torso - Light shirt */}
+      {/* TORSO */}
       <group position={[0, 0.58, 0]}>
         <mesh>
           <capsuleGeometry args={[0.09, 0.14, 10, 20]} />
           <StyledMaterial color={COLORS.elenaShirt} style={style} />
         </mesh>
+        {/* SHOULDER JOINTS */}
         <mesh position={[-0.11, 0.05, 0]}>
-          <sphereGeometry args={[0.04, 10, 10]} />
+          <sphereGeometry args={[0.04, 12, 12]} />
           <StyledMaterial color={COLORS.elenaShirt} style={style} />
         </mesh>
         <mesh position={[0.11, 0.05, 0]}>
-          <sphereGeometry args={[0.04, 10, 10]} />
+          <sphereGeometry args={[0.04, 12, 12]} />
           <StyledMaterial color={COLORS.elenaShirt} style={style} />
         </mesh>
       </group>
+      
+      {/* SPINE CONNECTION */}
+      <mesh position={[0, 0.46, 0]}>
+        <sphereGeometry args={[0.05, 10, 10]} />
+        <StyledMaterial color={COLORS.elenaShirt} style={style} />
+      </mesh>
       
       {/* Belt */}
       <mesh position={[0, 0.42, 0]}>
@@ -294,56 +389,132 @@ export function ElenaFisherModel({ style = 'standard' }: ModelProps) {
         <StyledMaterial color={COLORS.leather} style={style} />
       </mesh>
       
-      {/* Arms */}
-      <group position={[-0.14, 0.58, 0]}>
+      {/* LEFT ARM with joints */}
+      <group position={[-0.14, 0.63, 0]}>
         <mesh position={[0, -0.08, 0]} rotation={[0, 0, 0.1]}>
           <capsuleGeometry args={[0.028, 0.1, 8, 12]} />
           <StyledMaterial color={COLORS.elenaShirt} style={style} />
         </mesh>
-        <mesh position={[-0.01, -0.2, 0]}>
+        {/* ELBOW JOINT */}
+        <mesh position={[-0.01, -0.15, 0]}>
+          <sphereGeometry args={[0.025, 10, 10]} />
+          <StyledMaterial color={COLORS.elenaSkin} style={style} />
+        </mesh>
+        <mesh position={[-0.01, -0.22, 0]}>
           <capsuleGeometry args={[0.022, 0.08, 8, 12]} />
           <StyledMaterial color={COLORS.elenaSkin} style={style} />
         </mesh>
+        {/* WRIST JOINT */}
+        <mesh position={[-0.01, -0.28, 0]}>
+          <sphereGeometry args={[0.02, 10, 10]} />
+          <StyledMaterial color={COLORS.elenaSkin} style={style} />
+        </mesh>
+        {/* Hand */}
+        <mesh position={[-0.01, -0.33, 0]}>
+          <boxGeometry args={[0.035, 0.04, 0.018]} />
+          <StyledMaterial color={COLORS.elenaSkin} style={style} />
+        </mesh>
       </group>
-      <group position={[0.14, 0.58, 0]}>
+      
+      {/* RIGHT ARM with joints */}
+      <group position={[0.14, 0.63, 0]}>
         <mesh position={[0, -0.08, 0]} rotation={[0, 0, -0.1]}>
           <capsuleGeometry args={[0.028, 0.1, 8, 12]} />
           <StyledMaterial color={COLORS.elenaShirt} style={style} />
         </mesh>
-        <mesh position={[0.01, -0.2, 0]}>
+        {/* ELBOW JOINT */}
+        <mesh position={[0.01, -0.15, 0]}>
+          <sphereGeometry args={[0.025, 10, 10]} />
+          <StyledMaterial color={COLORS.elenaSkin} style={style} />
+        </mesh>
+        <mesh position={[0.01, -0.22, 0]}>
           <capsuleGeometry args={[0.022, 0.08, 8, 12]} />
+          <StyledMaterial color={COLORS.elenaSkin} style={style} />
+        </mesh>
+        {/* WRIST JOINT */}
+        <mesh position={[0.01, -0.28, 0]}>
+          <sphereGeometry args={[0.02, 10, 10]} />
+          <StyledMaterial color={COLORS.elenaSkin} style={style} />
+        </mesh>
+        {/* Hand */}
+        <mesh position={[0.01, -0.33, 0]}>
+          <boxGeometry args={[0.035, 0.04, 0.018]} />
           <StyledMaterial color={COLORS.elenaSkin} style={style} />
         </mesh>
       </group>
       
-      {/* Legs - Khaki pants */}
-      <mesh position={[-0.045, 0.22, 0]}>
-        <capsuleGeometry args={[0.038, 0.18, 8, 12]} />
+      {/* HIP JOINTS */}
+      <mesh position={[-0.045, 0.36, 0]}>
+        <sphereGeometry args={[0.035, 10, 10]} />
         <StyledMaterial color={COLORS.elenaPants} style={style} />
       </mesh>
-      <mesh position={[0.045, 0.22, 0]}>
-        <capsuleGeometry args={[0.038, 0.18, 8, 12]} />
+      <mesh position={[0.045, 0.36, 0]}>
+        <sphereGeometry args={[0.035, 10, 10]} />
         <StyledMaterial color={COLORS.elenaPants} style={style} />
       </mesh>
       
-      {/* Boots */}
-      <mesh position={[-0.045, 0.04, 0.015]}>
-        <boxGeometry args={[0.05, 0.06, 0.08]} />
-        <StyledMaterial color={COLORS.leather} style={style} />
-      </mesh>
-      <mesh position={[0.045, 0.04, 0.015]}>
-        <boxGeometry args={[0.05, 0.06, 0.08]} />
-        <StyledMaterial color={COLORS.leather} style={style} />
-      </mesh>
+      {/* LEFT LEG with joints */}
+      <group position={[-0.045, 0.36, 0]}>
+        <mesh position={[0, -0.1, 0]}>
+          <capsuleGeometry args={[0.038, 0.1, 8, 12]} />
+          <StyledMaterial color={COLORS.elenaPants} style={style} />
+        </mesh>
+        {/* KNEE JOINT */}
+        <mesh position={[0, -0.17, 0.01]}>
+          <sphereGeometry args={[0.032, 10, 10]} />
+          <StyledMaterial color={COLORS.elenaPants} style={style} />
+        </mesh>
+        <mesh position={[0, -0.26, 0]}>
+          <capsuleGeometry args={[0.03, 0.1, 8, 12]} />
+          <StyledMaterial color={COLORS.elenaPants} style={style} />
+        </mesh>
+        {/* ANKLE JOINT */}
+        <mesh position={[0, -0.33, 0]}>
+          <sphereGeometry args={[0.025, 10, 10]} />
+          <StyledMaterial color={COLORS.leather} style={style} />
+        </mesh>
+        {/* Boot */}
+        <mesh position={[0, -0.37, 0.015]}>
+          <boxGeometry args={[0.05, 0.05, 0.08]} />
+          <StyledMaterial color={COLORS.leather} style={style} />
+        </mesh>
+      </group>
+      
+      {/* RIGHT LEG with joints */}
+      <group position={[0.045, 0.36, 0]}>
+        <mesh position={[0, -0.1, 0]}>
+          <capsuleGeometry args={[0.038, 0.1, 8, 12]} />
+          <StyledMaterial color={COLORS.elenaPants} style={style} />
+        </mesh>
+        {/* KNEE JOINT */}
+        <mesh position={[0, -0.17, 0.01]}>
+          <sphereGeometry args={[0.032, 10, 10]} />
+          <StyledMaterial color={COLORS.elenaPants} style={style} />
+        </mesh>
+        <mesh position={[0, -0.26, 0]}>
+          <capsuleGeometry args={[0.03, 0.1, 8, 12]} />
+          <StyledMaterial color={COLORS.elenaPants} style={style} />
+        </mesh>
+        {/* ANKLE JOINT */}
+        <mesh position={[0, -0.33, 0]}>
+          <sphereGeometry args={[0.025, 10, 10]} />
+          <StyledMaterial color={COLORS.leather} style={style} />
+        </mesh>
+        {/* Boot */}
+        <mesh position={[0, -0.37, 0.015]}>
+          <boxGeometry args={[0.05, 0.05, 0.08]} />
+          <StyledMaterial color={COLORS.leather} style={style} />
+        </mesh>
+      </group>
     </group>
   );
 }
 
-// Victor Sullivan (Sully) - Veteran mentor
+// Victor Sullivan (Sully) - Veteran mentor with proper joint mapping
 export function VictorSullivanModel({ style = 'standard' }: ModelProps) {
   return (
     <group>
-      {/* Head - older, weathered */}
+      {/* HEAD */}
       <group position={[0, 0.95, 0]}>
         <mesh>
           <sphereGeometry args={[0.14, 24, 24]} />
@@ -401,13 +572,17 @@ export function VictorSullivanModel({ style = 'standard' }: ModelProps) {
         </mesh>
       </group>
       
-      {/* Neck */}
-      <mesh position={[0, 0.78, 0]}>
-        <cylinderGeometry args={[0.05, 0.055, 0.07, 12]} />
+      {/* NECK JOINT */}
+      <mesh position={[0, 0.8, 0]}>
+        <sphereGeometry args={[0.05, 12, 12]} />
+        <StyledMaterial color={COLORS.sullySkin} style={style} />
+      </mesh>
+      <mesh position={[0, 0.77, 0]}>
+        <cylinderGeometry args={[0.05, 0.055, 0.08, 12]} />
         <StyledMaterial color={COLORS.sullySkin} style={style} />
       </mesh>
       
-      {/* Torso - Hawaiian shirt (stockier build) */}
+      {/* TORSO */}
       <group position={[0, 0.55, 0]}>
         <mesh>
           <capsuleGeometry args={[0.13, 0.18, 10, 20]} />
@@ -427,16 +602,22 @@ export function VictorSullivanModel({ style = 'standard' }: ModelProps) {
           <StyledMaterial color={COLORS.sullyShirtPattern} style={style} />
         </mesh>
         
-        {/* Shoulders - broader */}
+        {/* SHOULDER JOINTS */}
         <mesh position={[-0.16, 0.06, 0]}>
-          <sphereGeometry args={[0.06, 10, 10]} />
+          <sphereGeometry args={[0.06, 12, 12]} />
           <StyledMaterial color={COLORS.sullyShirt} style={style} />
         </mesh>
         <mesh position={[0.16, 0.06, 0]}>
-          <sphereGeometry args={[0.06, 10, 10]} />
+          <sphereGeometry args={[0.06, 12, 12]} />
           <StyledMaterial color={COLORS.sullyShirt} style={style} />
         </mesh>
       </group>
+      
+      {/* SPINE CONNECTION */}
+      <mesh position={[0, 0.42, 0]}>
+        <sphereGeometry args={[0.07, 10, 10]} />
+        <StyledMaterial color={COLORS.sullyShirt} style={style} />
+      </mesh>
       
       {/* Belt */}
       <mesh position={[0, 0.38, 0]}>
@@ -444,56 +625,132 @@ export function VictorSullivanModel({ style = 'standard' }: ModelProps) {
         <StyledMaterial color={COLORS.leather} style={style} />
       </mesh>
       
-      {/* Arms */}
-      <group position={[-0.2, 0.58, 0]}>
+      {/* LEFT ARM with joints */}
+      <group position={[-0.2, 0.61, 0]}>
         <mesh position={[0, -0.1, 0]} rotation={[0, 0, 0.15]}>
           <capsuleGeometry args={[0.04, 0.12, 8, 12]} />
           <StyledMaterial color={COLORS.sullyShirt} style={style} />
         </mesh>
-        <mesh position={[-0.02, -0.26, 0]}>
+        {/* ELBOW JOINT */}
+        <mesh position={[-0.02, -0.18, 0]}>
+          <sphereGeometry args={[0.038, 10, 10]} />
+          <StyledMaterial color={COLORS.sullySkin} style={style} />
+        </mesh>
+        <mesh position={[-0.02, -0.28, 0]}>
           <capsuleGeometry args={[0.035, 0.1, 8, 12]} />
           <StyledMaterial color={COLORS.sullySkin} style={style} />
         </mesh>
+        {/* WRIST JOINT */}
+        <mesh position={[-0.02, -0.36, 0]}>
+          <sphereGeometry args={[0.03, 10, 10]} />
+          <StyledMaterial color={COLORS.sullySkin} style={style} />
+        </mesh>
+        {/* Hand */}
+        <mesh position={[-0.02, -0.42, 0]}>
+          <boxGeometry args={[0.045, 0.05, 0.025]} />
+          <StyledMaterial color={COLORS.sullySkin} style={style} />
+        </mesh>
       </group>
-      <group position={[0.2, 0.58, 0]}>
+      
+      {/* RIGHT ARM with joints */}
+      <group position={[0.2, 0.61, 0]}>
         <mesh position={[0, -0.1, 0]} rotation={[0, 0, -0.15]}>
           <capsuleGeometry args={[0.04, 0.12, 8, 12]} />
           <StyledMaterial color={COLORS.sullyShirt} style={style} />
         </mesh>
-        <mesh position={[0.02, -0.26, 0]}>
+        {/* ELBOW JOINT */}
+        <mesh position={[0.02, -0.18, 0]}>
+          <sphereGeometry args={[0.038, 10, 10]} />
+          <StyledMaterial color={COLORS.sullySkin} style={style} />
+        </mesh>
+        <mesh position={[0.02, -0.28, 0]}>
           <capsuleGeometry args={[0.035, 0.1, 8, 12]} />
+          <StyledMaterial color={COLORS.sullySkin} style={style} />
+        </mesh>
+        {/* WRIST JOINT */}
+        <mesh position={[0.02, -0.36, 0]}>
+          <sphereGeometry args={[0.03, 10, 10]} />
+          <StyledMaterial color={COLORS.sullySkin} style={style} />
+        </mesh>
+        {/* Hand */}
+        <mesh position={[0.02, -0.42, 0]}>
+          <boxGeometry args={[0.045, 0.05, 0.025]} />
           <StyledMaterial color={COLORS.sullySkin} style={style} />
         </mesh>
       </group>
       
-      {/* Legs - Khaki pants */}
-      <mesh position={[-0.06, 0.18, 0]}>
-        <capsuleGeometry args={[0.05, 0.18, 8, 12]} />
+      {/* HIP JOINTS */}
+      <mesh position={[-0.06, 0.32, 0]}>
+        <sphereGeometry args={[0.045, 10, 10]} />
         <StyledMaterial color={COLORS.sullyPants} style={style} />
       </mesh>
-      <mesh position={[0.06, 0.18, 0]}>
-        <capsuleGeometry args={[0.05, 0.18, 8, 12]} />
+      <mesh position={[0.06, 0.32, 0]}>
+        <sphereGeometry args={[0.045, 10, 10]} />
         <StyledMaterial color={COLORS.sullyPants} style={style} />
       </mesh>
       
-      {/* Shoes */}
-      <mesh position={[-0.06, 0.03, 0.02]}>
-        <boxGeometry args={[0.06, 0.06, 0.1]} />
-        <StyledMaterial color={COLORS.leather} style={style} />
-      </mesh>
-      <mesh position={[0.06, 0.03, 0.02]}>
-        <boxGeometry args={[0.06, 0.06, 0.1]} />
-        <StyledMaterial color={COLORS.leather} style={style} />
-      </mesh>
+      {/* LEFT LEG with joints */}
+      <group position={[-0.06, 0.32, 0]}>
+        <mesh position={[0, -0.1, 0]}>
+          <capsuleGeometry args={[0.05, 0.1, 8, 12]} />
+          <StyledMaterial color={COLORS.sullyPants} style={style} />
+        </mesh>
+        {/* KNEE JOINT */}
+        <mesh position={[0, -0.17, 0.01]}>
+          <sphereGeometry args={[0.042, 10, 10]} />
+          <StyledMaterial color={COLORS.sullyPants} style={style} />
+        </mesh>
+        <mesh position={[0, -0.27, 0]}>
+          <capsuleGeometry args={[0.04, 0.1, 8, 12]} />
+          <StyledMaterial color={COLORS.sullyPants} style={style} />
+        </mesh>
+        {/* ANKLE JOINT */}
+        <mesh position={[0, -0.34, 0]}>
+          <sphereGeometry args={[0.032, 10, 10]} />
+          <StyledMaterial color={COLORS.leather} style={style} />
+        </mesh>
+        {/* Shoe */}
+        <mesh position={[0, -0.38, 0.02]}>
+          <boxGeometry args={[0.06, 0.06, 0.1]} />
+          <StyledMaterial color={COLORS.leather} style={style} />
+        </mesh>
+      </group>
+      
+      {/* RIGHT LEG with joints */}
+      <group position={[0.06, 0.32, 0]}>
+        <mesh position={[0, -0.1, 0]}>
+          <capsuleGeometry args={[0.05, 0.1, 8, 12]} />
+          <StyledMaterial color={COLORS.sullyPants} style={style} />
+        </mesh>
+        {/* KNEE JOINT */}
+        <mesh position={[0, -0.17, 0.01]}>
+          <sphereGeometry args={[0.042, 10, 10]} />
+          <StyledMaterial color={COLORS.sullyPants} style={style} />
+        </mesh>
+        <mesh position={[0, -0.27, 0]}>
+          <capsuleGeometry args={[0.04, 0.1, 8, 12]} />
+          <StyledMaterial color={COLORS.sullyPants} style={style} />
+        </mesh>
+        {/* ANKLE JOINT */}
+        <mesh position={[0, -0.34, 0]}>
+          <sphereGeometry args={[0.032, 10, 10]} />
+          <StyledMaterial color={COLORS.leather} style={style} />
+        </mesh>
+        {/* Shoe */}
+        <mesh position={[0, -0.38, 0.02]}>
+          <boxGeometry args={[0.06, 0.06, 0.1]} />
+          <StyledMaterial color={COLORS.leather} style={style} />
+        </mesh>
+      </group>
     </group>
   );
 }
 
-// Chloe Frazer - Tactical treasure hunter
+// Chloe Frazer - Tactical treasure hunter with proper joint mapping
 export function ChloeFrazerModel({ style = 'standard' }: ModelProps) {
   return (
     <group>
-      {/* Head */}
+      {/* HEAD */}
       <group position={[0, 0.92, 0]}>
         <mesh>
           <sphereGeometry args={[0.12, 24, 24]} />
@@ -513,7 +770,6 @@ export function ChloeFrazerModel({ style = 'standard' }: ModelProps) {
           <sphereGeometry args={[0.06, 10, 10]} />
           <StyledMaterial color={COLORS.chloeHair} style={style} />
         </mesh>
-        {/* Hair falling down */}
         <mesh position={[-0.1, -0.08, -0.04]} rotation={[0, 0, 0.2]}>
           <capsuleGeometry args={[0.03, 0.1, 6, 8]} />
           <StyledMaterial color={COLORS.chloeHair} style={style} />
@@ -548,27 +804,38 @@ export function ChloeFrazerModel({ style = 'standard' }: ModelProps) {
         </mesh>
       </group>
       
-      {/* Neck */}
+      {/* NECK JOINT */}
       <mesh position={[0, 0.78, 0]}>
-        <cylinderGeometry args={[0.03, 0.035, 0.05, 12]} />
+        <sphereGeometry args={[0.035, 12, 12]} />
+        <StyledMaterial color={COLORS.chloeSkin} style={style} />
+      </mesh>
+      <mesh position={[0, 0.76, 0]}>
+        <cylinderGeometry args={[0.03, 0.035, 0.06, 12]} />
         <StyledMaterial color={COLORS.chloeSkin} style={style} />
       </mesh>
       
-      {/* Torso - Dark tactical top */}
+      {/* TORSO */}
       <group position={[0, 0.58, 0]}>
         <mesh>
           <capsuleGeometry args={[0.09, 0.14, 10, 20]} />
           <StyledMaterial color={COLORS.chloeTop} style={style} />
         </mesh>
+        {/* SHOULDER JOINTS */}
         <mesh position={[-0.11, 0.05, 0]}>
-          <sphereGeometry args={[0.04, 10, 10]} />
+          <sphereGeometry args={[0.04, 12, 12]} />
           <StyledMaterial color={COLORS.chloeTop} style={style} />
         </mesh>
         <mesh position={[0.11, 0.05, 0]}>
-          <sphereGeometry args={[0.04, 10, 10]} />
+          <sphereGeometry args={[0.04, 12, 12]} />
           <StyledMaterial color={COLORS.chloeTop} style={style} />
         </mesh>
       </group>
+      
+      {/* SPINE CONNECTION */}
+      <mesh position={[0, 0.46, 0]}>
+        <sphereGeometry args={[0.05, 10, 10]} />
+        <StyledMaterial color={COLORS.chloeTop} style={style} />
+      </mesh>
       
       {/* Tactical belt with pouches */}
       <mesh position={[0, 0.42, 0]}>
@@ -584,47 +851,123 @@ export function ChloeFrazerModel({ style = 'standard' }: ModelProps) {
         <StyledMaterial color={COLORS.leather} style={style} />
       </mesh>
       
-      {/* Arms */}
-      <group position={[-0.14, 0.58, 0]}>
+      {/* LEFT ARM with joints */}
+      <group position={[-0.14, 0.63, 0]}>
         <mesh position={[0, -0.08, 0]} rotation={[0, 0, 0.1]}>
           <capsuleGeometry args={[0.028, 0.1, 8, 12]} />
           <StyledMaterial color={COLORS.chloeTop} style={style} />
         </mesh>
-        <mesh position={[-0.01, -0.2, 0]}>
+        {/* ELBOW JOINT */}
+        <mesh position={[-0.01, -0.15, 0]}>
+          <sphereGeometry args={[0.025, 10, 10]} />
+          <StyledMaterial color={COLORS.chloeSkin} style={style} />
+        </mesh>
+        <mesh position={[-0.01, -0.22, 0]}>
           <capsuleGeometry args={[0.022, 0.08, 8, 12]} />
           <StyledMaterial color={COLORS.chloeSkin} style={style} />
         </mesh>
+        {/* WRIST JOINT */}
+        <mesh position={[-0.01, -0.28, 0]}>
+          <sphereGeometry args={[0.02, 10, 10]} />
+          <StyledMaterial color={COLORS.chloeSkin} style={style} />
+        </mesh>
+        {/* Hand */}
+        <mesh position={[-0.01, -0.33, 0]}>
+          <boxGeometry args={[0.035, 0.04, 0.018]} />
+          <StyledMaterial color={COLORS.chloeSkin} style={style} />
+        </mesh>
       </group>
-      <group position={[0.14, 0.58, 0]}>
+      
+      {/* RIGHT ARM with joints */}
+      <group position={[0.14, 0.63, 0]}>
         <mesh position={[0, -0.08, 0]} rotation={[0, 0, -0.1]}>
           <capsuleGeometry args={[0.028, 0.1, 8, 12]} />
           <StyledMaterial color={COLORS.chloeTop} style={style} />
         </mesh>
-        <mesh position={[0.01, -0.2, 0]}>
+        {/* ELBOW JOINT */}
+        <mesh position={[0.01, -0.15, 0]}>
+          <sphereGeometry args={[0.025, 10, 10]} />
+          <StyledMaterial color={COLORS.chloeSkin} style={style} />
+        </mesh>
+        <mesh position={[0.01, -0.22, 0]}>
           <capsuleGeometry args={[0.022, 0.08, 8, 12]} />
+          <StyledMaterial color={COLORS.chloeSkin} style={style} />
+        </mesh>
+        {/* WRIST JOINT */}
+        <mesh position={[0.01, -0.28, 0]}>
+          <sphereGeometry args={[0.02, 10, 10]} />
+          <StyledMaterial color={COLORS.chloeSkin} style={style} />
+        </mesh>
+        {/* Hand */}
+        <mesh position={[0.01, -0.33, 0]}>
+          <boxGeometry args={[0.035, 0.04, 0.018]} />
           <StyledMaterial color={COLORS.chloeSkin} style={style} />
         </mesh>
       </group>
       
-      {/* Legs - Dark tactical pants */}
-      <mesh position={[-0.045, 0.22, 0]}>
-        <capsuleGeometry args={[0.038, 0.18, 8, 12]} />
+      {/* HIP JOINTS */}
+      <mesh position={[-0.045, 0.36, 0]}>
+        <sphereGeometry args={[0.035, 10, 10]} />
         <StyledMaterial color={COLORS.chloePants} style={style} />
       </mesh>
-      <mesh position={[0.045, 0.22, 0]}>
-        <capsuleGeometry args={[0.038, 0.18, 8, 12]} />
+      <mesh position={[0.045, 0.36, 0]}>
+        <sphereGeometry args={[0.035, 10, 10]} />
         <StyledMaterial color={COLORS.chloePants} style={style} />
       </mesh>
       
-      {/* Tactical boots */}
-      <mesh position={[-0.045, 0.04, 0.015]}>
-        <boxGeometry args={[0.05, 0.07, 0.085]} />
-        <StyledMaterial color="#1a1a1a" style={style} />
-      </mesh>
-      <mesh position={[0.045, 0.04, 0.015]}>
-        <boxGeometry args={[0.05, 0.07, 0.085]} />
-        <StyledMaterial color="#1a1a1a" style={style} />
-      </mesh>
+      {/* LEFT LEG with joints */}
+      <group position={[-0.045, 0.36, 0]}>
+        <mesh position={[0, -0.1, 0]}>
+          <capsuleGeometry args={[0.038, 0.1, 8, 12]} />
+          <StyledMaterial color={COLORS.chloePants} style={style} />
+        </mesh>
+        {/* KNEE JOINT */}
+        <mesh position={[0, -0.17, 0.01]}>
+          <sphereGeometry args={[0.032, 10, 10]} />
+          <StyledMaterial color={COLORS.chloePants} style={style} />
+        </mesh>
+        <mesh position={[0, -0.26, 0]}>
+          <capsuleGeometry args={[0.03, 0.1, 8, 12]} />
+          <StyledMaterial color={COLORS.chloePants} style={style} />
+        </mesh>
+        {/* ANKLE JOINT */}
+        <mesh position={[0, -0.33, 0]}>
+          <sphereGeometry args={[0.025, 10, 10]} />
+          <StyledMaterial color="#1a1a1a" style={style} />
+        </mesh>
+        {/* Tactical boot */}
+        <mesh position={[0, -0.38, 0.015]}>
+          <boxGeometry args={[0.05, 0.06, 0.085]} />
+          <StyledMaterial color="#1a1a1a" style={style} />
+        </mesh>
+      </group>
+      
+      {/* RIGHT LEG with joints */}
+      <group position={[0.045, 0.36, 0]}>
+        <mesh position={[0, -0.1, 0]}>
+          <capsuleGeometry args={[0.038, 0.1, 8, 12]} />
+          <StyledMaterial color={COLORS.chloePants} style={style} />
+        </mesh>
+        {/* KNEE JOINT */}
+        <mesh position={[0, -0.17, 0.01]}>
+          <sphereGeometry args={[0.032, 10, 10]} />
+          <StyledMaterial color={COLORS.chloePants} style={style} />
+        </mesh>
+        <mesh position={[0, -0.26, 0]}>
+          <capsuleGeometry args={[0.03, 0.1, 8, 12]} />
+          <StyledMaterial color={COLORS.chloePants} style={style} />
+        </mesh>
+        {/* ANKLE JOINT */}
+        <mesh position={[0, -0.33, 0]}>
+          <sphereGeometry args={[0.025, 10, 10]} />
+          <StyledMaterial color="#1a1a1a" style={style} />
+        </mesh>
+        {/* Tactical boot */}
+        <mesh position={[0, -0.38, 0.015]}>
+          <boxGeometry args={[0.05, 0.06, 0.085]} />
+          <StyledMaterial color="#1a1a1a" style={style} />
+        </mesh>
+      </group>
     </group>
   );
 }
