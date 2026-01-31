@@ -59,7 +59,11 @@ const COLORS = {
   bearPolar: '#F0F0F0',      // White smoke
   foxOrange: '#FF6B35',      // Fox orange
   foxWhite: '#FFFAF0',       // Fox chest
-  
+  raccoonGray: '#5A5A5A',    // Raccoon body gray
+  raccoonMask: '#1a1a1a',    // Raccoon eye mask black
+  raccoonRings: '#2a2a2a',   // Tail ring dark
+  raccoonCream: '#F5F5DC',   // Raccoon light fur
+
   // Animal colors - Birds
   birdBlue: '#4169E1',       // Royal blue (Bluebird)
   birdRed: '#DC143C',        // Crimson (Cardinal)
@@ -1286,15 +1290,34 @@ export function CatModel({ color = COLORS.catOrange, style = 'standard' }: Model
           <StyledMaterial color={color} style={style} />
         </mesh>
       ))}
-      {/* Tail */}
-      <mesh position={[-0.28, 0.28, 0]} rotation={[0, 0, 1.3]}>
-        <capsuleGeometry args={[0.018, 0.15, 6, 12]} />
-        <StyledMaterial color={color} style={style} />
-      </mesh>
-      <mesh position={[-0.38, 0.4, 0]} rotation={[0, 0, 1.8]}>
-        <capsuleGeometry args={[0.015, 0.1, 6, 12]} />
-        <StyledMaterial color={color} style={style} />
-      </mesh>
+      {/* Tail - connected with base joint to hip */}
+      <group position={[-0.2, 0.2, 0]}>
+        {/* Tail base connection joint - attaches to hip */}
+        <mesh position={[0, 0, 0]}>
+          <sphereGeometry args={[0.025, 10, 10]} />
+          <StyledMaterial color={color} style={style} surface="fur" />
+        </mesh>
+        {/* Tail segment 1 */}
+        <mesh position={[-0.05, 0.06, 0]} rotation={[0, 0, 1.0]}>
+          <capsuleGeometry args={[0.02, 0.1, 8, 12]} />
+          <StyledMaterial color={color} style={style} surface="fur" />
+        </mesh>
+        {/* Joint between segments */}
+        <mesh position={[-0.1, 0.14, 0]}>
+          <sphereGeometry args={[0.018, 8, 8]} />
+          <StyledMaterial color={color} style={style} surface="fur" />
+        </mesh>
+        {/* Tail segment 2 - curves up */}
+        <mesh position={[-0.15, 0.22, 0]} rotation={[0, 0, 1.5]}>
+          <capsuleGeometry args={[0.016, 0.1, 8, 12]} />
+          <StyledMaterial color={color} style={style} surface="fur" />
+        </mesh>
+        {/* Fluffy tip */}
+        <mesh position={[-0.18, 0.32, 0]}>
+          <sphereGeometry args={[0.022, 10, 10]} />
+          <StyledMaterial color={color} style={style} surface="fur" />
+        </mesh>
+      </group>
     </group>
   );
 }
@@ -1369,11 +1392,34 @@ export function WolfModel({ color = COLORS.wolfGray, style = 'standard' }: Model
         <capsuleGeometry args={[0.045, 0.18, 6, 12]} />
         <StyledMaterial color={color} style={style} />
       </mesh>
-      {/* Bushy tail */}
-      <mesh position={[-0.42, 0.38, 0]} rotation={[0, 0, 0.6]}>
-        <capsuleGeometry args={[0.05, 0.2, 8, 12]} />
-        <StyledMaterial color={color} style={style} />
-      </mesh>
+      {/* Bushy tail - connected with base joint to hip */}
+      <group position={[-0.25, 0.32, 0]}>
+        {/* Tail base connection - attaches to hip */}
+        <mesh position={[0, 0, 0]}>
+          <sphereGeometry args={[0.045, 12, 12]} />
+          <StyledMaterial color={color} style={style} surface="fur" />
+        </mesh>
+        {/* Tail segment 1 */}
+        <mesh position={[-0.08, 0.04, 0]} rotation={[0, 0, 0.4]}>
+          <capsuleGeometry args={[0.05, 0.12, 10, 14]} />
+          <StyledMaterial color={color} style={style} surface="fur" />
+        </mesh>
+        {/* Tail joint */}
+        <mesh position={[-0.15, 0.1, 0]}>
+          <sphereGeometry args={[0.04, 10, 10]} />
+          <StyledMaterial color={color} style={style} surface="fur" />
+        </mesh>
+        {/* Tail segment 2 - bushy end */}
+        <mesh position={[-0.22, 0.15, 0]} rotation={[0, 0, 0.6]}>
+          <capsuleGeometry args={[0.055, 0.12, 10, 14]} />
+          <StyledMaterial color={color} style={style} surface="fur" />
+        </mesh>
+        {/* Bushy tip */}
+        <mesh position={[-0.28, 0.22, 0]}>
+          <sphereGeometry args={[0.05, 12, 12]} />
+          <StyledMaterial color={color} style={style} surface="fur" />
+        </mesh>
+      </group>
     </group>
   );
 }
@@ -1456,11 +1502,44 @@ export function TigerModel({ color = COLORS.tigerOrange, style = 'standard' }: M
         <capsuleGeometry args={[0.05, 0.15, 6, 12]} />
         <StyledMaterial color={color} style={style} />
       </mesh>
-      {/* Tail with stripes */}
-      <mesh position={[-0.4, 0.32, 0]} rotation={[0, 0, 0.8]}>
-        <capsuleGeometry args={[0.03, 0.25, 6, 12]} />
-        <StyledMaterial color={color} style={style} />
-      </mesh>
+      {/* Tail with stripes - connected with base joint */}
+      <group position={[-0.22, 0.28, 0]}>
+        {/* Tail base connection */}
+        <mesh position={[0, 0, 0]}>
+          <sphereGeometry args={[0.035, 10, 10]} />
+          <StyledMaterial color={color} style={style} surface="fur" />
+        </mesh>
+        {/* Tail segment 1 */}
+        <mesh position={[-0.08, 0.03, 0]} rotation={[0, 0, 0.6]}>
+          <capsuleGeometry args={[0.032, 0.1, 8, 12]} />
+          <StyledMaterial color={color} style={style} surface="fur" />
+        </mesh>
+        {/* Stripe 1 */}
+        <mesh position={[-0.08, 0.03, 0]} rotation={[0, 0, 0.6]}>
+          <cylinderGeometry args={[0.035, 0.035, 0.015, 12]} />
+          <StyledMaterial color={stripeColor} style={style} surface="fur" />
+        </mesh>
+        {/* Tail joint */}
+        <mesh position={[-0.14, 0.08, 0]}>
+          <sphereGeometry args={[0.028, 8, 8]} />
+          <StyledMaterial color={stripeColor} style={style} surface="fur" />
+        </mesh>
+        {/* Tail segment 2 */}
+        <mesh position={[-0.2, 0.12, 0]} rotation={[0, 0, 0.8]}>
+          <capsuleGeometry args={[0.028, 0.08, 8, 12]} />
+          <StyledMaterial color={color} style={style} surface="fur" />
+        </mesh>
+        {/* Stripe 2 */}
+        <mesh position={[-0.2, 0.12, 0]} rotation={[0, 0, 0.8]}>
+          <cylinderGeometry args={[0.03, 0.03, 0.015, 12]} />
+          <StyledMaterial color={stripeColor} style={style} surface="fur" />
+        </mesh>
+        {/* Tail tip */}
+        <mesh position={[-0.25, 0.18, 0]}>
+          <sphereGeometry args={[0.025, 10, 10]} />
+          <StyledMaterial color={stripeColor} style={style} surface="fur" />
+        </mesh>
+      </group>
     </group>
   );
 }
@@ -2491,6 +2570,224 @@ export function FoxModel({ color = COLORS.foxOrange, style = 'standard' }: Model
         <sphereGeometry args={[0.04, 8, 8]} />
         <StyledMaterial color={tailTip} style={style} />
       </mesh>
+    </group>
+  );
+}
+
+export function RaccoonModel({ color = COLORS.raccoonGray, style = 'standard' }: ModelProps) {
+  const breathRef = useBreathing(2.2);
+  const maskColor = COLORS.raccoonMask;
+  const ringColor = COLORS.raccoonRings;
+  const creamColor = COLORS.raccoonCream;
+  
+  return (
+    <group ref={breathRef}>
+      {/* BODY - Stocky build */}
+      <mesh position={[0, 0.2, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <capsuleGeometry args={[0.1, 0.2, 10, 16]} />
+        <StyledMaterial color={color} style={style} surface="fur" />
+      </mesh>
+      {/* Belly - lighter fur */}
+      <mesh position={[0, 0.16, 0.02]} rotation={[0, 0, Math.PI / 2]} scale={[0.8, 0.9, 0.7]}>
+        <capsuleGeometry args={[0.08, 0.18, 8, 14]} />
+        <StyledMaterial color={creamColor} style={style} surface="fur" />
+      </mesh>
+      
+      {/* HEAD - Distinctive pointed face */}
+      <mesh position={[0.18, 0.28, 0]}>
+        <sphereGeometry args={[0.1, 16, 16]} />
+        <StyledMaterial color={color} style={style} surface="fur" />
+      </mesh>
+      
+      {/* Snout - pointed */}
+      <mesh position={[0.28, 0.26, 0]} rotation={[0, 0, 0.1]}>
+        <boxGeometry args={[0.06, 0.04, 0.05]} />
+        <StyledMaterial color={creamColor} style={style} surface="fur" />
+      </mesh>
+      
+      {/* Nose - black */}
+      <mesh position={[0.31, 0.27, 0]}>
+        <sphereGeometry args={[0.015, 8, 8]} />
+        <StyledMaterial color={COLORS.black} style={style} />
+      </mesh>
+      
+      {/* ICONIC MASK - Black eye patches */}
+      {/* Left mask patch */}
+      <mesh position={[0.2, 0.3, 0.05]} scale={[1, 0.8, 0.5]}>
+        <sphereGeometry args={[0.035, 10, 10]} />
+        <StyledMaterial color={maskColor} style={style} surface="fur" />
+      </mesh>
+      {/* Right mask patch */}
+      <mesh position={[0.2, 0.3, -0.05]} scale={[1, 0.8, 0.5]}>
+        <sphereGeometry args={[0.035, 10, 10]} />
+        <StyledMaterial color={maskColor} style={style} surface="fur" />
+      </mesh>
+      {/* Mask bridge connection */}
+      <mesh position={[0.22, 0.3, 0]}>
+        <boxGeometry args={[0.02, 0.02, 0.08]} />
+        <StyledMaterial color={maskColor} style={style} surface="fur" />
+      </mesh>
+      
+      {/* Eyes - within the mask */}
+      <mesh position={[0.21, 0.3, 0.045]}>
+        <sphereGeometry args={[0.018, 8, 8]} />
+        <StyledMaterial color={COLORS.eyeWhite} style={style} />
+      </mesh>
+      <mesh position={[0.22, 0.3, 0.045]}>
+        <sphereGeometry args={[0.01, 6, 6]} />
+        <StyledMaterial color={COLORS.eyeBlack} style={style} />
+      </mesh>
+      <mesh position={[0.21, 0.3, -0.045]}>
+        <sphereGeometry args={[0.018, 8, 8]} />
+        <StyledMaterial color={COLORS.eyeWhite} style={style} />
+      </mesh>
+      <mesh position={[0.22, 0.3, -0.045]}>
+        <sphereGeometry args={[0.01, 6, 6]} />
+        <StyledMaterial color={COLORS.eyeBlack} style={style} />
+      </mesh>
+      
+      {/* White fur around mask */}
+      <mesh position={[0.15, 0.32, 0]}>
+        <sphereGeometry args={[0.05, 10, 10]} />
+        <StyledMaterial color={creamColor} style={style} surface="fur" />
+      </mesh>
+      
+      {/* Ears - rounded */}
+      <mesh position={[0.12, 0.38, 0.06]}>
+        <sphereGeometry args={[0.025, 10, 10]} />
+        <StyledMaterial color={color} style={style} surface="fur" />
+      </mesh>
+      <mesh position={[0.13, 0.38, 0.055]}>
+        <sphereGeometry args={[0.015, 8, 8]} />
+        <StyledMaterial color={creamColor} style={style} surface="fur" />
+      </mesh>
+      <mesh position={[0.12, 0.38, -0.06]}>
+        <sphereGeometry args={[0.025, 10, 10]} />
+        <StyledMaterial color={color} style={style} surface="fur" />
+      </mesh>
+      <mesh position={[0.13, 0.38, -0.055]}>
+        <sphereGeometry args={[0.015, 8, 8]} />
+        <StyledMaterial color={creamColor} style={style} surface="fur" />
+      </mesh>
+      
+      {/* LEGS - Short with dexterous paws */}
+      {/* Front legs */}
+      <group position={[0.1, 0.08, 0.06]}>
+        <mesh position={[0, 0, 0]}>
+          <capsuleGeometry args={[0.025, 0.08, 6, 10]} />
+          <StyledMaterial color={color} style={style} surface="fur" />
+        </mesh>
+        {/* Paw */}
+        <mesh position={[0, -0.06, 0]}>
+          <sphereGeometry args={[0.025, 8, 8]} />
+          <StyledMaterial color={COLORS.black} style={style} surface="fur" />
+        </mesh>
+        {/* Fingers */}
+        {[-0.01, 0, 0.01].map((z, i) => (
+          <mesh key={i} position={[0.015, -0.07, z]}>
+            <sphereGeometry args={[0.008, 6, 6]} />
+            <StyledMaterial color={COLORS.black} style={style} />
+          </mesh>
+        ))}
+      </group>
+      <group position={[0.1, 0.08, -0.06]}>
+        <mesh position={[0, 0, 0]}>
+          <capsuleGeometry args={[0.025, 0.08, 6, 10]} />
+          <StyledMaterial color={color} style={style} surface="fur" />
+        </mesh>
+        <mesh position={[0, -0.06, 0]}>
+          <sphereGeometry args={[0.025, 8, 8]} />
+          <StyledMaterial color={COLORS.black} style={style} surface="fur" />
+        </mesh>
+        {[-0.01, 0, 0.01].map((z, i) => (
+          <mesh key={i} position={[0.015, -0.07, z]}>
+            <sphereGeometry args={[0.008, 6, 6]} />
+            <StyledMaterial color={COLORS.black} style={style} />
+          </mesh>
+        ))}
+      </group>
+      
+      {/* Back legs */}
+      <group position={[-0.1, 0.08, 0.06]}>
+        <mesh position={[0, 0, 0]}>
+          <capsuleGeometry args={[0.028, 0.08, 6, 10]} />
+          <StyledMaterial color={color} style={style} surface="fur" />
+        </mesh>
+        <mesh position={[-0.01, -0.06, 0]}>
+          <sphereGeometry args={[0.028, 8, 8]} />
+          <StyledMaterial color={COLORS.black} style={style} surface="fur" />
+        </mesh>
+      </group>
+      <group position={[-0.1, 0.08, -0.06]}>
+        <mesh position={[0, 0, 0]}>
+          <capsuleGeometry args={[0.028, 0.08, 6, 10]} />
+          <StyledMaterial color={color} style={style} surface="fur" />
+        </mesh>
+        <mesh position={[-0.01, -0.06, 0]}>
+          <sphereGeometry args={[0.028, 8, 8]} />
+          <StyledMaterial color={COLORS.black} style={style} surface="fur" />
+        </mesh>
+      </group>
+      
+      {/* RINGED TAIL - Iconic striped pattern, properly connected */}
+      <group position={[-0.18, 0.2, 0]}>
+        {/* Tail base connection joint */}
+        <mesh position={[0, 0, 0]}>
+          <sphereGeometry args={[0.035, 10, 10]} />
+          <StyledMaterial color={color} style={style} surface="fur" />
+        </mesh>
+        
+        {/* Tail segment 1 */}
+        <mesh position={[-0.05, 0.02, 0]} rotation={[0, 0, 0.3]}>
+          <capsuleGeometry args={[0.035, 0.08, 8, 12]} />
+          <StyledMaterial color={color} style={style} surface="fur" />
+        </mesh>
+        {/* Ring 1 */}
+        <mesh position={[-0.05, 0.02, 0]} rotation={[0, 0, 0.3]}>
+          <cylinderGeometry args={[0.038, 0.038, 0.02, 12]} />
+          <StyledMaterial color={ringColor} style={style} surface="fur" />
+        </mesh>
+        
+        {/* Joint 1 */}
+        <mesh position={[-0.1, 0.06, 0]}>
+          <sphereGeometry args={[0.03, 8, 8]} />
+          <StyledMaterial color={ringColor} style={style} surface="fur" />
+        </mesh>
+        
+        {/* Tail segment 2 */}
+        <mesh position={[-0.15, 0.1, 0]} rotation={[0, 0, 0.5]}>
+          <capsuleGeometry args={[0.032, 0.07, 8, 12]} />
+          <StyledMaterial color={color} style={style} surface="fur" />
+        </mesh>
+        {/* Ring 2 */}
+        <mesh position={[-0.15, 0.1, 0]} rotation={[0, 0, 0.5]}>
+          <cylinderGeometry args={[0.035, 0.035, 0.02, 12]} />
+          <StyledMaterial color={ringColor} style={style} surface="fur" />
+        </mesh>
+        
+        {/* Joint 2 */}
+        <mesh position={[-0.2, 0.15, 0]}>
+          <sphereGeometry args={[0.028, 8, 8]} />
+          <StyledMaterial color={ringColor} style={style} surface="fur" />
+        </mesh>
+        
+        {/* Tail segment 3 */}
+        <mesh position={[-0.25, 0.2, 0]} rotation={[0, 0, 0.7]}>
+          <capsuleGeometry args={[0.028, 0.06, 8, 12]} />
+          <StyledMaterial color={color} style={style} surface="fur" />
+        </mesh>
+        {/* Ring 3 */}
+        <mesh position={[-0.25, 0.2, 0]} rotation={[0, 0, 0.7]}>
+          <cylinderGeometry args={[0.03, 0.03, 0.02, 12]} />
+          <StyledMaterial color={ringColor} style={style} surface="fur" />
+        </mesh>
+        
+        {/* Tail tip - black */}
+        <mesh position={[-0.29, 0.26, 0]}>
+          <sphereGeometry args={[0.028, 10, 10]} />
+          <StyledMaterial color={ringColor} style={style} surface="fur" />
+        </mesh>
+      </group>
     </group>
   );
 }
@@ -3730,6 +4027,7 @@ export const ProceduralModelRegistry: Record<string, React.ComponentType<ModelPr
   'penguin': PenguinModel,
   'rabbit': RabbitModel,
   'fox': FoxModel,
+  'raccoon': RaccoonModel,
   
   // Nature
   'tree': TreeModel,
