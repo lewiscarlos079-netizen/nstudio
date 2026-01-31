@@ -105,6 +105,54 @@ const preloadedAssets: PreloadedAsset[] = [
   { id: 'tower', name: 'Tower', category: 'structures', subcategory: 'buildings', icon: Building2, tags: ['tall', 'stone', 'defense'], tier: 'free', imageUrl: '/placeholder.svg' },
   { id: 'shop', name: 'Shop', category: 'structures', subcategory: 'buildings', icon: Building2, tags: ['commerce', 'store', 'village'], tier: 'free', imageUrl: '/placeholder.svg' },
   { id: 'tavern', name: 'Tavern', category: 'structures', subcategory: 'buildings', icon: Building2, tags: ['inn', 'medieval', 'social'], tier: 'free', imageUrl: '/placeholder.svg' },
+  
+  // Urban Buildings
+  { id: 'building-office', name: 'Office Building', category: 'structures', subcategory: 'urban', icon: Building2, tags: ['building', 'office', 'commercial', 'city'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'building-apartment', name: 'Apartment Building', category: 'structures', subcategory: 'urban', icon: Building2, tags: ['building', 'apartment', 'residential', 'city'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'skyscraper', name: 'Skyscraper', category: 'structures', subcategory: 'urban', icon: Building2, tags: ['building', 'skyscraper', 'tall', 'city', 'downtown'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'skyscraper-glass', name: 'Glass Skyscraper', category: 'structures', subcategory: 'urban', icon: Building2, tags: ['building', 'skyscraper', 'glass', 'modern'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'skyscraper-art-deco', name: 'Art Deco Tower', category: 'structures', subcategory: 'urban', icon: Building2, tags: ['building', 'skyscraper', 'art-deco', 'vintage'], tier: 'enterprise', imageUrl: '/placeholder.svg' },
+  
+  // Commercial Buildings
+  { id: 'restaurant', name: 'Restaurant', category: 'structures', subcategory: 'commercial', icon: UtensilsCrossed, tags: ['building', 'restaurant', 'dining', 'food'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'restaurant-diner', name: 'Diner', category: 'structures', subcategory: 'commercial', icon: UtensilsCrossed, tags: ['building', 'diner', 'retro', 'food'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'restaurant-cafe', name: 'Café', category: 'structures', subcategory: 'commercial', icon: Coffee, tags: ['building', 'cafe', 'coffee', 'bistro'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'restaurant-fast-food', name: 'Fast Food', category: 'structures', subcategory: 'commercial', icon: UtensilsCrossed, tags: ['building', 'fast-food', 'drive-thru'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'mall', name: 'Shopping Mall', category: 'structures', subcategory: 'commercial', icon: Building2, tags: ['building', 'mall', 'shopping', 'retail'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'gas-station', name: 'Gas Station', category: 'structures', subcategory: 'commercial', icon: Gauge, tags: ['building', 'gas', 'fuel', 'station'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'parking-garage', name: 'Parking Garage', category: 'structures', subcategory: 'commercial', icon: Car, tags: ['building', 'parking', 'garage', 'cars'], tier: 'free', imageUrl: '/placeholder.svg' },
+  
+  // Public Buildings
+  { id: 'zoo', name: 'Zoo Entrance', category: 'structures', subcategory: 'public', icon: Dog, tags: ['building', 'zoo', 'animals', 'entrance'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'zoo-enclosure', name: 'Zoo Enclosure', category: 'structures', subcategory: 'public', icon: Fence, tags: ['zoo', 'enclosure', 'habitat', 'fence'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'zoo-aviary', name: 'Aviary', category: 'structures', subcategory: 'public', icon: Bird, tags: ['zoo', 'aviary', 'birds', 'dome'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'hospital', name: 'Hospital', category: 'structures', subcategory: 'public', icon: Building2, tags: ['building', 'hospital', 'medical', 'emergency'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'school', name: 'School', category: 'structures', subcategory: 'public', icon: Building2, tags: ['building', 'school', 'education'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'library', name: 'Library', category: 'structures', subcategory: 'public', icon: Building2, tags: ['building', 'library', 'books', 'education'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'museum', name: 'Museum', category: 'structures', subcategory: 'public', icon: Building2, tags: ['building', 'museum', 'art', 'culture'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  { id: 'church', name: 'Church', category: 'structures', subcategory: 'public', icon: Building2, tags: ['building', 'church', 'religious', 'steeple'], tier: 'free', imageUrl: '/placeholder.svg' },
+  
+  // Roads & Paths
+  { id: 'road-asphalt', name: 'Asphalt Road', category: 'structures', subcategory: 'roads', icon: MapPin, tags: ['road', 'asphalt', 'street', 'pavement'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'road-highway', name: 'Highway', category: 'structures', subcategory: 'roads', icon: MapPin, tags: ['road', 'highway', 'lanes', 'freeway'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'road-intersection', name: 'Intersection', category: 'structures', subcategory: 'roads', icon: MapPin, tags: ['road', 'intersection', 'crossing'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'road-crosswalk', name: 'Crosswalk', category: 'structures', subcategory: 'roads', icon: MapPin, tags: ['road', 'crosswalk', 'zebra', 'pedestrian'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'sidewalk', name: 'Sidewalk', category: 'structures', subcategory: 'roads', icon: MapPin, tags: ['sidewalk', 'pavement', 'pedestrian', 'walkway'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'sidewalk-curb', name: 'Curb', category: 'structures', subcategory: 'roads', icon: MapPin, tags: ['curb', 'edge', 'road', 'concrete'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'road-dirt', name: 'Dirt Road', category: 'structures', subcategory: 'roads', icon: MapPin, tags: ['road', 'dirt', 'rural', 'unpaved'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'road-cobble', name: 'Cobblestone Road', category: 'structures', subcategory: 'roads', icon: MapPin, tags: ['road', 'cobblestone', 'historic', 'stone'], tier: 'free', imageUrl: '/placeholder.svg' },
+  
+  // Street Furniture
+  { id: 'street-lamp', name: 'Street Lamp', category: 'structures', subcategory: 'street-furniture', icon: Lamp, tags: ['lamp', 'street', 'light', 'urban'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'street-lamp-vintage', name: 'Vintage Lamp Post', category: 'structures', subcategory: 'street-furniture', icon: Lamp, tags: ['lamp', 'vintage', 'antique', 'ornate'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'street-lamp-modern', name: 'Modern Street Light', category: 'structures', subcategory: 'street-furniture', icon: Lamp, tags: ['lamp', 'modern', 'led', 'contemporary'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'traffic-light', name: 'Traffic Light', category: 'structures', subcategory: 'street-furniture', icon: Lightbulb, tags: ['traffic', 'signal', 'light', 'intersection'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'stop-sign', name: 'Stop Sign', category: 'structures', subcategory: 'street-furniture', icon: MapPin, tags: ['sign', 'stop', 'traffic', 'road'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'bench', name: 'Park Bench', category: 'structures', subcategory: 'street-furniture', icon: Sofa, tags: ['bench', 'park', 'seating', 'outdoor'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'trash-can', name: 'Trash Can', category: 'structures', subcategory: 'street-furniture', icon: Box, tags: ['trash', 'garbage', 'bin', 'urban'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'mailbox', name: 'Mailbox', category: 'structures', subcategory: 'street-furniture', icon: Box, tags: ['mailbox', 'post', 'mail', 'letters'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'bus-stop', name: 'Bus Stop', category: 'structures', subcategory: 'street-furniture', icon: MapPin, tags: ['bus', 'stop', 'shelter', 'transit'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'phone-booth', name: 'Phone Booth', category: 'structures', subcategory: 'street-furniture', icon: Box, tags: ['phone', 'booth', 'vintage', 'retro'], tier: 'free', imageUrl: '/placeholder.svg' },
 
   // Walls
   { id: 'wall-brick', name: 'Brick Wall', category: 'structures', subcategory: 'walls', icon: Fence, tags: ['wall', 'brick', 'red'], tier: 'free', imageUrl: '/placeholder.svg' },
