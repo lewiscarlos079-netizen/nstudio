@@ -82,16 +82,18 @@ export function useToonMaterial({
       );
     }
     
-    // Standard material (default)
+    // Standard material - Far Cry Primal realistic style
+    // More natural, rugged look with subsurface-like qualities
     return (
       <meshStandardMaterial
         color={color}
-        metalness={metalness}
-        roughness={roughness}
+        metalness={metalness * 0.3} // Reduce metalness for organic look
+        roughness={Math.max(0.6, roughness)} // Higher roughness for natural materials
         emissive={emissive}
-        emissiveIntensity={emissiveIntensity}
+        emissiveIntensity={emissiveIntensity * 0.5}
         opacity={opacity}
         transparent={transparent || opacity < 1}
+        envMapIntensity={0.8}
       />
     );
   }, [color, style, emissive, emissiveIntensity, metalness, roughness, opacity, transparent]);
@@ -136,15 +138,17 @@ export function StyledMaterial(props: StyledMaterialProps) {
     );
   }
   
+  // Far Cry Primal realistic style - natural, rugged materials
   return (
     <meshStandardMaterial
       color={color}
-      metalness={metalness}
-      roughness={roughness}
+      metalness={metalness * 0.3}
+      roughness={Math.max(0.6, roughness)}
       emissive={emissive}
-      emissiveIntensity={emissiveIntensity}
+      emissiveIntensity={emissiveIntensity * 0.5}
       opacity={opacity}
       transparent={transparent || opacity < 1}
+      envMapIntensity={0.8}
     />
   );
 }
