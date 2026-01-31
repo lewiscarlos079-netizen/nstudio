@@ -5,37 +5,61 @@ export type ModelStyle = 'standard' | 'wireframe';
 
 // Surface types for realistic material properties
 export type SurfaceType = 
-  | 'skin'      // Human/animal skin - smooth, subsurface
-  | 'fur'       // Animal fur - rough, matte
-  | 'hair'      // Human hair - slight sheen
-  | 'metal'     // Metallic surfaces - reflective
+  | 'skin'      // Human/animal skin - smooth, subsurface scattering look
+  | 'fur'       // Animal fur - rough, matte with depth
+  | 'hair'      // Human hair - anisotropic sheen
+  | 'metal'     // Metallic surfaces - high reflectivity
   | 'stone'     // Stone/rock - rough, matte
-  | 'wood'      // Wood - medium rough
+  | 'wood'      // Wood - medium rough with grain
   | 'fabric'    // Cloth/fabric - soft matte
-  | 'leather'   // Leather - slight sheen
+  | 'leather'   // Leather - slight sheen, fine grain
   | 'glass'     // Glass/crystal - transparent, reflective
-  | 'organic'   // Plants/leaves - matte
-  | 'bone'      // Bone/ivory/teeth - smooth
-  | 'default';  // Standard material
+  | 'organic'   // Plants/leaves - matte with slight translucency
+  | 'bone'      // Bone/ivory/teeth - smooth, slightly translucent
+  | 'rubber'    // Rubber/silicone - matte, flexible look
+  | 'plastic'   // Hard plastic - slight sheen
+  | 'ceramic'   // Ceramic/porcelain - smooth, reflective
+  | 'default';  // Standard PBR material
 
-// Surface-specific material properties
+// Realistic PBR surface properties based on real-world material references
+// Values calibrated for photorealistic rendering
 const SURFACE_PROPERTIES: Record<SurfaceType, {
   metalness: number;
   roughness: number;
   envMapIntensity: number;
+  clearcoat?: number;
+  clearcoatRoughness?: number;
 }> = {
-  skin: { metalness: 0.0, roughness: 0.5, envMapIntensity: 0.4 },
-  fur: { metalness: 0.0, roughness: 0.95, envMapIntensity: 0.1 },
-  hair: { metalness: 0.1, roughness: 0.6, envMapIntensity: 0.3 },
-  metal: { metalness: 0.9, roughness: 0.2, envMapIntensity: 1.0 },
-  stone: { metalness: 0.0, roughness: 0.85, envMapIntensity: 0.2 },
-  wood: { metalness: 0.0, roughness: 0.7, envMapIntensity: 0.15 },
-  fabric: { metalness: 0.0, roughness: 0.9, envMapIntensity: 0.05 },
-  leather: { metalness: 0.05, roughness: 0.55, envMapIntensity: 0.25 },
-  glass: { metalness: 0.1, roughness: 0.05, envMapIntensity: 1.2 },
-  organic: { metalness: 0.0, roughness: 0.8, envMapIntensity: 0.1 },
-  bone: { metalness: 0.05, roughness: 0.4, envMapIntensity: 0.3 },
-  default: { metalness: 0.15, roughness: 0.65, envMapIntensity: 0.5 },
+  // Human skin: low metalness, medium roughness for realistic subsurface look
+  skin: { metalness: 0.0, roughness: 0.45, envMapIntensity: 0.5, clearcoat: 0.1, clearcoatRoughness: 0.4 },
+  // Fur: completely matte, absorbs light
+  fur: { metalness: 0.0, roughness: 0.92, envMapIntensity: 0.08 },
+  // Hair: slight anisotropic sheen
+  hair: { metalness: 0.15, roughness: 0.5, envMapIntensity: 0.35 },
+  // Metal: high metalness, low roughness for reflections
+  metal: { metalness: 0.95, roughness: 0.15, envMapIntensity: 1.2 },
+  // Stone: rough, matte, natural material
+  stone: { metalness: 0.0, roughness: 0.88, envMapIntensity: 0.15 },
+  // Wood: organic, medium roughness with subtle grain
+  wood: { metalness: 0.0, roughness: 0.72, envMapIntensity: 0.2 },
+  // Fabric: soft, diffuse, matte appearance
+  fabric: { metalness: 0.0, roughness: 0.85, envMapIntensity: 0.08 },
+  // Leather: slight sheen, medium roughness
+  leather: { metalness: 0.02, roughness: 0.5, envMapIntensity: 0.3, clearcoat: 0.15, clearcoatRoughness: 0.5 },
+  // Glass: highly reflective, smooth
+  glass: { metalness: 0.05, roughness: 0.02, envMapIntensity: 1.5, clearcoat: 1.0, clearcoatRoughness: 0.0 },
+  // Organic: plants, leaves - matte with waxy coating
+  organic: { metalness: 0.0, roughness: 0.75, envMapIntensity: 0.12 },
+  // Bone/teeth: smooth, ivory-like
+  bone: { metalness: 0.02, roughness: 0.35, envMapIntensity: 0.4, clearcoat: 0.2, clearcoatRoughness: 0.3 },
+  // Rubber: completely matte, absorbs light
+  rubber: { metalness: 0.0, roughness: 0.95, envMapIntensity: 0.05 },
+  // Plastic: slight sheen, smooth
+  plastic: { metalness: 0.0, roughness: 0.35, envMapIntensity: 0.6, clearcoat: 0.3, clearcoatRoughness: 0.2 },
+  // Ceramic: smooth, reflective
+  ceramic: { metalness: 0.0, roughness: 0.2, envMapIntensity: 0.8, clearcoat: 0.5, clearcoatRoughness: 0.1 },
+  // Default: balanced PBR settings
+  default: { metalness: 0.1, roughness: 0.55, envMapIntensity: 0.6 },
 };
 
 
