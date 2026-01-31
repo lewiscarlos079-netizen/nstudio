@@ -215,6 +215,226 @@ function applyPartTransform(
   ];
 }
 
+// ==================== EXPRESSIVE EYES COMPONENT ====================
+
+interface ExpressiveEyeProps {
+  position: [number, number, number];
+  size?: number;
+  irisColor?: string;
+  style: ModelStyle;
+  side: 'left' | 'right';
+  emotion?: 'neutral' | 'happy' | 'sad' | 'angry' | 'surprised' | 'sleepy';
+  skinColor?: string;
+  isAnimal?: boolean;
+  verticalPupil?: boolean; // For cats, reptiles
+}
+
+function ExpressiveEye({ 
+  position, 
+  size = 0.025, 
+  irisColor = COLORS.eyeBrown,
+  style, 
+  side,
+  emotion = 'neutral',
+  skinColor = COLORS.skin,
+  isAnimal = false,
+  verticalPupil = false,
+}: ExpressiveEyeProps) {
+  const mirror = side === 'right' ? 1 : -1;
+  
+  // Emotion-based adjustments
+  const getEyelidRotation = () => {
+    switch (emotion) {
+      case 'happy': return 0.3;
+      case 'sad': return -0.15;
+      case 'angry': return -0.25;
+      case 'surprised': return 0.5;
+      case 'sleepy': return -0.4;
+      default: return 0.1;
+    }
+  };
+  
+  const getLowerLidOffset = () => {
+    switch (emotion) {
+      case 'happy': return 0.4; // Squinting smile
+      case 'sleepy': return 0.3;
+      default: return 0;
+    }
+  };
+  
+  const getPupilDilation = () => {
+    switch (emotion) {
+      case 'surprised': return 1.3;
+      case 'angry': return 0.7;
+      case 'happy': return 1.1;
+      default: return 1;
+    }
+  };
+
+  const upperLidRotation = getEyelidRotation();
+  const lowerLidOffset = getLowerLidOffset();
+  const pupilScale = getPupilDilation();
+  
+  // Eye gaze - slight offset for natural look
+  const gazeOffset = 0.002 * mirror;
+  
+  return (
+    <group position={position}>
+      {/* Eye socket depth - subtle shadow */}
+      <mesh position={[0, 0, -0.003]}>
+        <sphereGeometry args={[size * 1.15, 12, 12]} />
+        <StyledMaterial color="#2a2020" style={style} opacity={0.3} transparent />
+      </mesh>
+      
+      {/* Eyeball - white with slight off-white for realism */}
+      <mesh position={[0, 0, 0]}>
+        <sphereGeometry args={[size, 16, 16]} />
+        <StyledMaterial color="#FFFEF8" style={style} />
+      </mesh>
+      
+      {/* Iris - positioned slightly forward and offset for gaze */}
+      <mesh position={[gazeOffset, 0.001, size * 0.7]}>
+        <sphereGeometry args={[size * 0.55, 14, 14]} />
+        <StyledMaterial color={irisColor} style={style} />
+      </mesh>
+      
+      {/* Iris detail ring - darker outer ring */}
+      <mesh position={[gazeOffset, 0.001, size * 0.72]}>
+        <ringGeometry args={[size * 0.35, size * 0.52, 24]} />
+        <StyledMaterial 
+          color={irisColor} 
+          style={style} 
+          metalness={0.1}
+          roughness={0.3}
+        />
+      </mesh>
+      
+      {/* Pupil - can be vertical for cats */}
+      <mesh 
+        position={[gazeOffset, 0.001, size * 0.85]} 
+        scale={verticalPupil ? [0.4, 1, 1] : [pupilScale, pupilScale, 1]}
+      >
+        <sphereGeometry args={[size * 0.25, 10, 10]} />
+        <StyledMaterial color={COLORS.pupil} style={style} />
+      </mesh>
+      
+      {/* Eye highlight - main catchlight (upper right) */}
+      <mesh position={[size * 0.15 * mirror, size * 0.2, size * 0.95]}>
+        <sphereGeometry args={[size * 0.12, 8, 8]} />
+        <StyledMaterial color="#FFFFFF" style={style} emissive="#FFFFFF" emissiveIntensity={0.3} />
+      </mesh>
+      
+      {/* Secondary smaller highlight (lower left) */}
+      <mesh position={[-size * 0.1 * mirror, -size * 0.15, size * 0.9]}>
+        <sphereGeometry args={[size * 0.06, 6, 6]} />
+        <StyledMaterial color="#FFFFFF" style={style} opacity={0.7} transparent />
+      </mesh>
+      
+      {/* Upper eyelid */}
+      <mesh 
+        position={[0, size * 0.5, size * 0.3]} 
+        rotation={[upperLidRotation, 0, 0]}
+      >
+        <sphereGeometry args={[size * 1.1, 14, 14, 0, Math.PI * 2, 0, Math.PI * 0.4]} />
+        <StyledMaterial color={skinColor} style={style} surface={isAnimal ? "fur" : "skin"} />
+      </mesh>
+      
+      {/* Upper eyelid crease */}
+      <mesh position={[0, size * 0.65, size * 0.15]} rotation={[0.3 + upperLidRotation * 0.5, 0, 0]}>
+        <torusGeometry args={[size * 0.8, size * 0.05, 6, 16, Math.PI]} />
+        <StyledMaterial color={skinColor} style={style} surface={isAnimal ? "fur" : "skin"} />
+      </mesh>
+      
+      {/* Lower eyelid - subtle */}
+      <mesh 
+        position={[0, -size * 0.45 + lowerLidOffset * size * 0.3, size * 0.25]} 
+        rotation={[-0.2 - lowerLidOffset * 0.3, 0, 0]}
+      >
+        <sphereGeometry args={[size * 1.0, 12, 12, 0, Math.PI * 2, Math.PI * 0.6, Math.PI * 0.3]} />
+        <StyledMaterial color={skinColor} style={style} surface={isAnimal ? "fur" : "skin"} />
+      </mesh>
+      
+      {/* Eyelashes for non-animals */}
+      {!isAnimal && (
+        <group position={[0, size * 0.4, size * 0.6]} rotation={[upperLidRotation * 0.5, 0, 0]}>
+          {[-0.3, -0.15, 0, 0.15, 0.3].map((offset, i) => (
+            <mesh 
+              key={i} 
+              position={[offset * size * 2, 0, 0]} 
+              rotation={[0.4 - Math.abs(offset) * 0.5, offset * 0.3 * mirror, 0]}
+            >
+              <cylinderGeometry args={[0.001, 0.0005, size * 0.15, 4]} />
+              <StyledMaterial color={COLORS.hair} style={style} />
+            </mesh>
+          ))}
+        </group>
+      )}
+    </group>
+  );
+}
+
+// Animal eye variant - simpler but still expressive
+interface AnimalEyeProps {
+  position: [number, number, number];
+  size?: number;
+  irisColor?: string;
+  style: ModelStyle;
+  skinColor?: string;
+  verticalPupil?: boolean;
+}
+
+function AnimalEye({ 
+  position, 
+  size = 0.024, 
+  irisColor = COLORS.eyeBrown,
+  style, 
+  skinColor = COLORS.dogBrown,
+  verticalPupil = false,
+}: AnimalEyeProps) {
+  return (
+    <group position={position}>
+      {/* Eyeball */}
+      <mesh>
+        <sphereGeometry args={[size, 14, 14]} />
+        <StyledMaterial color={COLORS.eyeWhite} style={style} />
+      </mesh>
+      
+      {/* Iris */}
+      <mesh position={[size * 0.6, 0, 0]}>
+        <sphereGeometry args={[size * 0.65, 12, 12]} />
+        <StyledMaterial color={irisColor} style={style} />
+      </mesh>
+      
+      {/* Pupil */}
+      <mesh 
+        position={[size * 0.8, 0, 0]} 
+        scale={verticalPupil ? [1, 1, 0.35] : [1, 1, 1]}
+      >
+        <sphereGeometry args={[size * 0.35, 10, 10]} />
+        <StyledMaterial color={COLORS.pupil} style={style} />
+      </mesh>
+      
+      {/* Main highlight */}
+      <mesh position={[size * 0.85, size * 0.2, size * 0.15]}>
+        <sphereGeometry args={[size * 0.15, 8, 8]} />
+        <StyledMaterial color="#FFFFFF" style={style} emissive="#FFFFFF" emissiveIntensity={0.4} />
+      </mesh>
+      
+      {/* Secondary highlight */}
+      <mesh position={[size * 0.75, -size * 0.1, -size * 0.1]}>
+        <sphereGeometry args={[size * 0.08, 6, 6]} />
+        <StyledMaterial color="#FFFFFF" style={style} opacity={0.6} transparent />
+      </mesh>
+      
+      {/* Upper lid shadow */}
+      <mesh position={[size * 0.3, size * 0.7, 0]} rotation={[0, 0, 0]}>
+        <sphereGeometry args={[size * 0.9, 10, 10, 0, Math.PI * 2, 0, Math.PI * 0.35]} />
+        <StyledMaterial color={skinColor} style={style} surface="fur" />
+      </mesh>
+    </group>
+  );
+}
+
 // ==================== CHARACTERS ====================
 
 export function HumanoidModel({ color = COLORS.skin, bodyParts, style = 'standard' }: ModelProps) {
@@ -271,43 +491,41 @@ export function HumanoidModel({ color = COLORS.skin, bodyParts, style = 'standar
           <StyledMaterial color={skinColor} style={style} />
         </mesh>
         
-        {/* Eye sockets */}
-        <mesh position={[-0.045, 0.02, 0.1]}>
-          <sphereGeometry args={[0.025, 14, 14]} />
-          <StyledMaterial color={COLORS.eyeWhite} style={style} />
-        </mesh>
-        <mesh position={[0.045, 0.02, 0.1]}>
-          <sphereGeometry args={[0.025, 14, 14]} />
-          <StyledMaterial color={COLORS.eyeWhite} style={style} />
-        </mesh>
+        {/* EXPRESSIVE EYES */}
+        <ExpressiveEye 
+          position={[-0.045, 0.02, 0.08]} 
+          size={0.025}
+          irisColor={COLORS.eyeBrown}
+          style={style}
+          side="left"
+          emotion="neutral"
+          skinColor={skinColor}
+        />
+        <ExpressiveEye 
+          position={[0.045, 0.02, 0.08]} 
+          size={0.025}
+          irisColor={COLORS.eyeBrown}
+          style={style}
+          side="right"
+          emotion="neutral"
+          skinColor={skinColor}
+        />
         
-        {/* Irises */}
-        <mesh position={[-0.045, 0.02, 0.12]}>
-          <sphereGeometry args={[0.013, 10, 10]} />
-          <StyledMaterial color={COLORS.eyeBrown} style={style} />
-        </mesh>
-        <mesh position={[0.045, 0.02, 0.12]}>
-          <sphereGeometry args={[0.013, 10, 10]} />
-          <StyledMaterial color={COLORS.eyeBrown} style={style} />
-        </mesh>
-        
-        {/* Pupils */}
-        <mesh position={[-0.045, 0.02, 0.13]}>
-          <sphereGeometry args={[0.006, 8, 8]} />
-          <StyledMaterial color={COLORS.pupil} style={style} />
-        </mesh>
-        <mesh position={[0.045, 0.02, 0.13]}>
-          <sphereGeometry args={[0.006, 8, 8]} />
-          <StyledMaterial color={COLORS.pupil} style={style} />
-        </mesh>
-        
-        {/* Eyebrows */}
-        <mesh position={[-0.045, 0.055, 0.1]} rotation={[0, 0, 0.1]}>
-          <boxGeometry args={[0.04, 0.008, 0.015]} />
+        {/* Eyebrows - expressive arches */}
+        <mesh position={[-0.045, 0.055, 0.1]} rotation={[0.15, 0, 0.1]}>
+          <capsuleGeometry args={[0.006, 0.03, 6, 10]} />
           <StyledMaterial color={hairColor} style={style} surface="hair" />
         </mesh>
-        <mesh position={[0.045, 0.055, 0.1]} rotation={[0, 0, -0.1]}>
-          <boxGeometry args={[0.04, 0.008, 0.015]} />
+        <mesh position={[-0.025, 0.052, 0.1]} rotation={[0.1, 0, -0.05]}>
+          <capsuleGeometry args={[0.005, 0.02, 6, 10]} />
+          <StyledMaterial color={hairColor} style={style} surface="hair" />
+        </mesh>
+        <mesh position={[0.045, 0.055, 0.1]} rotation={[0.15, 0, -0.1]}>
+          <capsuleGeometry args={[0.006, 0.03, 6, 10]} />
+          <StyledMaterial color={hairColor} style={style} surface="hair" />
+        </mesh>
+        <mesh position={[0.025, 0.052, 0.1]} rotation={[0.1, 0, 0.05]}>
+          <capsuleGeometry args={[0.005, 0.02, 6, 10]} />
           <StyledMaterial color={hairColor} style={style} surface="hair" />
         </mesh>
         
@@ -947,45 +1165,21 @@ export function DogModel({ color = COLORS.dogGolden, bodyParts, style = 'standar
         </mesh>
       </group>
       
-      {/* EYES */}
-      <group position={[0.47, 0.5, 0]}>
-        {/* Eye whites */}
-        <mesh position={[0, 0, 0.055]}>
-          <sphereGeometry args={[0.024, 12, 12]} />
-          <StyledMaterial color={COLORS.eyeWhite} style={style} />
-        </mesh>
-        <mesh position={[0, 0, -0.055]}>
-          <sphereGeometry args={[0.024, 12, 12]} />
-          <StyledMaterial color={COLORS.eyeWhite} style={style} />
-        </mesh>
-        {/* Irises */}
-        <mesh position={[0.015, 0, 0.055]}>
-          <sphereGeometry args={[0.016, 10, 10]} />
-          <StyledMaterial color={eyeColor} style={style} />
-        </mesh>
-        <mesh position={[0.015, 0, -0.055]}>
-          <sphereGeometry args={[0.016, 10, 10]} />
-          <StyledMaterial color={eyeColor} style={style} />
-        </mesh>
-        {/* Pupils */}
-        <mesh position={[0.022, 0, 0.055]}>
-          <sphereGeometry args={[0.008, 8, 8]} />
-          <StyledMaterial color={COLORS.pupil} style={style} />
-        </mesh>
-        <mesh position={[0.022, 0, -0.055]}>
-          <sphereGeometry args={[0.008, 8, 8]} />
-          <StyledMaterial color={COLORS.pupil} style={style} />
-        </mesh>
-        {/* Eye shine */}
-        <mesh position={[0.024, 0.005, 0.058]}>
-          <sphereGeometry args={[0.004, 6, 6]} />
-          <StyledMaterial color={COLORS.white} style={style} />
-        </mesh>
-        <mesh position={[0.024, 0.005, -0.058]}>
-          <sphereGeometry args={[0.004, 6, 6]} />
-          <StyledMaterial color={COLORS.white} style={style} />
-        </mesh>
-      </group>
+      {/* EXPRESSIVE EYES */}
+      <AnimalEye 
+        position={[0.47, 0.5, 0.055]} 
+        size={0.024}
+        irisColor={eyeColor}
+        style={style}
+        skinColor={color}
+      />
+      <AnimalEye 
+        position={[0.47, 0.5, -0.055]} 
+        size={0.024}
+        irisColor={eyeColor}
+        style={style}
+        skinColor={color}
+      />
       
       {/* EARS - Floppy style */}
       <group scale={earsConfig.scale} position={applyPartTransform([0, 0, 0], earsConfig)}>
@@ -1217,24 +1411,23 @@ export function CatModel({ color = COLORS.catOrange, style = 'standard' }: Model
         <boxGeometry args={[0.015, 0.012, 0.015]} />
         <StyledMaterial color={noseColor} style={style} />
       </mesh>
-      {/* Eyes */}
-      <mesh position={[0.32, 0.32, 0.045]}>
-        <sphereGeometry args={[0.022, 8, 8]} />
-        <StyledMaterial color={eyeColor} style={style} emissive={eyeColor} emissiveIntensity={0.1} />
-      </mesh>
-      <mesh position={[0.32, 0.32, -0.045]}>
-        <sphereGeometry args={[0.022, 8, 8]} />
-        <StyledMaterial color={eyeColor} style={style} emissive={eyeColor} emissiveIntensity={0.1} />
-      </mesh>
-      {/* Pupils (vertical slit) */}
-      <mesh position={[0.335, 0.32, 0.045]} scale={[1, 1, 0.4]}>
-        <sphereGeometry args={[0.012, 6, 6]} />
-        <StyledMaterial color={COLORS.black} style={style} />
-      </mesh>
-      <mesh position={[0.335, 0.32, -0.045]} scale={[1, 1, 0.4]}>
-        <sphereGeometry args={[0.012, 6, 6]} />
-        <StyledMaterial color={COLORS.black} style={style} />
-      </mesh>
+      {/* EXPRESSIVE CAT EYES - with vertical pupils */}
+      <AnimalEye 
+        position={[0.32, 0.32, 0.045]} 
+        size={0.022}
+        irisColor={eyeColor}
+        style={style}
+        skinColor={color}
+        verticalPupil={true}
+      />
+      <AnimalEye 
+        position={[0.32, 0.32, -0.045]} 
+        size={0.022}
+        irisColor={eyeColor}
+        style={style}
+        skinColor={color}
+        verticalPupil={true}
+      />
       {/* Ears - outer */}
       <mesh position={[0.22, 0.4, -0.05]} rotation={[0.2, 0.3, 0.15]}>
         <coneGeometry args={[0.035, 0.08, 3]} />
