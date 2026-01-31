@@ -52,6 +52,11 @@ interface JointBall {
   radius: number;
   color: string;
   connectedTo: string[];
+  // Physics properties
+  mass?: number;
+  isFixed?: boolean;
+  stiffness?: number;
+  damping?: number;
 }
 
 interface BoneStructure {
@@ -101,31 +106,31 @@ const graftingTools = [
   { id: 'crease', name: 'Crease', icon: Spline, description: 'Create sharp creases', cursor: 'crosshair' },
 ];
 
-// Default humanoid skeleton with rotations
+// Default humanoid skeleton with rotations and physics properties
 const DEFAULT_JOINTS: JointBall[] = [
-  { id: 'j_pelvis', name: 'Pelvis', position: [0, 0, 0], rotation: [0, 0, 0], radius: 0.08, color: '#ffffff', connectedTo: [] },
-  { id: 'j_spine1', name: 'Spine Base', position: [0, 0.15, 0], rotation: [0, 0, 0], radius: 0.06, color: '#ffffff', connectedTo: ['j_pelvis'] },
-  { id: 'j_spine2', name: 'Spine Mid', position: [0, 0.3, 0], rotation: [0, 0, 0], radius: 0.05, color: '#ffffff', connectedTo: ['j_spine1'] },
-  { id: 'j_spine3', name: 'Spine Upper', position: [0, 0.45, 0], rotation: [0, 0, 0], radius: 0.05, color: '#ffffff', connectedTo: ['j_spine2'] },
-  { id: 'j_chest', name: 'Chest', position: [0, 0.6, 0], rotation: [0, 0, 0], radius: 0.07, color: '#ffffff', connectedTo: ['j_spine3'] },
-  { id: 'j_neck', name: 'Neck', position: [0, 0.72, 0], rotation: [0, 0, 0], radius: 0.04, color: '#ffffff', connectedTo: ['j_chest'] },
-  { id: 'j_head', name: 'Head', position: [0, 0.88, 0], rotation: [0, 0, 0], radius: 0.1, color: '#ffffff', connectedTo: ['j_neck'] },
-  { id: 'j_l_shoulder', name: 'L. Shoulder', position: [-0.18, 0.6, 0], rotation: [0, 0, 0], radius: 0.045, color: '#ffffff', connectedTo: ['j_chest'] },
-  { id: 'j_l_elbow', name: 'L. Elbow', position: [-0.32, 0.42, 0], rotation: [0, 0, 0], radius: 0.035, color: '#ffffff', connectedTo: ['j_l_shoulder'] },
-  { id: 'j_l_wrist', name: 'L. Wrist', position: [-0.42, 0.28, 0], rotation: [0, 0, 0], radius: 0.025, color: '#ffffff', connectedTo: ['j_l_elbow'] },
-  { id: 'j_l_hand', name: 'L. Hand', position: [-0.48, 0.2, 0], rotation: [0, 0, 0], radius: 0.03, color: '#ffffff', connectedTo: ['j_l_wrist'] },
-  { id: 'j_r_shoulder', name: 'R. Shoulder', position: [0.18, 0.6, 0], rotation: [0, 0, 0], radius: 0.045, color: '#ffffff', connectedTo: ['j_chest'] },
-  { id: 'j_r_elbow', name: 'R. Elbow', position: [0.32, 0.42, 0], rotation: [0, 0, 0], radius: 0.035, color: '#ffffff', connectedTo: ['j_r_shoulder'] },
-  { id: 'j_r_wrist', name: 'R. Wrist', position: [0.42, 0.28, 0], rotation: [0, 0, 0], radius: 0.025, color: '#ffffff', connectedTo: ['j_r_elbow'] },
-  { id: 'j_r_hand', name: 'R. Hand', position: [0.48, 0.2, 0], rotation: [0, 0, 0], radius: 0.03, color: '#ffffff', connectedTo: ['j_r_wrist'] },
-  { id: 'j_l_hip', name: 'L. Hip', position: [-0.1, -0.08, 0], rotation: [0, 0, 0], radius: 0.05, color: '#ffffff', connectedTo: ['j_pelvis'] },
-  { id: 'j_l_knee', name: 'L. Knee', position: [-0.1, -0.38, 0], rotation: [0, 0, 0], radius: 0.04, color: '#ffffff', connectedTo: ['j_l_hip'] },
-  { id: 'j_l_ankle', name: 'L. Ankle', position: [-0.1, -0.68, 0], rotation: [0, 0, 0], radius: 0.03, color: '#ffffff', connectedTo: ['j_l_knee'] },
-  { id: 'j_l_foot', name: 'L. Foot', position: [-0.1, -0.75, 0.08], rotation: [0, 0, 0], radius: 0.035, color: '#ffffff', connectedTo: ['j_l_ankle'] },
-  { id: 'j_r_hip', name: 'R. Hip', position: [0.1, -0.08, 0], rotation: [0, 0, 0], radius: 0.05, color: '#ffffff', connectedTo: ['j_pelvis'] },
-  { id: 'j_r_knee', name: 'R. Knee', position: [0.1, -0.38, 0], rotation: [0, 0, 0], radius: 0.04, color: '#ffffff', connectedTo: ['j_r_hip'] },
-  { id: 'j_r_ankle', name: 'R. Ankle', position: [0.1, -0.68, 0], rotation: [0, 0, 0], radius: 0.03, color: '#ffffff', connectedTo: ['j_r_knee'] },
-  { id: 'j_r_foot', name: 'R. Foot', position: [0.1, -0.75, 0.08], rotation: [0, 0, 0], radius: 0.035, color: '#ffffff', connectedTo: ['j_r_ankle'] },
+  { id: 'j_pelvis', name: 'Pelvis', position: [0, 0, 0], rotation: [0, 0, 0], radius: 0.08, color: '#ffffff', connectedTo: [], isFixed: true, mass: 3, stiffness: 100, damping: 0.95 },
+  { id: 'j_spine1', name: 'Spine Base', position: [0, 0.15, 0], rotation: [0, 0, 0], radius: 0.06, color: '#ffffff', connectedTo: ['j_pelvis'], mass: 2, stiffness: 80, damping: 0.9 },
+  { id: 'j_spine2', name: 'Spine Mid', position: [0, 0.3, 0], rotation: [0, 0, 0], radius: 0.05, color: '#ffffff', connectedTo: ['j_spine1'], mass: 1.5, stiffness: 80, damping: 0.9 },
+  { id: 'j_spine3', name: 'Spine Upper', position: [0, 0.45, 0], rotation: [0, 0, 0], radius: 0.05, color: '#ffffff', connectedTo: ['j_spine2'], mass: 1.5, stiffness: 80, damping: 0.9 },
+  { id: 'j_chest', name: 'Chest', position: [0, 0.6, 0], rotation: [0, 0, 0], radius: 0.07, color: '#ffffff', connectedTo: ['j_spine3'], mass: 2.5, stiffness: 70, damping: 0.9 },
+  { id: 'j_neck', name: 'Neck', position: [0, 0.72, 0], rotation: [0, 0, 0], radius: 0.04, color: '#ffffff', connectedTo: ['j_chest'], mass: 0.5, stiffness: 60, damping: 0.85 },
+  { id: 'j_head', name: 'Head', position: [0, 0.88, 0], rotation: [0, 0, 0], radius: 0.1, color: '#ffffff', connectedTo: ['j_neck'], mass: 1.5, stiffness: 50, damping: 0.85 },
+  { id: 'j_l_shoulder', name: 'L. Shoulder', position: [-0.18, 0.6, 0], rotation: [0, 0, 0], radius: 0.045, color: '#ffffff', connectedTo: ['j_chest'], mass: 1, stiffness: 40, damping: 0.85 },
+  { id: 'j_l_elbow', name: 'L. Elbow', position: [-0.32, 0.42, 0], rotation: [0, 0, 0], radius: 0.035, color: '#ffffff', connectedTo: ['j_l_shoulder'], mass: 0.8, stiffness: 35, damping: 0.8 },
+  { id: 'j_l_wrist', name: 'L. Wrist', position: [-0.42, 0.28, 0], rotation: [0, 0, 0], radius: 0.025, color: '#ffffff', connectedTo: ['j_l_elbow'], mass: 0.4, stiffness: 30, damping: 0.8 },
+  { id: 'j_l_hand', name: 'L. Hand', position: [-0.48, 0.2, 0], rotation: [0, 0, 0], radius: 0.03, color: '#ffffff', connectedTo: ['j_l_wrist'], mass: 0.3, stiffness: 25, damping: 0.75 },
+  { id: 'j_r_shoulder', name: 'R. Shoulder', position: [0.18, 0.6, 0], rotation: [0, 0, 0], radius: 0.045, color: '#ffffff', connectedTo: ['j_chest'], mass: 1, stiffness: 40, damping: 0.85 },
+  { id: 'j_r_elbow', name: 'R. Elbow', position: [0.32, 0.42, 0], rotation: [0, 0, 0], radius: 0.035, color: '#ffffff', connectedTo: ['j_r_shoulder'], mass: 0.8, stiffness: 35, damping: 0.8 },
+  { id: 'j_r_wrist', name: 'R. Wrist', position: [0.42, 0.28, 0], rotation: [0, 0, 0], radius: 0.025, color: '#ffffff', connectedTo: ['j_r_elbow'], mass: 0.4, stiffness: 30, damping: 0.8 },
+  { id: 'j_r_hand', name: 'R. Hand', position: [0.48, 0.2, 0], rotation: [0, 0, 0], radius: 0.03, color: '#ffffff', connectedTo: ['j_r_wrist'], mass: 0.3, stiffness: 25, damping: 0.75 },
+  { id: 'j_l_hip', name: 'L. Hip', position: [-0.1, -0.08, 0], rotation: [0, 0, 0], radius: 0.05, color: '#ffffff', connectedTo: ['j_pelvis'], mass: 1.2, stiffness: 60, damping: 0.9 },
+  { id: 'j_l_knee', name: 'L. Knee', position: [-0.1, -0.38, 0], rotation: [0, 0, 0], radius: 0.04, color: '#ffffff', connectedTo: ['j_l_hip'], mass: 1, stiffness: 55, damping: 0.85 },
+  { id: 'j_l_ankle', name: 'L. Ankle', position: [-0.1, -0.68, 0], rotation: [0, 0, 0], radius: 0.03, color: '#ffffff', connectedTo: ['j_l_knee'], mass: 0.5, stiffness: 50, damping: 0.8 },
+  { id: 'j_l_foot', name: 'L. Foot', position: [-0.1, -0.75, 0.08], rotation: [0, 0, 0], radius: 0.035, color: '#ffffff', connectedTo: ['j_l_ankle'], isFixed: true, mass: 0.4, stiffness: 45, damping: 0.8 },
+  { id: 'j_r_hip', name: 'R. Hip', position: [0.1, -0.08, 0], rotation: [0, 0, 0], radius: 0.05, color: '#ffffff', connectedTo: ['j_pelvis'], mass: 1.2, stiffness: 60, damping: 0.9 },
+  { id: 'j_r_knee', name: 'R. Knee', position: [0.1, -0.38, 0], rotation: [0, 0, 0], radius: 0.04, color: '#ffffff', connectedTo: ['j_r_hip'], mass: 1, stiffness: 55, damping: 0.85 },
+  { id: 'j_r_ankle', name: 'R. Ankle', position: [0.1, -0.68, 0], rotation: [0, 0, 0], radius: 0.03, color: '#ffffff', connectedTo: ['j_r_knee'], mass: 0.5, stiffness: 50, damping: 0.8 },
+  { id: 'j_r_foot', name: 'R. Foot', position: [0.1, -0.75, 0.08], rotation: [0, 0, 0], radius: 0.035, color: '#ffffff', connectedTo: ['j_r_ankle'], isFixed: true, mass: 0.4, stiffness: 45, damping: 0.8 },
 ];
 
 export default function CharacterSandbox() {
@@ -142,6 +147,7 @@ export default function CharacterSandbox() {
   const [characterName, setCharacterName] = useState('Custom Character');
   const [selectedJoint, setSelectedJoint] = useState<string | null>(null);
   const [zoom, setZoom] = useState(50);
+  const [physicsEnabled, setPhysicsEnabled] = useState(false);
   
   const [joints, setJoints] = useState<JointBall[]>(DEFAULT_JOINTS);
   const [bones, setBones] = useState<BoneStructure[]>([]);
@@ -172,6 +178,14 @@ export default function CharacterSandbox() {
     setJoints(joints.map(j => j.id === id ? { ...j, radius } : j));
   };
 
+  const updateJointPhysics = (id: string, updates: Partial<JointBall>) => {
+    setJoints(joints.map(j => j.id === id ? { ...j, ...updates } : j));
+  };
+
+  const handleJointPositionUpdate = (id: string, position: [number, number, number]) => {
+    setJoints(joints.map(j => j.id === id ? { ...j, position } : j));
+  };
+
   const addJoint = () => {
     const newJoint: JointBall = {
       id: `j_${Date.now()}`,
@@ -181,6 +195,10 @@ export default function CharacterSandbox() {
       radius: 0.05,
       color: selectedColor,
       connectedTo: joints.length > 0 ? [joints[joints.length - 1].id] : [],
+      mass: 1,
+      isFixed: false,
+      stiffness: 50,
+      damping: 0.85,
     };
     setJoints([...joints, newJoint]);
     setSelectedJoint(newJoint.id);
@@ -467,6 +485,26 @@ export default function CharacterSandbox() {
                 </CardContent>
               </Card>
 
+              {/* Physics Toggle */}
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <Move className="w-4 h-4" />
+                    Physics Simulation
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-xs">Enable Physics</Label>
+                    <Switch checked={physicsEnabled} onCheckedChange={setPhysicsEnabled} />
+                  </div>
+                  <p className="text-[10px] text-muted-foreground">
+                    When enabled, joints become opposable and hold their own weight. 
+                    Fixed joints (pelvis, feet) stay anchored.
+                  </p>
+                </CardContent>
+              </Card>
+
               {/* Color Palette */}
               <Card>
                 <CardHeader className="pb-2">
@@ -527,10 +565,12 @@ export default function CharacterSandbox() {
                     clayLayers={clayLayers}
                     selectedJoint={selectedJoint}
                     onSelectJoint={setSelectedJoint}
+                    onUpdateJointPosition={handleJointPositionUpdate}
                     zoom={zoom}
                     brushSize={brushSize}
                     brushStrength={brushStrength}
                     activeTool={activeTool}
+                    physicsEnabled={physicsEnabled}
                   />
                 </CardContent>
               </Card>
@@ -637,6 +677,57 @@ export default function CharacterSandbox() {
                                   <Button size="icon" variant="outline" className="h-5 w-5" onClick={() => updateJointRotation(selectedJointData.id, 'z', 15)}>
                                     <RotateCw className="w-2 h-2" />
                                   </Button>
+                                </div>
+                              </div>
+                              
+                              {/* Physics Properties */}
+                              <div className="pt-2 border-t border-border/30 space-y-2">
+                                <Label className="text-[10px] text-muted-foreground">Physics</Label>
+                                <div className="flex items-center justify-between">
+                                  <Label className="text-[10px]">Fixed (Anchor)</Label>
+                                  <Switch 
+                                    checked={selectedJointData.isFixed ?? false}
+                                    onCheckedChange={(val) => updateJointPhysics(selectedJointData.id, { isFixed: val })}
+                                  />
+                                </div>
+                                <div className="space-y-1">
+                                  <div className="flex justify-between">
+                                    <Label className="text-[10px]">Mass</Label>
+                                    <span className="text-[10px] text-muted-foreground">{(selectedJointData.mass ?? 1).toFixed(1)}</span>
+                                  </div>
+                                  <Slider
+                                    value={[(selectedJointData.mass ?? 1) * 20]}
+                                    onValueChange={([val]) => updateJointPhysics(selectedJointData.id, { mass: val / 20 })}
+                                    min={1}
+                                    max={100}
+                                    disabled={selectedJointData.isFixed}
+                                  />
+                                </div>
+                                <div className="space-y-1">
+                                  <div className="flex justify-between">
+                                    <Label className="text-[10px]">Stiffness</Label>
+                                    <span className="text-[10px] text-muted-foreground">{selectedJointData.stiffness ?? 50}</span>
+                                  </div>
+                                  <Slider
+                                    value={[selectedJointData.stiffness ?? 50]}
+                                    onValueChange={([val]) => updateJointPhysics(selectedJointData.id, { stiffness: val })}
+                                    min={10}
+                                    max={100}
+                                    disabled={selectedJointData.isFixed}
+                                  />
+                                </div>
+                                <div className="space-y-1">
+                                  <div className="flex justify-between">
+                                    <Label className="text-[10px]">Damping</Label>
+                                    <span className="text-[10px] text-muted-foreground">{((selectedJointData.damping ?? 0.85) * 100).toFixed(0)}%</span>
+                                  </div>
+                                  <Slider
+                                    value={[(selectedJointData.damping ?? 0.85) * 100]}
+                                    onValueChange={([val]) => updateJointPhysics(selectedJointData.id, { damping: val / 100 })}
+                                    min={50}
+                                    max={99}
+                                    disabled={selectedJointData.isFixed}
+                                  />
                                 </div>
                               </div>
                             </CardContent>

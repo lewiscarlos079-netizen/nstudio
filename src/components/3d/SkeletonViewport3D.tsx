@@ -1,6 +1,6 @@
-import { Canvas, useThree } from '@react-three/fiber';
+import { Canvas, useThree, useFrame } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Environment, Grid, ContactShadows } from '@react-three/drei';
-import { Suspense, useRef, useEffect } from 'react';
+import { Suspense, useRef, useEffect, useState, useCallback } from 'react';
 import * as THREE from 'three';
 
 interface JointBall {
@@ -10,6 +10,11 @@ interface JointBall {
   radius: number;
   color: string;
   connectedTo: string[];
+  // Physics properties
+  mass?: number;
+  isFixed?: boolean; // Fixed joints don't move (like root/pelvis)
+  stiffness?: number; // How rigid the joint connection is
+  damping?: number; // Energy loss in movement
 }
 
 interface BoneStructure {
@@ -37,42 +42,160 @@ interface SkeletonViewport3DProps {
   clayLayers: ClayLayer[];
   selectedJoint: string | null;
   onSelectJoint: (id: string | null) => void;
+  onUpdateJointPosition?: (id: string, position: [number, number, number]) => void;
   zoom: number;
   brushSize: number;
   brushStrength: number;
   activeTool: string;
+  physicsEnabled?: boolean;
 }
 
-// 3D Joint sphere component
+// Physics state for each joint
+interface JointPhysicsState {
+  velocity: [number, number, number];
+  acceleration: [number, number, number];
+  restPosition: [number, number, number];
+}
+
+// Vector math helpers for physics
+const vec3 = {
+  add: (a: [number, number, number], b: [number, number, number]): [number, number, number] => 
+    [a[0] + b[0], a[1] + b[1], a[2] + b[2]],
+  sub: (a: [number, number, number], b: [number, number, number]): [number, number, number] => 
+    [a[0] - b[0], a[1] - b[1], a[2] - b[2]],
+  scale: (v: [number, number, number], s: number): [number, number, number] => 
+    [v[0] * s, v[1] * s, v[2] * s],
+  length: (v: [number, number, number]): number => 
+    Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]),
+  normalize: (v: [number, number, number]): [number, number, number] => {
+    const len = vec3.length(v);
+    return len > 0 ? vec3.scale(v, 1 / len) : [0, 0, 0];
+  },
+  lerp: (a: [number, number, number], b: [number, number, number], t: number): [number, number, number] =>
+    [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t],
+};
+
+// 3D Joint sphere component with physics
 function JointSphere({ 
   joint, 
   isSelected, 
-  onClick 
+  onClick,
+  isDragging,
+  onDragStart,
+  onDrag,
+  onDragEnd,
+  physicsEnabled,
+  allJoints
 }: { 
   joint: JointBall; 
   isSelected: boolean; 
   onClick: () => void;
+  isDragging: boolean;
+  onDragStart: (id: string) => void;
+  onDrag: (id: string, position: [number, number, number]) => void;
+  onDragEnd: (id: string) => void;
+  physicsEnabled: boolean;
+  allJoints: JointBall[];
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
+  const [hovered, setHovered] = useState(false);
+  
+  // Calculate weight indicator based on connected joints below this one
+  const calculateWeight = useCallback(() => {
+    const mass = joint.mass ?? 1;
+    // Count joints connected below (supporting weight)
+    const connectedBelow = allJoints.filter(j => 
+      joint.connectedTo.includes(j.id) && j.position[1] < joint.position[1]
+    );
+    return mass + connectedBelow.length * 0.5;
+  }, [joint, allJoints]);
+  
+  const weight = calculateWeight();
+  const isFixed = joint.isFixed ?? false;
+  
+  // Visual indicator for fixed vs opposable joints
+  const jointColor = isFixed 
+    ? '#ff6b6b' // Fixed joints are red-tinted
+    : isSelected 
+      ? '#00d4ff' 
+      : hovered 
+        ? '#66e0ff'
+        : joint.color;
   
   return (
-    <mesh
-      ref={meshRef}
-      position={joint.position}
-      onClick={(e) => {
-        e.stopPropagation();
-        onClick();
-      }}
-    >
-      <sphereGeometry args={[joint.radius, 16, 16]} />
-      <meshStandardMaterial
-        color={isSelected ? '#00d4ff' : joint.color}
-        metalness={0.3}
-        roughness={0.4}
-        emissive={isSelected ? '#00d4ff' : '#000000'}
-        emissiveIntensity={isSelected ? 0.3 : 0}
-      />
-    </mesh>
+    <group position={joint.position}>
+      {/* Main joint sphere */}
+      <mesh
+        ref={meshRef}
+        onClick={(e) => {
+          e.stopPropagation();
+          onClick();
+        }}
+        onPointerDown={(e) => {
+          if (!isFixed && physicsEnabled) {
+            e.stopPropagation();
+            onDragStart(joint.id);
+          }
+        }}
+        onPointerUp={() => {
+          if (isDragging) {
+            onDragEnd(joint.id);
+          }
+        }}
+        onPointerEnter={() => setHovered(true)}
+        onPointerLeave={() => setHovered(false)}
+      >
+        <sphereGeometry args={[joint.radius, 24, 24]} />
+        <meshStandardMaterial
+          color={jointColor}
+          metalness={0.4}
+          roughness={0.3}
+          emissive={isSelected ? '#00d4ff' : hovered ? '#00d4ff' : '#000000'}
+          emissiveIntensity={isSelected ? 0.4 : hovered ? 0.2 : 0}
+        />
+      </mesh>
+      
+      {/* Weight indicator ring */}
+      {physicsEnabled && !isFixed && (
+        <mesh rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[joint.radius * 1.3, 0.01, 8, 32]} />
+          <meshBasicMaterial 
+            color={weight > 2 ? '#ff9500' : '#00ff88'} 
+            transparent 
+            opacity={0.6} 
+          />
+        </mesh>
+      )}
+      
+      {/* Fixed joint indicator */}
+      {isFixed && (
+        <mesh rotation={[Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[joint.radius * 1.2, joint.radius * 1.4, 6]} />
+          <meshBasicMaterial color="#ff4444" transparent opacity={0.5} />
+        </mesh>
+      )}
+      
+      {/* Opposable joint axes indicator */}
+      {!isFixed && isSelected && (
+        <>
+          {/* X axis */}
+          <mesh position={[joint.radius * 2, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[0.008, 0.008, joint.radius * 1.5, 8]} />
+            <meshBasicMaterial color="#ff0000" />
+          </mesh>
+          {/* Y axis */}
+          <mesh position={[0, joint.radius * 2, 0]}>
+            <cylinderGeometry args={[0.008, 0.008, joint.radius * 1.5, 8]} />
+            <meshBasicMaterial color="#00ff00" />
+          </mesh>
+          {/* Z axis */}
+          <mesh position={[0, 0, joint.radius * 2]} rotation={[Math.PI / 2, 0, 0]}>
+            <cylinderGeometry args={[0.008, 0.008, joint.radius * 1.5, 8]} />
+            <meshBasicMaterial color="#0088ff" />
+          </mesh>
+        </>
+      )}
+    </group>
   );
 }
 
@@ -210,6 +333,160 @@ function BrushCursor({ size, visible }: { size: number; visible: boolean }) {
   );
 }
 
+// Physics simulation hook
+function useJointPhysics(
+  joints: JointBall[],
+  enabled: boolean,
+  onUpdatePosition?: (id: string, position: [number, number, number]) => void
+) {
+  const physicsState = useRef<Map<string, JointPhysicsState>>(new Map());
+  const [simulatedPositions, setSimulatedPositions] = useState<Map<string, [number, number, number]>>(new Map());
+  const draggingJoint = useRef<string | null>(null);
+  const dragTarget = useRef<[number, number, number] | null>(null);
+  
+  // Initialize physics state
+  useEffect(() => {
+    joints.forEach(joint => {
+      if (!physicsState.current.has(joint.id)) {
+        physicsState.current.set(joint.id, {
+          velocity: [0, 0, 0],
+          acceleration: [0, 0, 0],
+          restPosition: [...joint.position] as [number, number, number],
+        });
+      }
+    });
+  }, [joints]);
+  
+  // Physics step
+  useFrame((_, delta) => {
+    if (!enabled) return;
+    
+    const dt = Math.min(delta, 0.033); // Cap at ~30fps for stability
+    const gravity: [number, number, number] = [0, -9.81, 0];
+    const newPositions = new Map<string, [number, number, number]>();
+    
+    joints.forEach(joint => {
+      const state = physicsState.current.get(joint.id);
+      if (!state) return;
+      
+      const isFixed = joint.isFixed ?? false;
+      const mass = joint.mass ?? 1;
+      const stiffness = joint.stiffness ?? 50;
+      const damping = joint.damping ?? 0.9;
+      
+      // Fixed joints don't move
+      if (isFixed) {
+        newPositions.set(joint.id, joint.position);
+        return;
+      }
+      
+      let currentPos = simulatedPositions.get(joint.id) ?? joint.position;
+      
+      // Handle dragging
+      if (draggingJoint.current === joint.id && dragTarget.current) {
+        currentPos = vec3.lerp(currentPos, dragTarget.current, 0.3);
+        state.velocity = [0, 0, 0];
+        newPositions.set(joint.id, currentPos);
+        return;
+      }
+      
+      // Calculate forces
+      let force: [number, number, number] = [0, 0, 0];
+      
+      // Gravity (scaled by mass)
+      force = vec3.add(force, vec3.scale(gravity, mass * 0.1));
+      
+      // Spring force to rest position (holds weight)
+      const toRest = vec3.sub(state.restPosition, currentPos);
+      const springForce = vec3.scale(toRest, stiffness);
+      force = vec3.add(force, springForce);
+      
+      // Constraint forces from connected joints
+      joint.connectedTo.forEach(connectedId => {
+        const connectedJoint = joints.find(j => j.id === connectedId);
+        if (!connectedJoint) return;
+        
+        const connectedPos = simulatedPositions.get(connectedId) ?? connectedJoint.position;
+        const connectedRestPos = physicsState.current.get(connectedId)?.restPosition ?? connectedJoint.position;
+        
+        // Calculate rest distance
+        const restDiff = vec3.sub(state.restPosition, connectedRestPos);
+        const restDist = vec3.length(restDiff);
+        
+        // Current distance
+        const currentDiff = vec3.sub(currentPos, connectedPos);
+        const currentDist = vec3.length(currentDiff);
+        
+        // Apply constraint force to maintain distance
+        if (currentDist > 0 && restDist > 0) {
+          const stretch = currentDist - restDist;
+          const constraintDir = vec3.normalize(currentDiff);
+          const constraintForce = vec3.scale(constraintDir, -stretch * stiffness * 0.5);
+          force = vec3.add(force, constraintForce);
+        }
+      });
+      
+      // Apply acceleration (F = ma)
+      const accel = vec3.scale(force, 1 / mass);
+      
+      // Integrate velocity
+      state.velocity = vec3.add(state.velocity, vec3.scale(accel, dt));
+      
+      // Apply damping
+      state.velocity = vec3.scale(state.velocity, damping);
+      
+      // Integrate position
+      const newPos = vec3.add(currentPos, vec3.scale(state.velocity, dt));
+      
+      // Ground collision
+      if (newPos[1] < -1.4) {
+        newPos[1] = -1.4;
+        state.velocity[1] = -state.velocity[1] * 0.3;
+      }
+      
+      newPositions.set(joint.id, newPos);
+    });
+    
+    setSimulatedPositions(newPositions);
+  });
+  
+  const startDrag = useCallback((id: string) => {
+    draggingJoint.current = id;
+  }, []);
+  
+  const updateDrag = useCallback((id: string, position: [number, number, number]) => {
+    if (draggingJoint.current === id) {
+      dragTarget.current = position;
+    }
+  }, []);
+  
+  const endDrag = useCallback((id: string) => {
+    if (draggingJoint.current === id) {
+      // Update rest position to current position
+      const state = physicsState.current.get(id);
+      const currentPos = simulatedPositions.get(id);
+      if (state && currentPos) {
+        state.restPosition = [...currentPos] as [number, number, number];
+        onUpdatePosition?.(id, currentPos);
+      }
+      draggingJoint.current = null;
+      dragTarget.current = null;
+    }
+  }, [simulatedPositions, onUpdatePosition]);
+  
+  const getPosition = useCallback((id: string, defaultPos: [number, number, number]): [number, number, number] => {
+    return simulatedPositions.get(id) ?? defaultPos;
+  }, [simulatedPositions]);
+  
+  return {
+    getPosition,
+    startDrag,
+    updateDrag,
+    endDrag,
+    isDragging: (id: string) => draggingJoint.current === id,
+  };
+}
+
 // Scene content
 function SceneContent({
   joints,
@@ -217,12 +494,22 @@ function SceneContent({
   clayLayers,
   selectedJoint,
   onSelectJoint,
+  onUpdateJointPosition,
   brushSize,
-  activeTool
+  activeTool,
+  physicsEnabled = false
 }: Omit<SkeletonViewport3DProps, 'zoom' | 'brushStrength'>) {
+  const physics = useJointPhysics(joints, physicsEnabled, onUpdateJointPosition);
+  
   const handleMissedClick = () => {
     onSelectJoint(null);
   };
+  
+  // Get physics-adjusted joints
+  const physicsJoints = joints.map(joint => ({
+    ...joint,
+    position: physicsEnabled ? physics.getPosition(joint.id, joint.position) : joint.position,
+  }));
 
   return (
     <>
@@ -232,9 +519,9 @@ function SceneContent({
       <Environment preset="city" />
       
       {/* Render connection rods between joints */}
-      {joints.map((joint) =>
+      {physicsJoints.map((joint) =>
         joint.connectedTo.map((parentId) => {
-          const parent = joints.find(j => j.id === parentId);
+          const parent = physicsJoints.find(j => j.id === parentId);
           if (!parent) return null;
           return (
             <ConnectionRod
@@ -248,21 +535,27 @@ function SceneContent({
       
       {/* Render bone structures */}
       {bones.map((bone) => (
-        <BoneRod key={bone.id} bone={bone} joints={joints} />
+        <BoneRod key={bone.id} bone={bone} joints={physicsJoints} />
       ))}
       
       {/* Render clay layers */}
       {clayLayers.map((layer) => (
-        <ClayLayerMesh key={layer.id} layer={layer} bones={bones} joints={joints} />
+        <ClayLayerMesh key={layer.id} layer={layer} bones={bones} joints={physicsJoints} />
       ))}
       
       {/* Render joint spheres */}
-      {joints.map((joint) => (
+      {physicsJoints.map((joint) => (
         <JointSphere
           key={joint.id}
           joint={joint}
           isSelected={selectedJoint === joint.id}
           onClick={() => onSelectJoint(joint.id)}
+          isDragging={physics.isDragging(joint.id)}
+          onDragStart={physics.startDrag}
+          onDrag={physics.updateDrag}
+          onDragEnd={physics.endDrag}
+          physicsEnabled={physicsEnabled}
+          allJoints={physicsJoints}
         />
       ))}
       
@@ -321,7 +614,7 @@ function CameraController({ zoom }: { zoom: number }) {
 }
 
 export function SkeletonViewport3D(props: SkeletonViewport3DProps) {
-  const { zoom, ...sceneProps } = props;
+  const { zoom, physicsEnabled = false, ...sceneProps } = props;
   
   return (
     <div className="w-full h-full relative bg-gradient-to-b from-muted/30 to-muted/50 rounded-lg overflow-hidden">
@@ -345,13 +638,21 @@ export function SkeletonViewport3D(props: SkeletonViewport3DProps) {
             target={[0, 0.3, 0]}
           />
           <CameraController zoom={zoom} />
-          <SceneContent {...sceneProps} />
+          <SceneContent {...sceneProps} physicsEnabled={physicsEnabled} />
         </Canvas>
       </Suspense>
       
+      {/* Physics indicator */}
+      {physicsEnabled && (
+        <div className="absolute top-2 left-2 text-[10px] text-green-400 bg-background/70 px-2 py-1 rounded backdrop-blur-sm flex items-center gap-1">
+          <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+          Physics Active
+        </div>
+      )}
+      
       {/* Viewport controls hint */}
       <div className="absolute bottom-2 left-2 text-[10px] text-muted-foreground bg-background/70 px-2 py-1 rounded backdrop-blur-sm">
-        LMB: Rotate | RMB: Pan | Scroll: Zoom | Click: Select
+        LMB: Rotate | RMB: Pan | Scroll: Zoom | Click: Select {physicsEnabled && '| Drag: Move Joint'}
       </div>
     </div>
   );
