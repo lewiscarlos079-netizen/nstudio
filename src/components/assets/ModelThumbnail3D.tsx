@@ -38,7 +38,7 @@ interface ModelThumbnail3DProps {
 }
 
 // Style cycle order for the 20-second refresh
-const STYLE_CYCLE: ModelStyle[] = ['standard', 'toon', 'wireframe'];
+const STYLE_CYCLE: ModelStyle[] = ['standard', 'wireframe'];
 
 // Map model IDs to their procedural components
 const MODEL_COMPONENTS: Record<string, React.FC<{ style?: ModelStyle }>> = {
@@ -126,7 +126,7 @@ const MODEL_COMPONENTS: Record<string, React.FC<{ style?: ModelStyle }>> = {
 };
 
 // Fallback primitive for unknown models
-function FallbackModel({ style = 'toon' }: { style?: ModelStyle }) {
+function FallbackModel({ style = 'standard' }: { style?: ModelStyle }) {
   return (
     <mesh>
       <boxGeometry args={[0.5, 0.5, 0.5]} />

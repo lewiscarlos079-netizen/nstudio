@@ -3,7 +3,7 @@ import { Mesh, Vector3, Plane, Group } from 'three';
 import { ThreeEvent, useThree, useFrame } from '@react-three/fiber';
 import { useSceneStore, SceneObject } from '@/store/sceneStore';
 import { getProceduralModel } from './ProceduralModels';
-import { StyledMaterial } from './ToonMaterials';
+import { StyledMaterial } from './Materials';
 
 interface SceneObjectProps {
   object: SceneObject;
