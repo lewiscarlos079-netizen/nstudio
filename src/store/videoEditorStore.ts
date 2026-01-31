@@ -29,10 +29,23 @@ export interface EditState {
   fps: number;
 }
 
+export interface LoadedProject {
+  id: string;
+  name: string;
+  description?: string;
+  type?: string;
+  resolution?: string;
+}
+
 interface VideoEditorState {
   tracks: TimelineTrack[];
   editState: EditState;
   projectDuration: number;
+  loadedProject: LoadedProject | null;
+  
+  // Project actions
+  loadProject: (project: LoadedProject) => void;
+  clearProject: () => void;
   
   // Track actions
   addTrack: (type: TimelineTrack['type'], name?: string) => void;
@@ -81,6 +94,60 @@ export const useVideoEditorStore = create<VideoEditorState>((set, get) => ({
     fps: 30,
   },
   projectDuration: 0,
+  loadedProject: null,
+
+  loadProject: (project) =>
+    set((state) => {
+      // Create a clip from the loaded project
+      const defaultDuration = 10; // 10 seconds default
+      const fps = state.editState.fps;
+      const newClip: VideoClip = {
+        id: crypto.randomUUID(),
+        name: project.name,
+        duration: defaultDuration,
+        startFrame: 0,
+        endFrame: defaultDuration * fps,
+        sourceProjectId: project.id,
+      };
+
+      // Add clip to first video track
+      const updatedTracks = state.tracks.map((t, index) =>
+        index === 0 && t.type === 'video'
+          ? { ...t, clips: [...t.clips, newClip] }
+          : t
+      );
+
+      return {
+        loadedProject: project,
+        tracks: updatedTracks,
+        projectDuration: Math.max(state.projectDuration, defaultDuration),
+      };
+    }),
+
+  clearProject: () =>
+    set({
+      loadedProject: null,
+      tracks: [
+        {
+          id: 'main-video',
+          name: 'Video 1',
+          type: 'video',
+          clips: [],
+          muted: false,
+          locked: false,
+        },
+      ],
+      projectDuration: 0,
+      editState: {
+        currentTime: 0,
+        isPlaying: false,
+        zoom: 1,
+        selectedClipId: null,
+        selectedTrackId: null,
+        editMode: 'clip',
+        fps: 30,
+      },
+    }),
 
   addTrack: (type, name) =>
     set((state) => {

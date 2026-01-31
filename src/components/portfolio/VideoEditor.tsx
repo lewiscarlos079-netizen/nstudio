@@ -34,6 +34,7 @@ export function VideoEditor() {
     tracks,
     editState,
     projectDuration,
+    loadedProject,
     addTrack,
     removeTrack,
     toggleTrackMute,
@@ -50,6 +51,7 @@ export function VideoEditor() {
     goToFrame,
     nextFrame,
     prevFrame,
+    clearProject,
   } = useVideoEditorStore();
 
   const formatTime = (time: number) => {
@@ -73,7 +75,14 @@ export function VideoEditor() {
         <div className="flex items-center justify-between p-3 border-b border-border/50">
           <div className="flex items-center gap-2">
             <Film className="w-5 h-5 text-primary" />
-            <h3 className="font-display text-sm font-semibold">Video Editor</h3>
+            <h3 className="font-display text-sm font-semibold">
+              {loadedProject ? loadedProject.name : 'Video Editor'}
+            </h3>
+            {loadedProject && (
+              <Badge variant="outline" className="text-xs bg-primary/10">
+                {loadedProject.resolution?.toUpperCase()}
+              </Badge>
+            )}
             <Badge variant="outline" className="text-xs ml-2">
               {editState.editMode === 'frame' ? 'Frame Mode' : 'Clip Mode'}
             </Badge>
@@ -110,12 +119,22 @@ export function VideoEditor() {
 
         {/* Preview Area */}
         <div className="flex-1 flex items-center justify-center bg-muted/30 min-h-[200px]">
-          <div className="aspect-video bg-background rounded-lg border border-border/50 w-full max-w-2xl flex items-center justify-center">
-            <div className="text-center">
-              <Film className="w-12 h-12 text-muted-foreground/30 mx-auto mb-2" />
-              <p className="text-sm text-muted-foreground">Preview Window</p>
-              <p className="text-xs text-muted-foreground/60 mt-1">Frame {currentFrame} / {totalFrames || 0}</p>
-            </div>
+          <div className="aspect-video bg-background rounded-lg border border-border/50 w-full max-w-2xl flex items-center justify-center relative overflow-hidden">
+            {loadedProject ? (
+              <div className="text-center">
+                <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                  <Film className="w-8 h-8 text-primary" />
+                </div>
+                <p className="text-sm font-medium text-foreground">{loadedProject.name}</p>
+                <p className="text-xs text-muted-foreground mt-1">Frame {currentFrame} / {totalFrames || 0}</p>
+              </div>
+            ) : (
+              <div className="text-center">
+                <Film className="w-12 h-12 text-muted-foreground/30 mx-auto mb-2" />
+                <p className="text-sm text-muted-foreground">No project loaded</p>
+                <p className="text-xs text-muted-foreground/60 mt-1">Select a project from the portfolio</p>
+              </div>
+            )}
           </div>
         </div>
 
