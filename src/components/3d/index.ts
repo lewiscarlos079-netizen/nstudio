@@ -73,3 +73,6 @@ export {
   useAnimalROM,
   SCIENTIFIC_COLORS,
 } from './ScientificAnimals';
+
+// Skeleton viewport for character sandbox
+export { SkeletonViewport3D } from './SkeletonViewport3D';

@@ -31,6 +31,10 @@ export interface SceneObject {
   visible: boolean;
   // Body part customization for procedural models
   bodyParts?: Record<BodyPartType, BodyPartConfig>;
+  // Accessibility flag - for buildings/props to be player accessible or background-only
+  isPlayerAccessible?: boolean;
+  // Layer category for organization
+  layerCategory?: 'terrain' | 'water' | 'vegetation' | 'building' | 'prop' | 'character';
 }
 
 export type CameraMode = '2D' | '3D';
