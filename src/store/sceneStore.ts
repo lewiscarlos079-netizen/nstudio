@@ -83,8 +83,17 @@ interface SceneState {
 const getRandomPosition = (): [number, number, number] => {
   return [
     (Math.random() - 0.5) * 4,
-    0.5 + Math.random() * 2,
+    0.5 + Math.random() * 1.5,
     (Math.random() - 0.5) * 4,
+  ];
+};
+
+// Larger spawn position for procedural models so they're more visible
+const getProceduralModelPosition = (): [number, number, number] => {
+  return [
+    (Math.random() - 0.5) * 3,
+    0,  // Ground level - models have their own height offset
+    (Math.random() - 0.5) * 3,
   ];
 };
 
@@ -128,14 +137,17 @@ export const useSceneStore = create<SceneState>((set, get) => ({
 
   addProceduralModel: (modelId, name) =>
     set((state) => {
+      // Use larger scale for better visibility of detailed models
+      const defaultScale: [number, number, number] = [2, 2, 2];
+      
       const newObject: SceneObject = {
         id: crypto.randomUUID(),
         name: name || `${modelId}_${objectCounter++}`,
         type: 'procedural',
         modelId,
-        position: getRandomPosition(),
+        position: getProceduralModelPosition(),
         rotation: [0, 0, 0],
-        scale: [1, 1, 1],
+        scale: defaultScale,
         color: '#00d4ff',
         metalness: 0.5,
         roughness: 0.5,
