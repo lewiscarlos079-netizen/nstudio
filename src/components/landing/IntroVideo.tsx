@@ -1,18 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { X, Crown, Code, Volume2, VolumeX } from 'lucide-react';
+import { IntroTrailer3D, IntroSceneType } from '@/components/3d/IntroScenes3D';
 
 interface IntroVideoProps {
   onClose: () => void;
 }
 
 interface Scene {
-  id: string;
+  id: IntroSceneType;
   title: string;
   subtitle: string;
-  emoji: string;
   bgGradient: string;
   duration: number;
 }
@@ -22,41 +22,36 @@ const scenes: Scene[] = [
     id: 'robots-farming',
     title: 'Robots Farming',
     subtitle: 'Automated agricultural systems in action',
-    emoji: '🤖🌾',
     bgGradient: 'from-emerald-950 via-green-900/50 to-emerald-950',
-    duration: 4000,
+    duration: 5000,
   },
   {
     id: 'skydiving',
     title: 'Extreme Skydiving',
     subtitle: 'Capture breathtaking aerial cinematics',
-    emoji: '🪂☁️',
     bgGradient: 'from-sky-950 via-blue-900/50 to-cyan-950',
-    duration: 4000,
+    duration: 5000,
   },
   {
     id: 'surfing',
     title: 'Ocean Surfing',
     subtitle: 'Ride the waves with dynamic water physics',
-    emoji: '🏄‍♂️🌊',
     bgGradient: 'from-teal-950 via-cyan-900/50 to-blue-950',
-    duration: 4000,
+    duration: 5000,
   },
   {
     id: 'racing',
     title: 'Street Racing',
     subtitle: 'High-speed vehicle simulations',
-    emoji: '🏎️💨',
     bgGradient: 'from-slate-950 via-zinc-900/50 to-neutral-950',
-    duration: 4000,
+    duration: 5000,
   },
   {
     id: 'space',
     title: 'Space Exploration',
     subtitle: 'Journey through the cosmos',
-    emoji: '🚀✨',
     bgGradient: 'from-violet-950 via-purple-900/50 to-indigo-950',
-    duration: 4000,
+    duration: 5000,
   },
 ];
 
@@ -108,57 +103,40 @@ export function IntroVideo({ onClose }: IntroVideoProps) {
     >
       {/* Video Container */}
       <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
-        {/* Animated Scene Backgrounds */}
+        {/* 3D Scene Background */}
         <AnimatePresence mode="wait">
           <motion.div
             key={currentScene.id}
-            initial={{ opacity: 0, scale: 1.1 }}
+            initial={{ opacity: 0, scale: 1.05 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 1.2, ease: "easeInOut" }}
-            className={`absolute inset-0 bg-gradient-to-br ${currentScene.bgGradient}`}
+            transition={{ duration: 1.5, ease: "easeInOut" }}
+            className="absolute inset-0"
           >
-            <div className="absolute inset-0 grid-bg opacity-20" />
+            {/* Gradient overlay for depth */}
+            <div className={`absolute inset-0 bg-gradient-to-br ${currentScene.bgGradient} opacity-40 z-10 pointer-events-none`} />
             
-            {/* Floating particles */}
-            {[...Array(20)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute w-2 h-2 rounded-full bg-primary/30"
-                initial={{
-                  x: Math.random() * window.innerWidth,
-                  y: Math.random() * window.innerHeight,
-                }}
-                animate={{
-                  y: [null, Math.random() * -200],
-                  opacity: [0.2, 0.8, 0.2],
-                }}
-                transition={{
-                  duration: 4 + Math.random() * 3,
-                  repeat: Infinity,
-                  delay: Math.random() * 2,
-                }}
-              />
-            ))}
+            {/* 3D Rendered Scene */}
+            <div className="absolute inset-0">
+              <Suspense fallback={
+                <div className={`w-full h-full bg-gradient-to-br ${currentScene.bgGradient}`} />
+              }>
+                <IntroTrailer3D 
+                  sceneType={currentScene.id} 
+                  isPlaying={!showCTAs}
+                />
+              </Suspense>
+            </div>
 
-            {/* Slow moving gradient orbs */}
-            <motion.div
-              animate={{
-                scale: [1, 1.15, 1],
-                x: [0, 30, 0],
-                y: [0, -20, 0],
+            {/* Subtle vignette effect */}
+            <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-black/50 z-10 pointer-events-none" />
+            
+            {/* Film grain overlay for cinematic feel */}
+            <div 
+              className="absolute inset-0 opacity-[0.03] z-10 pointer-events-none"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
               }}
-              transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-gradient-radial from-primary/20 via-transparent to-transparent blur-3xl"
-            />
-            <motion.div
-              animate={{
-                scale: [1, 1.2, 1],
-                x: [0, -25, 0],
-                y: [0, 25, 0],
-              }}
-              transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-gradient-radial from-secondary/15 via-transparent to-transparent blur-3xl"
             />
           </motion.div>
         </AnimatePresence>
@@ -172,24 +150,14 @@ export function IntroVideo({ onClose }: IntroVideoProps) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -40 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="relative z-10 text-center px-8"
+              className="relative z-20 text-center px-8"
             >
-              {/* Scene Emoji */}
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
-                className="text-7xl md:text-9xl mb-8"
-              >
-                {currentScene.emoji}
-              </motion.div>
-
-              {/* Scene Title */}
+              {/* Scene Title - now overlaid on 3D scene */}
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-                className="font-display text-5xl md:text-7xl font-bold mb-4"
+                transition={{ delay: 0.3 }}
+                className="font-display text-5xl md:text-7xl font-bold mb-4 drop-shadow-2xl"
               >
                 <span className="bg-gradient-to-r from-violet-300 via-primary to-secondary bg-clip-text text-transparent">
                   {currentScene.title}
@@ -232,15 +200,15 @@ export function IntroVideo({ onClose }: IntroVideoProps) {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="relative z-10 text-center px-8 max-w-3xl"
+              className="relative z-20 text-center px-8 max-w-3xl"
             >
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 200 }}
-                className="text-6xl mb-6"
+                className="text-6xl mb-6 drop-shadow-lg"
               >
-                ✨
+                🎬
               </motion.div>
               
               <h2 className="font-display text-4xl md:text-6xl font-bold mb-4">
