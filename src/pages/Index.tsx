@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { IntroVideo } from '@/components/landing/IntroVideo';
 import { StoragePrompt, useStoragePrompt } from '@/components/landing/StoragePrompt';
+import { CommunitySpotlight } from '@/components/landing/CommunitySpotlight';
 
 const INTRO_SHOWN_KEY = 'nexus_intro_shown';
 
@@ -262,6 +263,9 @@ export default function Index() {
           </motion.div>
         </div>
       </div>
+      
+      {/* Community Spotlight - Featured Creations */}
+      <CommunitySpotlight position="bottom" showVoting={true} maxItems={5} />
     </Layout>
     </>
   );

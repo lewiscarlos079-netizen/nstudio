@@ -56,3 +56,14 @@ export {
   OceanWaves,
   WaterModelRegistry,
 } from './WaterSystems';
+
+// Scientific animal models with ROM
+export {
+  ScientificElephant,
+  ScientificLion,
+  ScientificRaccoon,
+  ScientificAnimalRegistry,
+  ROM_PRESETS,
+  useAnimalROM,
+  SCIENTIFIC_COLORS,
+} from './ScientificAnimals';

@@ -448,10 +448,10 @@ const preloadedAssets: PreloadedAsset[] = [
   { id: 'marsh-grass', name: 'Marsh Grass', category: 'terrain', subcategory: 'biomes', icon: Leaf, tags: ['grass', 'marsh', 'tall', 'reeds'], tier: 'free', imageUrl: '/placeholder.svg' },
   { id: 'cattails', name: 'Cattails', category: 'terrain', subcategory: 'biomes', icon: Leaf, tags: ['plant', 'cattail', 'marsh', 'wetland'], tier: 'free', imageUrl: '/placeholder.svg' },
 
-  // Roads & Paths
-  { id: 'road-cobble', name: 'Cobblestone Road', category: 'terrain', subcategory: 'roads', icon: MapPin, tags: ['path', 'stone', 'medieval'], tier: 'free', imageUrl: '/placeholder.svg' },
-  { id: 'road-dirt', name: 'Dirt Path', category: 'terrain', subcategory: 'roads', icon: MapPin, tags: ['path', 'earth', 'natural'], tier: 'free', imageUrl: '/placeholder.svg' },
-  { id: 'road-asphalt', name: 'Asphalt Road', category: 'terrain', subcategory: 'roads', icon: Car, tags: ['modern', 'street', 'urban'], tier: 'pro', imageUrl: '/placeholder.svg' },
+  // Roads & Paths (Terrain variants)
+  { id: 'terrain-road-cobble', name: 'Cobblestone Path', category: 'terrain', subcategory: 'roads', icon: MapPin, tags: ['path', 'stone', 'medieval'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'terrain-road-dirt', name: 'Dirt Path', category: 'terrain', subcategory: 'roads', icon: MapPin, tags: ['path', 'earth', 'natural'], tier: 'free', imageUrl: '/placeholder.svg' },
+  { id: 'terrain-road-asphalt', name: 'Paved Path', category: 'terrain', subcategory: 'roads', icon: Car, tags: ['modern', 'street', 'urban'], tier: 'pro', imageUrl: '/placeholder.svg' },
 ];
 
 const categories = [
