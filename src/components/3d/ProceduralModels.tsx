@@ -220,117 +220,307 @@ export function HumanoidModel({ color = COLORS.skin, bodyParts, style = 'standar
   const leftLegConfig = getPartConfig(bodyParts, 'leftLeg');
   const rightLegConfig = getPartConfig(bodyParts, 'rightLeg');
 
+  const skinColor = headConfig.color || color;
+  const shirtColor = torsoConfig.color || COLORS.fabric;
+  const pantsColor = COLORS.fabricDark;
+  const hairColor = COLORS.hair;
+
   return (
     <group>
-      {/* Torso */}
-      <mesh 
-        position={applyPartTransform([0, 0.4, 0], torsoConfig)}
-        scale={torsoConfig.scale}
-      >
-        <boxGeometry args={[0.35, 0.5, 0.2]} />
-        <StyledMaterial color={torsoConfig.color || COLORS.fabric} style={style} />
-      </mesh>
-      {/* Chest detail */}
-      <mesh position={[0, 0.45, 0.08]}>
-        <boxGeometry args={[0.3, 0.35, 0.08]} />
-        <StyledMaterial color={COLORS.fabric} style={style} />
-      </mesh>
-      {/* Head */}
-      <mesh 
-        position={applyPartTransform([0, 0.85, 0], headConfig)}
-        scale={headConfig.scale}
-      >
-        <sphereGeometry args={[0.15, 16, 16]} />
-        <StyledMaterial color={headConfig.color || color} style={style} />
-      </mesh>
-      {/* Neck */}
-      <mesh position={[0, 0.68, 0]}>
-        <cylinderGeometry args={[0.06, 0.08, 0.08, 8]} />
-        <StyledMaterial color={color} style={style} />
-      </mesh>
-      {/* Eyes */}
-      <mesh position={[-0.05, 0.88, 0.12]}>
-        <sphereGeometry args={[0.025, 8, 8]} />
-        <StyledMaterial color={COLORS.eyeWhite} style={style} />
-      </mesh>
-      <mesh position={[0.05, 0.88, 0.12]}>
-        <sphereGeometry args={[0.025, 8, 8]} />
-        <StyledMaterial color={COLORS.eyeWhite} style={style} />
-      </mesh>
-      {/* Pupils */}
-      <mesh position={[-0.05, 0.88, 0.14]}>
-        <sphereGeometry args={[0.012, 6, 6]} />
-        <StyledMaterial color={COLORS.eyeBrown} style={style} />
-      </mesh>
-      <mesh position={[0.05, 0.88, 0.14]}>
-        <sphereGeometry args={[0.012, 6, 6]} />
-        <StyledMaterial color={COLORS.eyeBrown} style={style} />
-      </mesh>
-      {/* Hair */}
-      <mesh position={[0, 0.92, -0.02]} scale={[1.1, 0.8, 1]}>
-        <sphereGeometry args={[0.14, 12, 12]} />
-        <StyledMaterial color={COLORS.hair} style={style} />
-      </mesh>
-      {/* Left Arm */}
-      <group position={applyPartTransform([-0.25, 0.5, 0], leftArmConfig)} scale={leftArmConfig.scale}>
+      {/* HEAD GROUP */}
+      <group position={applyPartTransform([0, 0.95, 0], headConfig)} scale={headConfig.scale}>
+        {/* Skull - main head shape */}
         <mesh position={[0, 0, 0]}>
-          <capsuleGeometry args={[0.05, 0.2, 8, 16]} />
-          <StyledMaterial color={leftArmConfig.color || color} style={style} />
+          <sphereGeometry args={[0.14, 24, 24]} />
+          <StyledMaterial color={skinColor} style={style} />
+        </mesh>
+        
+        {/* Face - slightly forward */}
+        <mesh position={[0, -0.01, 0.05]}>
+          <sphereGeometry args={[0.11, 20, 20]} />
+          <StyledMaterial color={skinColor} style={style} />
+        </mesh>
+        
+        {/* Jaw */}
+        <mesh position={[0, -0.08, 0.03]}>
+          <boxGeometry args={[0.09, 0.05, 0.08]} />
+          <StyledMaterial color={skinColor} style={style} />
+        </mesh>
+        
+        {/* Chin */}
+        <mesh position={[0, -0.1, 0.05]}>
+          <sphereGeometry args={[0.03, 12, 12]} />
+          <StyledMaterial color={skinColor} style={style} />
+        </mesh>
+        
+        {/* Nose bridge */}
+        <mesh position={[0, 0, 0.12]} rotation={[0.2, 0, 0]}>
+          <boxGeometry args={[0.025, 0.05, 0.03]} />
+          <StyledMaterial color={skinColor} style={style} />
+        </mesh>
+        
+        {/* Nose tip */}
+        <mesh position={[0, -0.02, 0.14]}>
+          <sphereGeometry args={[0.018, 10, 10]} />
+          <StyledMaterial color={skinColor} style={style} />
+        </mesh>
+        
+        {/* Eye sockets */}
+        <mesh position={[-0.045, 0.02, 0.1]}>
+          <sphereGeometry args={[0.025, 14, 14]} />
+          <StyledMaterial color={COLORS.eyeWhite} style={style} />
+        </mesh>
+        <mesh position={[0.045, 0.02, 0.1]}>
+          <sphereGeometry args={[0.025, 14, 14]} />
+          <StyledMaterial color={COLORS.eyeWhite} style={style} />
+        </mesh>
+        
+        {/* Irises */}
+        <mesh position={[-0.045, 0.02, 0.12]}>
+          <sphereGeometry args={[0.013, 10, 10]} />
+          <StyledMaterial color={COLORS.eyeBrown} style={style} />
+        </mesh>
+        <mesh position={[0.045, 0.02, 0.12]}>
+          <sphereGeometry args={[0.013, 10, 10]} />
+          <StyledMaterial color={COLORS.eyeBrown} style={style} />
+        </mesh>
+        
+        {/* Pupils */}
+        <mesh position={[-0.045, 0.02, 0.13]}>
+          <sphereGeometry args={[0.006, 8, 8]} />
+          <StyledMaterial color={COLORS.pupil} style={style} />
+        </mesh>
+        <mesh position={[0.045, 0.02, 0.13]}>
+          <sphereGeometry args={[0.006, 8, 8]} />
+          <StyledMaterial color={COLORS.pupil} style={style} />
+        </mesh>
+        
+        {/* Eyebrows */}
+        <mesh position={[-0.045, 0.055, 0.1]} rotation={[0, 0, 0.1]}>
+          <boxGeometry args={[0.04, 0.008, 0.015]} />
+          <StyledMaterial color={hairColor} style={style} />
+        </mesh>
+        <mesh position={[0.045, 0.055, 0.1]} rotation={[0, 0, -0.1]}>
+          <boxGeometry args={[0.04, 0.008, 0.015]} />
+          <StyledMaterial color={hairColor} style={style} />
+        </mesh>
+        
+        {/* Ears */}
+        <mesh position={[-0.13, 0, 0]}>
+          <sphereGeometry args={[0.025, 10, 10]} />
+          <StyledMaterial color={skinColor} style={style} />
+        </mesh>
+        <mesh position={[0.13, 0, 0]}>
+          <sphereGeometry args={[0.025, 10, 10]} />
+          <StyledMaterial color={skinColor} style={style} />
+        </mesh>
+        
+        {/* Hair top */}
+        <mesh position={[0, 0.08, -0.01]}>
+          <sphereGeometry args={[0.15, 20, 20, 0, Math.PI * 2, 0, Math.PI / 2]} />
+          <StyledMaterial color={hairColor} style={style} />
+        </mesh>
+        
+        {/* Hair sides */}
+        <mesh position={[-0.08, 0.04, -0.03]}>
+          <sphereGeometry args={[0.08, 12, 12]} />
+          <StyledMaterial color={hairColor} style={style} />
+        </mesh>
+        <mesh position={[0.08, 0.04, -0.03]}>
+          <sphereGeometry args={[0.08, 12, 12]} />
+          <StyledMaterial color={hairColor} style={style} />
+        </mesh>
+        
+        {/* Mouth line */}
+        <mesh position={[0, -0.06, 0.12]}>
+          <boxGeometry args={[0.035, 0.005, 0.008]} />
+          <StyledMaterial color="#8b5a5a" style={style} />
+        </mesh>
+      </group>
+      
+      {/* Neck */}
+      <mesh position={[0, 0.78, 0]}>
+        <cylinderGeometry args={[0.04, 0.05, 0.08, 12]} />
+        <StyledMaterial color={skinColor} style={style} />
+      </mesh>
+      
+      {/* TORSO */}
+      <group position={applyPartTransform([0, 0.55, 0], torsoConfig)} scale={torsoConfig.scale}>
+        {/* Chest */}
+        <mesh position={[0, 0.05, 0]}>
+          <capsuleGeometry args={[0.12, 0.18, 10, 20]} />
+          <StyledMaterial color={shirtColor} style={style} />
+        </mesh>
+        
+        {/* Shoulders */}
+        <mesh position={[-0.15, 0.08, 0]}>
+          <sphereGeometry args={[0.055, 12, 12]} />
+          <StyledMaterial color={shirtColor} style={style} />
+        </mesh>
+        <mesh position={[0.15, 0.08, 0]}>
+          <sphereGeometry args={[0.055, 12, 12]} />
+          <StyledMaterial color={shirtColor} style={style} />
+        </mesh>
+        
+        {/* Abdomen */}
+        <mesh position={[0, -0.12, 0]}>
+          <capsuleGeometry args={[0.1, 0.1, 10, 20]} />
+          <StyledMaterial color={shirtColor} style={style} />
+        </mesh>
+      </group>
+      
+      {/* Pelvis/Hips */}
+      <mesh position={[0, 0.38, 0]}>
+        <boxGeometry args={[0.18, 0.08, 0.1]} />
+        <StyledMaterial color={pantsColor} style={style} />
+      </mesh>
+      
+      {/* LEFT ARM */}
+      <group position={applyPartTransform([-0.2, 0.62, 0], leftArmConfig)} scale={leftArmConfig.scale}>
+        {/* Upper arm */}
+        <mesh position={[0, -0.08, 0]} rotation={[0, 0, 0.1]}>
+          <capsuleGeometry args={[0.035, 0.14, 8, 16]} />
+          <StyledMaterial color={leftArmConfig.color || skinColor} style={style} />
+        </mesh>
+        {/* Elbow */}
+        <mesh position={[-0.02, -0.16, 0]}>
+          <sphereGeometry args={[0.028, 10, 10]} />
+          <StyledMaterial color={skinColor} style={style} />
         </mesh>
         {/* Forearm */}
-        <mesh position={[0, -0.18, 0]}>
-          <capsuleGeometry args={[0.04, 0.18, 8, 16]} />
-          <StyledMaterial color={color} style={style} />
+        <mesh position={[-0.02, -0.26, 0]}>
+          <capsuleGeometry args={[0.028, 0.12, 8, 16]} />
+          <StyledMaterial color={skinColor} style={style} />
         </mesh>
-        {/* Hand */}
-        <mesh position={[0, -0.32, 0]}>
-          <sphereGeometry args={[0.04, 8, 8]} />
-          <StyledMaterial color={color} style={style} />
+        {/* Wrist */}
+        <mesh position={[-0.02, -0.34, 0]}>
+          <sphereGeometry args={[0.022, 8, 8]} />
+          <StyledMaterial color={skinColor} style={style} />
+        </mesh>
+        {/* Hand palm */}
+        <mesh position={[-0.02, -0.38, 0]}>
+          <boxGeometry args={[0.04, 0.05, 0.02]} />
+          <StyledMaterial color={skinColor} style={style} />
+        </mesh>
+        {/* Fingers */}
+        {[0, 1, 2, 3].map((i) => (
+          <mesh key={i} position={[-0.032 + i * 0.012, -0.42, 0]}>
+            <capsuleGeometry args={[0.005, 0.02, 4, 8]} />
+            <StyledMaterial color={skinColor} style={style} />
+          </mesh>
+        ))}
+        {/* Thumb */}
+        <mesh position={[-0.04, -0.37, 0.015]} rotation={[0, 0, 0.5]}>
+          <capsuleGeometry args={[0.006, 0.02, 4, 8]} />
+          <StyledMaterial color={skinColor} style={style} />
         </mesh>
       </group>
-      {/* Right Arm */}
-      <group position={applyPartTransform([0.25, 0.5, 0], rightArmConfig)} scale={rightArmConfig.scale}>
-        <mesh position={[0, 0, 0]}>
-          <capsuleGeometry args={[0.05, 0.2, 8, 16]} />
-          <StyledMaterial color={rightArmConfig.color || color} style={style} />
+      
+      {/* RIGHT ARM */}
+      <group position={applyPartTransform([0.2, 0.62, 0], rightArmConfig)} scale={rightArmConfig.scale}>
+        {/* Upper arm */}
+        <mesh position={[0, -0.08, 0]} rotation={[0, 0, -0.1]}>
+          <capsuleGeometry args={[0.035, 0.14, 8, 16]} />
+          <StyledMaterial color={rightArmConfig.color || skinColor} style={style} />
         </mesh>
-        <mesh position={[0, -0.18, 0]}>
-          <capsuleGeometry args={[0.04, 0.18, 8, 16]} />
-          <StyledMaterial color={color} style={style} />
+        {/* Elbow */}
+        <mesh position={[0.02, -0.16, 0]}>
+          <sphereGeometry args={[0.028, 10, 10]} />
+          <StyledMaterial color={skinColor} style={style} />
         </mesh>
-        <mesh position={[0, -0.32, 0]}>
-          <sphereGeometry args={[0.04, 8, 8]} />
-          <StyledMaterial color={color} style={style} />
+        {/* Forearm */}
+        <mesh position={[0.02, -0.26, 0]}>
+          <capsuleGeometry args={[0.028, 0.12, 8, 16]} />
+          <StyledMaterial color={skinColor} style={style} />
+        </mesh>
+        {/* Wrist */}
+        <mesh position={[0.02, -0.34, 0]}>
+          <sphereGeometry args={[0.022, 8, 8]} />
+          <StyledMaterial color={skinColor} style={style} />
+        </mesh>
+        {/* Hand palm */}
+        <mesh position={[0.02, -0.38, 0]}>
+          <boxGeometry args={[0.04, 0.05, 0.02]} />
+          <StyledMaterial color={skinColor} style={style} />
+        </mesh>
+        {/* Fingers */}
+        {[0, 1, 2, 3].map((i) => (
+          <mesh key={i} position={[0.008 + i * 0.012, -0.42, 0]}>
+            <capsuleGeometry args={[0.005, 0.02, 4, 8]} />
+            <StyledMaterial color={skinColor} style={style} />
+          </mesh>
+        ))}
+        {/* Thumb */}
+        <mesh position={[0.04, -0.37, 0.015]} rotation={[0, 0, -0.5]}>
+          <capsuleGeometry args={[0.006, 0.02, 4, 8]} />
+          <StyledMaterial color={skinColor} style={style} />
         </mesh>
       </group>
-      {/* Left Leg */}
-      <group position={applyPartTransform([-0.1, 0.08, 0], leftLegConfig)} scale={leftLegConfig.scale}>
-        <mesh position={[0, 0, 0]}>
-          <capsuleGeometry args={[0.06, 0.22, 8, 16]} />
-          <StyledMaterial color={leftLegConfig.color || COLORS.fabricDark} style={style} />
+      
+      {/* LEFT LEG */}
+      <group position={applyPartTransform([-0.065, 0.32, 0], leftLegConfig)} scale={leftLegConfig.scale}>
+        {/* Thigh */}
+        <mesh position={[0, -0.1, 0]}>
+          <capsuleGeometry args={[0.048, 0.14, 8, 16]} />
+          <StyledMaterial color={leftLegConfig.color || pantsColor} style={style} />
         </mesh>
-        <mesh position={[0, -0.22, 0]}>
-          <capsuleGeometry args={[0.05, 0.2, 8, 16]} />
-          <StyledMaterial color={COLORS.fabricDark} style={style} />
+        {/* Knee */}
+        <mesh position={[0, -0.2, 0.015]}>
+          <sphereGeometry args={[0.038, 10, 10]} />
+          <StyledMaterial color={pantsColor} style={style} />
+        </mesh>
+        {/* Shin */}
+        <mesh position={[0, -0.32, 0]}>
+          <capsuleGeometry args={[0.035, 0.16, 8, 16]} />
+          <StyledMaterial color={pantsColor} style={style} />
+        </mesh>
+        {/* Ankle */}
+        <mesh position={[0, -0.42, 0]}>
+          <sphereGeometry args={[0.028, 8, 8]} />
+          <StyledMaterial color={COLORS.black} style={style} />
         </mesh>
         {/* Foot */}
-        <mesh position={[0, -0.38, 0.03]}>
-          <boxGeometry args={[0.08, 0.04, 0.12]} />
+        <mesh position={[0, -0.45, 0.025]}>
+          <boxGeometry args={[0.055, 0.03, 0.09]} />
+          <StyledMaterial color={COLORS.black} style={style} />
+        </mesh>
+        {/* Toe cap */}
+        <mesh position={[0, -0.45, 0.07]}>
+          <sphereGeometry args={[0.028, 8, 8]} />
           <StyledMaterial color={COLORS.black} style={style} />
         </mesh>
       </group>
-      {/* Right Leg */}
-      <group position={applyPartTransform([0.1, 0.08, 0], rightLegConfig)} scale={rightLegConfig.scale}>
-        <mesh position={[0, 0, 0]}>
-          <capsuleGeometry args={[0.06, 0.22, 8, 16]} />
-          <StyledMaterial color={rightLegConfig.color || COLORS.fabricDark} style={style} />
+      
+      {/* RIGHT LEG */}
+      <group position={applyPartTransform([0.065, 0.32, 0], rightLegConfig)} scale={rightLegConfig.scale}>
+        {/* Thigh */}
+        <mesh position={[0, -0.1, 0]}>
+          <capsuleGeometry args={[0.048, 0.14, 8, 16]} />
+          <StyledMaterial color={rightLegConfig.color || pantsColor} style={style} />
         </mesh>
-        <mesh position={[0, -0.22, 0]}>
-          <capsuleGeometry args={[0.05, 0.2, 8, 16]} />
-          <StyledMaterial color={COLORS.fabricDark} style={style} />
+        {/* Knee */}
+        <mesh position={[0, -0.2, 0.015]}>
+          <sphereGeometry args={[0.038, 10, 10]} />
+          <StyledMaterial color={pantsColor} style={style} />
         </mesh>
-        <mesh position={[0, -0.38, 0.03]}>
-          <boxGeometry args={[0.08, 0.04, 0.12]} />
+        {/* Shin */}
+        <mesh position={[0, -0.32, 0]}>
+          <capsuleGeometry args={[0.035, 0.16, 8, 16]} />
+          <StyledMaterial color={pantsColor} style={style} />
+        </mesh>
+        {/* Ankle */}
+        <mesh position={[0, -0.42, 0]}>
+          <sphereGeometry args={[0.028, 8, 8]} />
+          <StyledMaterial color={COLORS.black} style={style} />
+        </mesh>
+        {/* Foot */}
+        <mesh position={[0, -0.45, 0.025]}>
+          <boxGeometry args={[0.055, 0.03, 0.09]} />
+          <StyledMaterial color={COLORS.black} style={style} />
+        </mesh>
+        {/* Toe cap */}
+        <mesh position={[0, -0.45, 0.07]}>
+          <sphereGeometry args={[0.028, 8, 8]} />
           <StyledMaterial color={COLORS.black} style={style} />
         </mesh>
       </group>
@@ -590,133 +780,330 @@ export function DogModel({ color = COLORS.dogGolden, bodyParts, style = 'standar
 
   return (
     <group>
-      {/* Body */}
-      <mesh 
-        position={applyPartTransform([0, 0.28, 0], torsoConfig)} 
-        rotation={[0, 0, Math.PI / 2]}
-        scale={torsoConfig.scale}
-      >
-        <capsuleGeometry args={[0.14, 0.35, 8, 16]} />
-        <StyledMaterial color={torsoConfig.color || color} style={style} />
-      </mesh>
-      {/* Chest */}
-      <mesh position={[0.2, 0.28, 0]}>
-        <sphereGeometry args={[0.12, 12, 12]} />
-        <StyledMaterial color={color} style={style} />
-      </mesh>
-      {/* Head */}
-      <mesh 
-        position={applyPartTransform([0.35, 0.4, 0], headConfig)}
-        scale={headConfig.scale}
-      >
-        <sphereGeometry args={[0.14, 16, 16]} />
-        <StyledMaterial color={headConfig.color || color} style={style} />
-      </mesh>
-      {/* Snout */}
-      <mesh 
-        position={applyPartTransform([0.48, 0.38, 0], snoutConfig)}
-        scale={snoutConfig.scale}
-      >
-        <boxGeometry args={[0.1, 0.07, 0.08]} />
-        <StyledMaterial color={snoutConfig.color || color} style={style} />
-      </mesh>
-      {/* Nose */}
-      <mesh position={[0.53, 0.4, 0]}>
-        <sphereGeometry args={[0.025, 8, 8]} />
-        <StyledMaterial color={noseColor} style={style} />
-      </mesh>
-      {/* Mouth line */}
-      <mesh position={[0.5, 0.35, 0]} scale={[1, 0.3, 1]}>
-        <boxGeometry args={[0.04, 0.02, 0.03]} />
-        <StyledMaterial color={noseColor} style={style} />
-      </mesh>
-      {/* Tongue (hanging out slightly) */}
-      <mesh position={[0.5, 0.33, 0]} rotation={[0.3, 0, 0]}>
-        <boxGeometry args={[0.02, 0.03, 0.015]} />
-        <StyledMaterial color={tongueColor} style={style} />
-      </mesh>
-      {/* Eyes */}
-      <mesh position={[0.42, 0.45, 0.06]}>
-        <sphereGeometry args={[0.025, 8, 8]} />
-        <StyledMaterial color={COLORS.eyeWhite} style={style} />
-      </mesh>
-      <mesh position={[0.42, 0.45, -0.06]}>
-        <sphereGeometry args={[0.025, 8, 8]} />
-        <StyledMaterial color={COLORS.eyeWhite} style={style} />
-      </mesh>
-      {/* Pupils */}
-      <mesh position={[0.44, 0.45, 0.06]}>
-        <sphereGeometry args={[0.015, 6, 6]} />
-        <StyledMaterial color={eyeColor} style={style} />
-      </mesh>
-      <mesh position={[0.44, 0.45, -0.06]}>
-        <sphereGeometry args={[0.015, 6, 6]} />
-        <StyledMaterial color={eyeColor} style={style} />
-      </mesh>
-      {/* Ears (floppy) */}
-      <group scale={earsConfig.scale} position={applyPartTransform([0, 0, 0], earsConfig)}>
-        <mesh position={[0.28, 0.48, -0.1]} rotation={[0.2, 0.3, 0.5]}>
-          <capsuleGeometry args={[0.03, 0.08, 6, 12]} />
-          <StyledMaterial color={earsConfig.color || color} style={style} />
+      {/* BODY - Main torso */}
+      <group position={applyPartTransform([0, 0.32, 0], torsoConfig)} scale={torsoConfig.scale}>
+        {/* Ribcage */}
+        <mesh position={[0.05, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <capsuleGeometry args={[0.16, 0.35, 12, 20]} />
+          <StyledMaterial color={torsoConfig.color || color} style={style} />
         </mesh>
-        <mesh position={[0.28, 0.48, 0.1]} rotation={[0.2, -0.3, 0.5]}>
-          <capsuleGeometry args={[0.03, 0.08, 6, 12]} />
-          <StyledMaterial color={earsConfig.color || color} style={style} />
+        {/* Chest - larger front */}
+        <mesh position={[0.22, 0.02, 0]}>
+          <sphereGeometry args={[0.15, 14, 14]} />
+          <StyledMaterial color={color} style={style} />
+        </mesh>
+        {/* Belly curve */}
+        <mesh position={[-0.05, -0.06, 0]} rotation={[0, 0, Math.PI / 2]} scale={[0.8, 1, 0.9]}>
+          <capsuleGeometry args={[0.12, 0.2, 10, 16]} />
+          <StyledMaterial color={color} style={style} />
+        </mesh>
+        {/* Hip area */}
+        <mesh position={[-0.2, 0, 0]}>
+          <sphereGeometry args={[0.13, 12, 12]} />
+          <StyledMaterial color={color} style={style} />
         </mesh>
       </group>
-      {/* Front Right Leg */}
-      <group position={applyPartTransform([0.18, 0.12, 0.08], rightFrontLegConfig)} scale={rightFrontLegConfig.scale}>
+      
+      {/* HEAD */}
+      <group position={applyPartTransform([0.42, 0.45, 0], headConfig)} scale={headConfig.scale}>
+        {/* Skull - main head */}
         <mesh position={[0, 0, 0]}>
-          <capsuleGeometry args={[0.035, 0.12, 6, 12]} />
+          <sphereGeometry args={[0.13, 18, 18]} />
+          <StyledMaterial color={headConfig.color || color} style={style} />
+        </mesh>
+        {/* Forehead bump */}
+        <mesh position={[0.02, 0.06, 0]}>
+          <sphereGeometry args={[0.1, 14, 14]} />
+          <StyledMaterial color={color} style={style} />
+        </mesh>
+        {/* Cheeks */}
+        <mesh position={[-0.02, -0.02, 0.08]}>
+          <sphereGeometry args={[0.06, 10, 10]} />
+          <StyledMaterial color={color} style={style} />
+        </mesh>
+        <mesh position={[-0.02, -0.02, -0.08]}>
+          <sphereGeometry args={[0.06, 10, 10]} />
+          <StyledMaterial color={color} style={style} />
+        </mesh>
+      </group>
+      
+      {/* SNOUT / MUZZLE */}
+      <group position={applyPartTransform([0.52, 0.42, 0], snoutConfig)} scale={snoutConfig.scale}>
+        {/* Upper muzzle */}
+        <mesh position={[0, 0.015, 0]} rotation={[0, 0, 0.1]}>
+          <boxGeometry args={[0.12, 0.065, 0.085]} />
+          <StyledMaterial color={snoutConfig.color || color} style={style} />
+        </mesh>
+        {/* Muzzle sides */}
+        <mesh position={[0.02, 0, 0.035]}>
+          <sphereGeometry args={[0.035, 8, 8]} />
+          <StyledMaterial color={color} style={style} />
+        </mesh>
+        <mesh position={[0.02, 0, -0.035]}>
+          <sphereGeometry args={[0.035, 8, 8]} />
+          <StyledMaterial color={color} style={style} />
+        </mesh>
+        {/* Lower jaw */}
+        <mesh position={[-0.01, -0.03, 0]}>
+          <boxGeometry args={[0.09, 0.03, 0.06]} />
+          <StyledMaterial color={color} style={style} />
+        </mesh>
+        {/* Nose */}
+        <mesh position={[0.065, 0.02, 0]}>
+          <sphereGeometry args={[0.028, 10, 10]} />
+          <StyledMaterial color={noseColor} style={style} />
+        </mesh>
+        {/* Nostrils */}
+        <mesh position={[0.075, 0.015, 0.008]}>
+          <sphereGeometry args={[0.006, 6, 6]} />
+          <StyledMaterial color={COLORS.black} style={style} />
+        </mesh>
+        <mesh position={[0.075, 0.015, -0.008]}>
+          <sphereGeometry args={[0.006, 6, 6]} />
+          <StyledMaterial color={COLORS.black} style={style} />
+        </mesh>
+        {/* Mouth line */}
+        <mesh position={[0.04, -0.015, 0]}>
+          <boxGeometry args={[0.05, 0.004, 0.04]} />
+          <StyledMaterial color={noseColor} style={style} />
+        </mesh>
+        {/* Tongue */}
+        <mesh position={[0.04, -0.035, 0]} rotation={[0.4, 0, 0]}>
+          <capsuleGeometry args={[0.012, 0.025, 6, 10]} />
+          <StyledMaterial color={tongueColor} style={style} />
+        </mesh>
+      </group>
+      
+      {/* EYES */}
+      <group position={[0.47, 0.5, 0]}>
+        {/* Eye whites */}
+        <mesh position={[0, 0, 0.055]}>
+          <sphereGeometry args={[0.024, 12, 12]} />
+          <StyledMaterial color={COLORS.eyeWhite} style={style} />
+        </mesh>
+        <mesh position={[0, 0, -0.055]}>
+          <sphereGeometry args={[0.024, 12, 12]} />
+          <StyledMaterial color={COLORS.eyeWhite} style={style} />
+        </mesh>
+        {/* Irises */}
+        <mesh position={[0.015, 0, 0.055]}>
+          <sphereGeometry args={[0.016, 10, 10]} />
+          <StyledMaterial color={eyeColor} style={style} />
+        </mesh>
+        <mesh position={[0.015, 0, -0.055]}>
+          <sphereGeometry args={[0.016, 10, 10]} />
+          <StyledMaterial color={eyeColor} style={style} />
+        </mesh>
+        {/* Pupils */}
+        <mesh position={[0.022, 0, 0.055]}>
+          <sphereGeometry args={[0.008, 8, 8]} />
+          <StyledMaterial color={COLORS.pupil} style={style} />
+        </mesh>
+        <mesh position={[0.022, 0, -0.055]}>
+          <sphereGeometry args={[0.008, 8, 8]} />
+          <StyledMaterial color={COLORS.pupil} style={style} />
+        </mesh>
+        {/* Eye shine */}
+        <mesh position={[0.024, 0.005, 0.058]}>
+          <sphereGeometry args={[0.004, 6, 6]} />
+          <StyledMaterial color={COLORS.white} style={style} />
+        </mesh>
+        <mesh position={[0.024, 0.005, -0.058]}>
+          <sphereGeometry args={[0.004, 6, 6]} />
+          <StyledMaterial color={COLORS.white} style={style} />
+        </mesh>
+      </group>
+      
+      {/* EARS - Floppy style */}
+      <group scale={earsConfig.scale} position={applyPartTransform([0, 0, 0], earsConfig)}>
+        {/* Right ear */}
+        <group position={[0.36, 0.52, 0.1]}>
+          <mesh rotation={[0.3, -0.3, 0.6]}>
+            <capsuleGeometry args={[0.035, 0.1, 8, 14]} />
+            <StyledMaterial color={earsConfig.color || color} style={style} />
+          </mesh>
+          {/* Ear tip */}
+          <mesh position={[-0.04, -0.06, 0]} rotation={[0.4, -0.2, 0.8]}>
+            <sphereGeometry args={[0.032, 8, 8]} />
+            <StyledMaterial color={color} style={style} />
+          </mesh>
+        </group>
+        {/* Left ear */}
+        <group position={[0.36, 0.52, -0.1]}>
+          <mesh rotation={[0.3, 0.3, 0.6]}>
+            <capsuleGeometry args={[0.035, 0.1, 8, 14]} />
+            <StyledMaterial color={earsConfig.color || color} style={style} />
+          </mesh>
+          <mesh position={[-0.04, -0.06, 0]} rotation={[0.4, 0.2, 0.8]}>
+            <sphereGeometry args={[0.032, 8, 8]} />
+            <StyledMaterial color={color} style={style} />
+          </mesh>
+        </group>
+      </group>
+      
+      {/* FRONT LEGS */}
+      {/* Right front leg */}
+      <group position={applyPartTransform([0.2, 0.18, 0.09], rightFrontLegConfig)} scale={rightFrontLegConfig.scale}>
+        {/* Shoulder */}
+        <mesh position={[0, 0.05, 0]}>
+          <sphereGeometry args={[0.045, 10, 10]} />
           <StyledMaterial color={rightFrontLegConfig.color || color} style={style} />
         </mesh>
-        {/* Paw */}
-        <mesh position={[0, -0.1, 0.01]}>
-          <sphereGeometry args={[0.04, 8, 8]} />
+        {/* Upper leg */}
+        <mesh position={[0, -0.04, 0]}>
+          <capsuleGeometry args={[0.038, 0.1, 8, 14]} />
           <StyledMaterial color={color} style={style} />
         </mesh>
+        {/* Elbow */}
+        <mesh position={[0, -0.1, 0.01]}>
+          <sphereGeometry args={[0.032, 8, 8]} />
+          <StyledMaterial color={color} style={style} />
+        </mesh>
+        {/* Lower leg */}
+        <mesh position={[0, -0.18, 0]}>
+          <capsuleGeometry args={[0.028, 0.1, 8, 14]} />
+          <StyledMaterial color={color} style={style} />
+        </mesh>
+        {/* Paw */}
+        <mesh position={[0.01, -0.26, 0.01]}>
+          <sphereGeometry args={[0.04, 10, 10]} />
+          <StyledMaterial color={color} style={style} />
+        </mesh>
+        {/* Toes */}
+        {[0, 1, 2].map((i) => (
+          <mesh key={i} position={[0.04, -0.27, -0.015 + i * 0.015]}>
+            <sphereGeometry args={[0.012, 6, 6]} />
+            <StyledMaterial color={color} style={style} />
+          </mesh>
+        ))}
       </group>
-      {/* Front Left Leg */}
-      <group position={applyPartTransform([0.18, 0.12, -0.08], leftFrontLegConfig)} scale={leftFrontLegConfig.scale}>
-        <mesh position={[0, 0, 0]}>
-          <capsuleGeometry args={[0.035, 0.12, 6, 12]} />
+      
+      {/* Left front leg */}
+      <group position={applyPartTransform([0.2, 0.18, -0.09], leftFrontLegConfig)} scale={leftFrontLegConfig.scale}>
+        <mesh position={[0, 0.05, 0]}>
+          <sphereGeometry args={[0.045, 10, 10]} />
           <StyledMaterial color={leftFrontLegConfig.color || color} style={style} />
         </mesh>
-        <mesh position={[0, -0.1, -0.01]}>
-          <sphereGeometry args={[0.04, 8, 8]} />
+        <mesh position={[0, -0.04, 0]}>
+          <capsuleGeometry args={[0.038, 0.1, 8, 14]} />
           <StyledMaterial color={color} style={style} />
         </mesh>
+        <mesh position={[0, -0.1, -0.01]}>
+          <sphereGeometry args={[0.032, 8, 8]} />
+          <StyledMaterial color={color} style={style} />
+        </mesh>
+        <mesh position={[0, -0.18, 0]}>
+          <capsuleGeometry args={[0.028, 0.1, 8, 14]} />
+          <StyledMaterial color={color} style={style} />
+        </mesh>
+        <mesh position={[0.01, -0.26, -0.01]}>
+          <sphereGeometry args={[0.04, 10, 10]} />
+          <StyledMaterial color={color} style={style} />
+        </mesh>
+        {[0, 1, 2].map((i) => (
+          <mesh key={i} position={[0.04, -0.27, 0.015 - i * 0.015]}>
+            <sphereGeometry args={[0.012, 6, 6]} />
+            <StyledMaterial color={color} style={style} />
+          </mesh>
+        ))}
       </group>
-      {/* Back Right Leg */}
-      <group position={applyPartTransform([-0.18, 0.12, 0.08], rightBackLegConfig)} scale={rightBackLegConfig.scale}>
-        <mesh position={[0, 0, 0]}>
-          <capsuleGeometry args={[0.04, 0.14, 6, 12]} />
+      
+      {/* BACK LEGS */}
+      {/* Right back leg */}
+      <group position={applyPartTransform([-0.18, 0.2, 0.1], rightBackLegConfig)} scale={rightBackLegConfig.scale}>
+        {/* Hip */}
+        <mesh position={[0, 0.06, 0]}>
+          <sphereGeometry args={[0.055, 10, 10]} />
           <StyledMaterial color={rightBackLegConfig.color || color} style={style} />
         </mesh>
-        <mesh position={[0, -0.12, 0.01]}>
-          <sphereGeometry args={[0.045, 8, 8]} />
+        {/* Thigh */}
+        <mesh position={[-0.02, -0.02, 0]} rotation={[0, 0, -0.3]}>
+          <capsuleGeometry args={[0.048, 0.12, 8, 14]} />
           <StyledMaterial color={color} style={style} />
         </mesh>
+        {/* Knee */}
+        <mesh position={[-0.04, -0.12, 0.02]}>
+          <sphereGeometry args={[0.035, 8, 8]} />
+          <StyledMaterial color={color} style={style} />
+        </mesh>
+        {/* Lower leg */}
+        <mesh position={[0, -0.2, 0]}>
+          <capsuleGeometry args={[0.03, 0.1, 8, 14]} />
+          <StyledMaterial color={color} style={style} />
+        </mesh>
+        {/* Hock */}
+        <mesh position={[0.02, -0.26, 0]}>
+          <sphereGeometry args={[0.028, 8, 8]} />
+          <StyledMaterial color={color} style={style} />
+        </mesh>
+        {/* Paw */}
+        <mesh position={[0.02, -0.3, 0.015]}>
+          <sphereGeometry args={[0.042, 10, 10]} />
+          <StyledMaterial color={color} style={style} />
+        </mesh>
+        {/* Toes */}
+        {[0, 1, 2].map((i) => (
+          <mesh key={i} position={[0.05, -0.31, -0.015 + i * 0.015]}>
+            <sphereGeometry args={[0.012, 6, 6]} />
+            <StyledMaterial color={color} style={style} />
+          </mesh>
+        ))}
       </group>
-      {/* Back Left Leg */}
-      <group position={applyPartTransform([-0.18, 0.12, -0.08], leftBackLegConfig)} scale={leftBackLegConfig.scale}>
-        <mesh position={[0, 0, 0]}>
-          <capsuleGeometry args={[0.04, 0.14, 6, 12]} />
+      
+      {/* Left back leg */}
+      <group position={applyPartTransform([-0.18, 0.2, -0.1], leftBackLegConfig)} scale={leftBackLegConfig.scale}>
+        <mesh position={[0, 0.06, 0]}>
+          <sphereGeometry args={[0.055, 10, 10]} />
           <StyledMaterial color={leftBackLegConfig.color || color} style={style} />
         </mesh>
-        <mesh position={[0, -0.12, -0.01]}>
-          <sphereGeometry args={[0.045, 8, 8]} />
+        <mesh position={[-0.02, -0.02, 0]} rotation={[0, 0, -0.3]}>
+          <capsuleGeometry args={[0.048, 0.12, 8, 14]} />
           <StyledMaterial color={color} style={style} />
         </mesh>
+        <mesh position={[-0.04, -0.12, -0.02]}>
+          <sphereGeometry args={[0.035, 8, 8]} />
+          <StyledMaterial color={color} style={style} />
+        </mesh>
+        <mesh position={[0, -0.2, 0]}>
+          <capsuleGeometry args={[0.03, 0.1, 8, 14]} />
+          <StyledMaterial color={color} style={style} />
+        </mesh>
+        <mesh position={[0.02, -0.26, 0]}>
+          <sphereGeometry args={[0.028, 8, 8]} />
+          <StyledMaterial color={color} style={style} />
+        </mesh>
+        <mesh position={[0.02, -0.3, -0.015]}>
+          <sphereGeometry args={[0.042, 10, 10]} />
+          <StyledMaterial color={color} style={style} />
+        </mesh>
+        {[0, 1, 2].map((i) => (
+          <mesh key={i} position={[0.05, -0.31, 0.015 - i * 0.015]}>
+            <sphereGeometry args={[0.012, 6, 6]} />
+            <StyledMaterial color={color} style={style} />
+          </mesh>
+        ))}
       </group>
-      {/* Tail (wagging curve) */}
-      <group position={applyPartTransform([-0.35, 0.35, 0], tailConfig)} scale={tailConfig.scale}>
-        <mesh position={[0, 0.05, 0]} rotation={[0, 0, 0.8]}>
-          <capsuleGeometry args={[0.025, 0.12, 6, 12]} />
+      
+      {/* TAIL - Curved upward, happy dog */}
+      <group position={applyPartTransform([-0.32, 0.38, 0], tailConfig)} scale={tailConfig.scale}>
+        {/* Tail base */}
+        <mesh position={[0, 0.04, 0]} rotation={[0, 0, 0.6]}>
+          <capsuleGeometry args={[0.032, 0.1, 8, 12]} />
           <StyledMaterial color={tailConfig.color || color} style={style} />
         </mesh>
-        <mesh position={[-0.08, 0.14, 0]} rotation={[0, 0, 1.2]}>
-          <capsuleGeometry args={[0.02, 0.08, 6, 12]} />
+        {/* Tail mid */}
+        <mesh position={[-0.06, 0.12, 0]} rotation={[0, 0, 1.0]}>
+          <capsuleGeometry args={[0.026, 0.08, 8, 12]} />
+          <StyledMaterial color={color} style={style} />
+        </mesh>
+        {/* Tail tip */}
+        <mesh position={[-0.1, 0.18, 0]} rotation={[0, 0, 1.3]}>
+          <capsuleGeometry args={[0.02, 0.06, 8, 12]} />
+          <StyledMaterial color={color} style={style} />
+        </mesh>
+        {/* Tail fluff tip */}
+        <mesh position={[-0.12, 0.22, 0]}>
+          <sphereGeometry args={[0.022, 8, 8]} />
           <StyledMaterial color={color} style={style} />
         </mesh>
       </group>
