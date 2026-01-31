@@ -588,21 +588,21 @@ export function HumanoidModel({ color = COLORS.skin, bodyParts, style = 'standar
           <StyledMaterial color={shirtColor} style={style} surface="fabric" />
         </mesh>
         
-        {/* Center front seam line */}
-        <mesh position={[0, 0, 0.115]}>
-          <boxGeometry args={[0.004, 0.28, 0.002]} />
-          <StyledMaterial color={COLORS.fabricDark} style={style} opacity={0.6} transparent />
+        {/* Center front seam line - raised stitching */}
+        <mesh position={[0, 0, 0.12]}>
+          <capsuleGeometry args={[0.003, 0.26, 4, 8]} />
+          <StyledMaterial color={COLORS.fabricDark} style={style} />
         </mesh>
         
-        {/* Side seams - left */}
-        <mesh position={[-0.11, 0, 0]} rotation={[0, 0, 0.05]}>
-          <boxGeometry args={[0.003, 0.26, 0.002]} />
-          <StyledMaterial color={COLORS.fabricDark} style={style} opacity={0.5} transparent />
+        {/* Side seams - left - raised stitching */}
+        <mesh position={[-0.115, 0, 0]} rotation={[0, 0, 0.05]}>
+          <capsuleGeometry args={[0.003, 0.24, 4, 8]} />
+          <StyledMaterial color={COLORS.fabricDark} style={style} />
         </mesh>
         {/* Side seams - right */}
-        <mesh position={[0.11, 0, 0]} rotation={[0, 0, -0.05]}>
-          <boxGeometry args={[0.003, 0.26, 0.002]} />
-          <StyledMaterial color={COLORS.fabricDark} style={style} opacity={0.5} transparent />
+        <mesh position={[0.115, 0, 0]} rotation={[0, 0, -0.05]}>
+          <capsuleGeometry args={[0.003, 0.24, 4, 8]} />
+          <StyledMaterial color={COLORS.fabricDark} style={style} />
         </mesh>
         
         {/* Shoulders with sleeve caps */}
@@ -611,10 +611,10 @@ export function HumanoidModel({ color = COLORS.skin, bodyParts, style = 'standar
             <sphereGeometry args={[0.055, 12, 12]} />
             <StyledMaterial color={shirtColor} style={style} surface="fabric" />
           </mesh>
-          {/* Shoulder seam */}
+          {/* Shoulder seam - solid torus */}
           <mesh position={[0, 0.02, 0]} rotation={[0, 0, 0.4]}>
-            <torusGeometry args={[0.045, 0.003, 6, 16, Math.PI]} />
-            <StyledMaterial color={COLORS.fabricDark} style={style} opacity={0.5} transparent />
+            <torusGeometry args={[0.048, 0.004, 8, 20, Math.PI]} />
+            <StyledMaterial color={COLORS.fabricDark} style={style} />
           </mesh>
         </group>
         <group position={[0.15, 0.08, 0]}>
@@ -622,10 +622,10 @@ export function HumanoidModel({ color = COLORS.skin, bodyParts, style = 'standar
             <sphereGeometry args={[0.055, 12, 12]} />
             <StyledMaterial color={shirtColor} style={style} surface="fabric" />
           </mesh>
-          {/* Shoulder seam */}
+          {/* Shoulder seam - solid torus */}
           <mesh position={[0, 0.02, 0]} rotation={[0, 0, -0.4]}>
-            <torusGeometry args={[0.045, 0.003, 6, 16, Math.PI]} />
-            <StyledMaterial color={COLORS.fabricDark} style={style} opacity={0.5} transparent />
+            <torusGeometry args={[0.048, 0.004, 8, 20, Math.PI]} />
+            <StyledMaterial color={COLORS.fabricDark} style={style} />
           </mesh>
         </group>
         
@@ -635,10 +635,15 @@ export function HumanoidModel({ color = COLORS.skin, bodyParts, style = 'standar
           <StyledMaterial color={shirtColor} style={style} surface="fabric" />
         </mesh>
         
-        {/* Hem line at waist */}
+        {/* Hem line at waist - visible ridge */}
         <mesh position={[0, -0.18, 0]}>
-          <torusGeometry args={[0.095, 0.006, 8, 24]} />
+          <torusGeometry args={[0.1, 0.007, 8, 24]} />
           <StyledMaterial color={shirtColor} style={style} surface="fabric" />
+        </mesh>
+        {/* Hem stitching */}
+        <mesh position={[0, -0.175, 0]}>
+          <torusGeometry args={[0.098, 0.003, 6, 20]} />
+          <StyledMaterial color={COLORS.fabricDark} style={style} />
         </mesh>
       </group>
       
@@ -648,6 +653,11 @@ export function HumanoidModel({ color = COLORS.skin, bodyParts, style = 'standar
         <mesh position={[0, 0.38, 0]}>
           <cylinderGeometry args={[0.095, 0.1, 0.04, 16]} />
           <StyledMaterial color={pantsColor} style={style} surface="fabric" />
+        </mesh>
+        {/* Waistband top seam */}
+        <mesh position={[0, 0.40, 0]}>
+          <torusGeometry args={[0.096, 0.003, 6, 20]} />
+          <StyledMaterial color={COLORS.fabricDark} style={style} />
         </mesh>
         {/* Belt */}
         <mesh position={[0, 0.39, 0]}>
@@ -666,10 +676,15 @@ export function HumanoidModel({ color = COLORS.skin, bodyParts, style = 'standar
           <StyledMaterial color={pantsColor} style={style} surface="fabric" />
         </mesh>
         
-        {/* Center front seam (fly area) */}
-        <mesh position={[0, 0.32, 0.085]}>
-          <boxGeometry args={[0.004, 0.08, 0.002]} />
-          <StyledMaterial color={COLORS.black} style={style} opacity={0.4} transparent />
+        {/* Center front seam (fly area) - raised stitching */}
+        <mesh position={[0, 0.32, 0.09]}>
+          <capsuleGeometry args={[0.003, 0.08, 4, 8]} />
+          <StyledMaterial color={COLORS.fabricDark} style={style} />
+        </mesh>
+        {/* Fly topstitching */}
+        <mesh position={[0.012, 0.32, 0.088]}>
+          <capsuleGeometry args={[0.002, 0.06, 4, 8]} />
+          <StyledMaterial color={COLORS.fabricDark} style={style} />
         </mesh>
       </group>
       
@@ -816,25 +831,30 @@ export function HumanoidModel({ color = COLORS.skin, bodyParts, style = 'standar
           <capsuleGeometry args={[0.048, 0.14, 8, 16]} />
           <StyledMaterial color={leftLegConfig.color || pantsColor} style={style} surface="fabric" />
         </mesh>
-        {/* Outer seam */}
-        <mesh position={[-0.045, -0.1, 0]}>
-          <boxGeometry args={[0.003, 0.2, 0.002]} />
-          <StyledMaterial color={COLORS.black} style={style} opacity={0.3} transparent />
+        {/* Outer seam - raised stitching */}
+        <mesh position={[-0.049, -0.1, 0]}>
+          <capsuleGeometry args={[0.003, 0.2, 4, 8]} />
+          <StyledMaterial color={COLORS.fabricDark} style={style} />
         </mesh>
-        {/* Inner seam */}
-        <mesh position={[0.045, -0.1, 0]}>
-          <boxGeometry args={[0.003, 0.2, 0.002]} />
-          <StyledMaterial color={COLORS.black} style={style} opacity={0.3} transparent />
+        {/* Inner seam - raised stitching */}
+        <mesh position={[0.049, -0.1, 0]}>
+          <capsuleGeometry args={[0.003, 0.2, 4, 8]} />
+          <StyledMaterial color={COLORS.fabricDark} style={style} />
+        </mesh>
+        {/* Front crease */}
+        <mesh position={[0, -0.1, 0.045]}>
+          <capsuleGeometry args={[0.002, 0.18, 4, 8]} />
+          <StyledMaterial color={COLORS.fabricDark} style={style} />
         </mesh>
         {/* Knee - reinforced with dart */}
         <mesh position={[0, -0.2, 0.015]}>
           <sphereGeometry args={[0.038, 10, 10]} />
           <StyledMaterial color={pantsColor} style={style} surface="fabric" />
         </mesh>
-        {/* Knee dart seam */}
-        <mesh position={[0, -0.2, 0.045]} rotation={[0.2, 0, 0]}>
-          <boxGeometry args={[0.02, 0.003, 0.002]} />
-          <StyledMaterial color={COLORS.black} style={style} opacity={0.4} transparent />
+        {/* Knee reinforcement seam - visible ridge */}
+        <mesh position={[0, -0.2, 0.052]} rotation={[0.2, 0, 0]}>
+          <capsuleGeometry args={[0.002, 0.025, 4, 8]} />
+          <StyledMaterial color={COLORS.fabricDark} style={style} />
         </mesh>
         {/* Shin */}
         <mesh position={[0, -0.32, 0]}>
@@ -842,14 +862,23 @@ export function HumanoidModel({ color = COLORS.skin, bodyParts, style = 'standar
           <StyledMaterial color={pantsColor} style={style} surface="fabric" />
         </mesh>
         {/* Shin outer seam */}
-        <mesh position={[-0.033, -0.32, 0]}>
-          <boxGeometry args={[0.002, 0.18, 0.002]} />
-          <StyledMaterial color={COLORS.black} style={style} opacity={0.3} transparent />
+        <mesh position={[-0.037, -0.32, 0]}>
+          <capsuleGeometry args={[0.002, 0.18, 4, 8]} />
+          <StyledMaterial color={COLORS.fabricDark} style={style} />
         </mesh>
-        {/* Cuff hem */}
+        {/* Shin inner seam */}
+        <mesh position={[0.037, -0.32, 0]}>
+          <capsuleGeometry args={[0.002, 0.18, 4, 8]} />
+          <StyledMaterial color={COLORS.fabricDark} style={style} />
+        </mesh>
+        {/* Cuff hem - double stitched */}
         <mesh position={[0, -0.41, 0]}>
-          <torusGeometry args={[0.035, 0.004, 6, 16]} />
+          <torusGeometry args={[0.036, 0.005, 8, 20]} />
           <StyledMaterial color={pantsColor} style={style} surface="fabric" />
+        </mesh>
+        <mesh position={[0, -0.40, 0]}>
+          <torusGeometry args={[0.034, 0.002, 6, 16]} />
+          <StyledMaterial color={COLORS.fabricDark} style={style} />
         </mesh>
         {/* Ankle */}
         <mesh position={[0, -0.42, 0]}>
@@ -887,25 +916,30 @@ export function HumanoidModel({ color = COLORS.skin, bodyParts, style = 'standar
           <capsuleGeometry args={[0.048, 0.14, 8, 16]} />
           <StyledMaterial color={rightLegConfig.color || pantsColor} style={style} surface="fabric" />
         </mesh>
-        {/* Outer seam */}
-        <mesh position={[0.045, -0.1, 0]}>
-          <boxGeometry args={[0.003, 0.2, 0.002]} />
-          <StyledMaterial color={COLORS.black} style={style} opacity={0.3} transparent />
+        {/* Outer seam - raised stitching */}
+        <mesh position={[0.049, -0.1, 0]}>
+          <capsuleGeometry args={[0.003, 0.2, 4, 8]} />
+          <StyledMaterial color={COLORS.fabricDark} style={style} />
         </mesh>
-        {/* Inner seam */}
-        <mesh position={[-0.045, -0.1, 0]}>
-          <boxGeometry args={[0.003, 0.2, 0.002]} />
-          <StyledMaterial color={COLORS.black} style={style} opacity={0.3} transparent />
+        {/* Inner seam - raised stitching */}
+        <mesh position={[-0.049, -0.1, 0]}>
+          <capsuleGeometry args={[0.003, 0.2, 4, 8]} />
+          <StyledMaterial color={COLORS.fabricDark} style={style} />
+        </mesh>
+        {/* Front crease */}
+        <mesh position={[0, -0.1, 0.045]}>
+          <capsuleGeometry args={[0.002, 0.18, 4, 8]} />
+          <StyledMaterial color={COLORS.fabricDark} style={style} />
         </mesh>
         {/* Knee */}
         <mesh position={[0, -0.2, 0.015]}>
           <sphereGeometry args={[0.038, 10, 10]} />
           <StyledMaterial color={pantsColor} style={style} surface="fabric" />
         </mesh>
-        {/* Knee dart seam */}
-        <mesh position={[0, -0.2, 0.045]} rotation={[0.2, 0, 0]}>
-          <boxGeometry args={[0.02, 0.003, 0.002]} />
-          <StyledMaterial color={COLORS.black} style={style} opacity={0.4} transparent />
+        {/* Knee reinforcement seam */}
+        <mesh position={[0, -0.2, 0.052]} rotation={[0.2, 0, 0]}>
+          <capsuleGeometry args={[0.002, 0.025, 4, 8]} />
+          <StyledMaterial color={COLORS.fabricDark} style={style} />
         </mesh>
         {/* Shin */}
         <mesh position={[0, -0.32, 0]}>
@@ -913,14 +947,23 @@ export function HumanoidModel({ color = COLORS.skin, bodyParts, style = 'standar
           <StyledMaterial color={pantsColor} style={style} surface="fabric" />
         </mesh>
         {/* Shin outer seam */}
-        <mesh position={[0.033, -0.32, 0]}>
-          <boxGeometry args={[0.002, 0.18, 0.002]} />
-          <StyledMaterial color={COLORS.black} style={style} opacity={0.3} transparent />
+        <mesh position={[0.037, -0.32, 0]}>
+          <capsuleGeometry args={[0.002, 0.18, 4, 8]} />
+          <StyledMaterial color={COLORS.fabricDark} style={style} />
         </mesh>
-        {/* Cuff hem */}
+        {/* Shin inner seam */}
+        <mesh position={[-0.037, -0.32, 0]}>
+          <capsuleGeometry args={[0.002, 0.18, 4, 8]} />
+          <StyledMaterial color={COLORS.fabricDark} style={style} />
+        </mesh>
+        {/* Cuff hem - double stitched */}
         <mesh position={[0, -0.41, 0]}>
-          <torusGeometry args={[0.035, 0.004, 6, 16]} />
+          <torusGeometry args={[0.036, 0.005, 8, 20]} />
           <StyledMaterial color={pantsColor} style={style} surface="fabric" />
+        </mesh>
+        <mesh position={[0, -0.40, 0]}>
+          <torusGeometry args={[0.034, 0.002, 6, 16]} />
+          <StyledMaterial color={COLORS.fabricDark} style={style} />
         </mesh>
         {/* Ankle */}
         <mesh position={[0, -0.42, 0]}>
