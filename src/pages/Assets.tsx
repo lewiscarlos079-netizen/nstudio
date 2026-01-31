@@ -15,7 +15,8 @@ import {
   ExternalLink,
   Download,
   RefreshCw,
-  Pencil
+  Pencil,
+  FileCode
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -24,6 +25,7 @@ import { SketchfabBrowser } from '@/components/assets/SketchfabBrowser';
 import { FileUploader } from '@/components/assets/FileUploader';
 import { ModelThumbnail3D } from '@/components/assets/ModelThumbnail3D';
 import { ModelEditModal } from '@/components/assets/ModelEditModal';
+import { BlenderExportModal } from '@/components/assets/BlenderExportModal';
 import { useProjectStore } from '@/store/projectStore';
 import { useModelAssets, useRefreshModels, detectHardwareTier, ModelAsset } from '@/hooks/useModelAssets';
 
@@ -54,10 +56,19 @@ export default function Assets() {
   // Edit modal state
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedModel, setSelectedModel] = useState<ModelAsset | null>(null);
+  
+  // Blender export modal state
+  const [blenderExportOpen, setBlenderExportOpen] = useState(false);
+  const [exportModel, setExportModel] = useState<ModelAsset | null>(null);
 
   const handleEditModel = (model: ModelAsset) => {
     setSelectedModel(model);
     setEditModalOpen(true);
+  };
+  
+  const handleBlenderExport = (model: ModelAsset) => {
+    setExportModel(model);
+    setBlenderExportOpen(true);
   };
 
   return (
@@ -183,8 +194,17 @@ export default function Assets() {
                                 <Pencil className="w-3 h-3" />
                                 Edit
                               </Button>
-                              <Button size="sm" variant="glass" className="h-8">
-                                <Download className="w-3 h-3" />
+                              <Button 
+                                size="sm" 
+                                variant="glass" 
+                                className="h-8 gap-1"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleBlenderExport(model);
+                                }}
+                              >
+                                <FileCode className="w-3 h-3" />
+                                Blender
                               </Button>
                               <Button size="sm" variant="glass" className="h-8">
                                 <MoreHorizontal className="w-3 h-3" />
@@ -332,6 +352,13 @@ export default function Assets() {
         model={selectedModel}
         open={editModalOpen}
         onOpenChange={setEditModalOpen}
+      />
+      
+      {/* Blender Export Modal */}
+      <BlenderExportModal
+        model={exportModel}
+        open={blenderExportOpen}
+        onOpenChange={setBlenderExportOpen}
       />
     </Layout>
   );
