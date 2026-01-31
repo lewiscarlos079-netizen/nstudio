@@ -41,9 +41,10 @@ const STYLE_CYCLE: ModelStyle[] = ['toon', 'standard', 'wireframe'];
 
 // Map model IDs to their procedural components
 const MODEL_COMPONENTS: Record<string, React.FC<{ style?: ModelStyle }>> = {
-  // Standard characters
+  // Characters
   'humanoid_male': HumanoidModel,
   'humanoid_female': HumanoidModel,
+  'humanoid_child': HumanoidModel,
   
   // Uncharted characters
   'nathan_drake': NathanDrakeModel,
@@ -51,7 +52,18 @@ const MODEL_COMPONENTS: Record<string, React.FC<{ style?: ModelStyle }>> = {
   'victor_sullivan': VictorSullivanModel,
   'chloe_frazer': ChloeFrazerModel,
   
-  // Animals
+  // Animals - Database IDs
+  'dog_golden_retriever': DogModel,
+  'cat_domestic': CatModel,
+  'elephant_african': ElephantModel,
+  'lion_african': LionModel,
+  'horse_arabian': HorseModel,
+  'wolf_gray': WolfModel,
+  'shark_great_white': WhaleModel,
+  'dolphin_bottlenose': DolphinModel,
+  'eagle_bald': BirdModel,
+  
+  // Animals - Legacy IDs
   'dog': DogModel,
   'cat': CatModel,
   'domestic_cat': CatModel,
@@ -71,7 +83,16 @@ const MODEL_COMPONENTS: Record<string, React.FC<{ style?: ModelStyle }>> = {
   'bird': BirdModel,
   'whale': WhaleModel,
   
-  // Nature
+  // Plants - Database IDs
+  'tree_oak': TreeModel,
+  'tree_pine': TreeModel,
+  'tree_palm': PalmTreeModel,
+  'flower_rose': FlowerModel,
+  'bush_flowering': FlowerModel,
+  'fern_boston': FlowerModel,
+  'grass_patch': FlowerModel,
+  
+  // Plants - Legacy IDs
   'oak_tree': TreeModel,
   'pine_tree': TreeModel,
   'palm_tree': PalmTreeModel,
@@ -79,6 +100,17 @@ const MODEL_COMPONENTS: Record<string, React.FC<{ style?: ModelStyle }>> = {
   'rose': FlowerModel,
   'rose_bush': FlowerModel,
   'flower': FlowerModel,
+  
+  // Water - Database IDs
+  'water_lake': RockModel,
+  'water_river': RockModel,
+  'water_pond': RockModel,
+  'water_ocean': RockModel,
+  'water_fountain': RockModel,
+  'water_waterfall': RockModel,
+  'water_rain': RockModel,
+  
+  // Water/Nature - Legacy IDs
   'rock': RockModel,
   'lake': RockModel,
   'river': RockModel,
