@@ -167,8 +167,10 @@ export function ModelThumbnail3D({ modelId, className = '' }: ModelThumbnail3DPr
           antialias: true,
           alpha: true,
           preserveDrawingBuffer: true,
+          powerPreference: 'high-performance',
         }}
         dpr={[1, 2]}
+        frameloop="always"
       >
         <PerspectiveCamera makeDefault position={[1.5, 1, 1.5]} fov={40} />
         
