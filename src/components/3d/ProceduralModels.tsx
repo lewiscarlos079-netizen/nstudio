@@ -1,7 +1,8 @@
 import { useRef } from 'react';
 import { Group } from 'three';
+import { useFrame } from '@react-three/fiber';
 import { BodyPartType, BodyPartConfig, ModelStyle } from '@/store/sceneStore';
-import { StyledMaterial } from './ToonMaterials';
+import { StyledMaterial, SurfaceType } from './ToonMaterials';
 
 // Realistic color palettes for different asset types
 const COLORS = {
@@ -213,6 +214,7 @@ function applyPartTransform(
 // ==================== CHARACTERS ====================
 
 export function HumanoidModel({ color = COLORS.skin, bodyParts, style = 'standard' }: ModelProps) {
+  const breathRef = useBreathing(1.2); // Normal human breathing rate
   const headConfig = getPartConfig(bodyParts, 'head');
   const torsoConfig = getPartConfig(bodyParts, 'torso');
   const leftArmConfig = getPartConfig(bodyParts, 'leftArm');
@@ -226,31 +228,31 @@ export function HumanoidModel({ color = COLORS.skin, bodyParts, style = 'standar
   const hairColor = COLORS.hair;
 
   return (
-    <group>
+    <group ref={breathRef}>
       {/* HEAD GROUP */}
       <group position={applyPartTransform([0, 0.95, 0], headConfig)} scale={headConfig.scale}>
         {/* Skull - main head shape */}
         <mesh position={[0, 0, 0]}>
           <sphereGeometry args={[0.14, 24, 24]} />
-          <StyledMaterial color={skinColor} style={style} />
+          <StyledMaterial color={skinColor} style={style} surface="skin" />
         </mesh>
         
         {/* Face - slightly forward */}
         <mesh position={[0, -0.01, 0.05]}>
           <sphereGeometry args={[0.11, 20, 20]} />
-          <StyledMaterial color={skinColor} style={style} />
+          <StyledMaterial color={skinColor} style={style} surface="skin" />
         </mesh>
         
         {/* Jaw */}
         <mesh position={[0, -0.08, 0.03]}>
           <boxGeometry args={[0.09, 0.05, 0.08]} />
-          <StyledMaterial color={skinColor} style={style} />
+          <StyledMaterial color={skinColor} style={style} surface="skin" />
         </mesh>
         
         {/* Chin */}
         <mesh position={[0, -0.1, 0.05]}>
           <sphereGeometry args={[0.03, 12, 12]} />
-          <StyledMaterial color={skinColor} style={style} />
+          <StyledMaterial color={skinColor} style={style} surface="skin" />
         </mesh>
         
         {/* Nose bridge */}
@@ -298,50 +300,50 @@ export function HumanoidModel({ color = COLORS.skin, bodyParts, style = 'standar
         {/* Eyebrows */}
         <mesh position={[-0.045, 0.055, 0.1]} rotation={[0, 0, 0.1]}>
           <boxGeometry args={[0.04, 0.008, 0.015]} />
-          <StyledMaterial color={hairColor} style={style} />
+          <StyledMaterial color={hairColor} style={style} surface="hair" />
         </mesh>
         <mesh position={[0.045, 0.055, 0.1]} rotation={[0, 0, -0.1]}>
           <boxGeometry args={[0.04, 0.008, 0.015]} />
-          <StyledMaterial color={hairColor} style={style} />
+          <StyledMaterial color={hairColor} style={style} surface="hair" />
         </mesh>
         
         {/* Ears */}
         <mesh position={[-0.13, 0, 0]}>
           <sphereGeometry args={[0.025, 10, 10]} />
-          <StyledMaterial color={skinColor} style={style} />
+          <StyledMaterial color={skinColor} style={style} surface="skin" />
         </mesh>
         <mesh position={[0.13, 0, 0]}>
           <sphereGeometry args={[0.025, 10, 10]} />
-          <StyledMaterial color={skinColor} style={style} />
+          <StyledMaterial color={skinColor} style={style} surface="skin" />
         </mesh>
         
         {/* Hair top */}
         <mesh position={[0, 0.08, -0.01]}>
           <sphereGeometry args={[0.15, 20, 20, 0, Math.PI * 2, 0, Math.PI / 2]} />
-          <StyledMaterial color={hairColor} style={style} />
+          <StyledMaterial color={hairColor} style={style} surface="hair" />
         </mesh>
         
         {/* Hair sides */}
         <mesh position={[-0.08, 0.04, -0.03]}>
           <sphereGeometry args={[0.08, 12, 12]} />
-          <StyledMaterial color={hairColor} style={style} />
+          <StyledMaterial color={hairColor} style={style} surface="hair" />
         </mesh>
         <mesh position={[0.08, 0.04, -0.03]}>
           <sphereGeometry args={[0.08, 12, 12]} />
-          <StyledMaterial color={hairColor} style={style} />
+          <StyledMaterial color={hairColor} style={style} surface="hair" />
         </mesh>
         
         {/* Mouth line */}
         <mesh position={[0, -0.06, 0.12]}>
           <boxGeometry args={[0.035, 0.005, 0.008]} />
-          <StyledMaterial color="#8b5a5a" style={style} />
+          <StyledMaterial color="#8b5a5a" style={style} surface="skin" />
         </mesh>
       </group>
       
       {/* Neck */}
       <mesh position={[0, 0.78, 0]}>
         <cylinderGeometry args={[0.04, 0.05, 0.08, 12]} />
-        <StyledMaterial color={skinColor} style={style} />
+        <StyledMaterial color={skinColor} style={style} surface="skin" />
       </mesh>
       
       {/* TORSO */}
@@ -349,30 +351,30 @@ export function HumanoidModel({ color = COLORS.skin, bodyParts, style = 'standar
         {/* Chest */}
         <mesh position={[0, 0.05, 0]}>
           <capsuleGeometry args={[0.12, 0.18, 10, 20]} />
-          <StyledMaterial color={shirtColor} style={style} />
+          <StyledMaterial color={shirtColor} style={style} surface="fabric" />
         </mesh>
         
         {/* Shoulders */}
         <mesh position={[-0.15, 0.08, 0]}>
           <sphereGeometry args={[0.055, 12, 12]} />
-          <StyledMaterial color={shirtColor} style={style} />
+          <StyledMaterial color={shirtColor} style={style} surface="fabric" />
         </mesh>
         <mesh position={[0.15, 0.08, 0]}>
           <sphereGeometry args={[0.055, 12, 12]} />
-          <StyledMaterial color={shirtColor} style={style} />
+          <StyledMaterial color={shirtColor} style={style} surface="fabric" />
         </mesh>
         
         {/* Abdomen */}
         <mesh position={[0, -0.12, 0]}>
           <capsuleGeometry args={[0.1, 0.1, 10, 20]} />
-          <StyledMaterial color={shirtColor} style={style} />
+          <StyledMaterial color={shirtColor} style={style} surface="fabric" />
         </mesh>
       </group>
       
       {/* Pelvis/Hips */}
       <mesh position={[0, 0.38, 0]}>
         <boxGeometry args={[0.18, 0.08, 0.1]} />
-        <StyledMaterial color={pantsColor} style={style} />
+        <StyledMaterial color={pantsColor} style={style} surface="fabric" />
       </mesh>
       
       {/* LEFT ARM */}
@@ -818,7 +820,20 @@ export function DragonModel({ color = COLORS.dragonGreen, style = 'standard' }: 
 
 // ==================== ANIMALS ====================
 
+// Breathing animation hook for living creatures
+function useBreathing(speed: number = 1) {
+  const groupRef = useRef<Group>(null);
+  useFrame(({ clock }) => {
+    if (groupRef.current) {
+      const breath = Math.sin(clock.elapsedTime * speed) * 0.02;
+      groupRef.current.scale.setY(1 + breath);
+    }
+  });
+  return groupRef;
+}
+
 export function DogModel({ color = COLORS.dogGolden, bodyParts, style = 'standard' }: ModelProps) {
+  const breathRef = useBreathing(2.5); // Dogs breathe faster
   const noseColor = COLORS.dogNose;
   const eyeColor = COLORS.eyeBrown;
   const tongueColor = COLORS.pink;
@@ -833,28 +848,28 @@ export function DogModel({ color = COLORS.dogGolden, bodyParts, style = 'standar
   const tailConfig = getPartConfig(bodyParts, 'tail');
 
   return (
-    <group>
-      {/* BODY - Main torso */}
+    <group ref={breathRef}>
+      {/* BODY - Main torso with fur texture */}
       <group position={applyPartTransform([0, 0.32, 0], torsoConfig)} scale={torsoConfig.scale}>
         {/* Ribcage */}
         <mesh position={[0.05, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
           <capsuleGeometry args={[0.16, 0.35, 12, 20]} />
-          <StyledMaterial color={torsoConfig.color || color} style={style} />
+          <StyledMaterial color={torsoConfig.color || color} style={style} surface="fur" />
         </mesh>
         {/* Chest - larger front */}
         <mesh position={[0.22, 0.02, 0]}>
           <sphereGeometry args={[0.15, 14, 14]} />
-          <StyledMaterial color={color} style={style} />
+          <StyledMaterial color={color} style={style} surface="fur" />
         </mesh>
         {/* Belly curve */}
         <mesh position={[-0.05, -0.06, 0]} rotation={[0, 0, Math.PI / 2]} scale={[0.8, 1, 0.9]}>
           <capsuleGeometry args={[0.12, 0.2, 10, 16]} />
-          <StyledMaterial color={color} style={style} />
+          <StyledMaterial color={color} style={style} surface="fur" />
         </mesh>
         {/* Hip area */}
         <mesh position={[-0.2, 0, 0]}>
           <sphereGeometry args={[0.13, 12, 12]} />
-          <StyledMaterial color={color} style={style} />
+          <StyledMaterial color={color} style={style} surface="fur" />
         </mesh>
       </group>
       
@@ -1166,21 +1181,22 @@ export function DogModel({ color = COLORS.dogGolden, bodyParts, style = 'standar
 }
 
 export function CatModel({ color = COLORS.catOrange, style = 'standard' }: ModelProps) {
+  const breathRef = useBreathing(3); // Cats breathe faster
   const noseColor = COLORS.catPink;
   const eyeColor = COLORS.eyeGreen;
   const innerEarColor = COLORS.catPink;
   
   return (
-    <group>
+    <group ref={breathRef}>
       {/* Body */}
       <mesh position={[0, 0.18, 0]} rotation={[0, 0, Math.PI / 2]}>
         <capsuleGeometry args={[0.09, 0.25, 8, 16]} />
-        <StyledMaterial color={color} style={style} />
+        <StyledMaterial color={color} style={style} surface="fur" />
       </mesh>
       {/* Chest */}
       <mesh position={[0.15, 0.2, 0]}>
         <sphereGeometry args={[0.08, 12, 12]} />
-        <StyledMaterial color={color} style={style} />
+        <StyledMaterial color={color} style={style} surface="fur" />
       </mesh>
       {/* Head */}
       <mesh position={[0.26, 0.28, 0]}>
@@ -2020,32 +2036,33 @@ export function HorseModel({ color = COLORS.horseBrown, style = 'standard' }: Mo
 }
 
 export function ElephantModel({ color = COLORS.elephantGray, style = 'standard' }: ModelProps) {
+  const breathRef = useBreathing(0.8); // Elephants breathe slowly
   const darkColor = COLORS.elephantDark;
   
   return (
-    <group>
-      {/* Body - massive barrel shape */}
+    <group ref={breathRef}>
+      {/* Body - massive barrel shape with thick skin */}
       <mesh position={[0, 0.5, 0]} scale={[1.3, 1, 1]}>
         <sphereGeometry args={[0.35, 20, 20]} />
-        <StyledMaterial color={color} style={style} />
+        <StyledMaterial color={color} style={style} surface="skin" />
       </mesh>
       
       {/* Neck connection to head */}
       <mesh position={[0.32, 0.58, 0]} rotation={[0, 0, -0.3]}>
         <cylinderGeometry args={[0.14, 0.16, 0.12, 12]} />
-        <StyledMaterial color={color} style={style} />
+        <StyledMaterial color={color} style={style} surface="skin" />
       </mesh>
       
       {/* Head - connected to neck */}
       <mesh position={[0.42, 0.65, 0]}>
         <sphereGeometry args={[0.22, 20, 20]} />
-        <StyledMaterial color={color} style={style} />
+        <StyledMaterial color={color} style={style} surface="skin" />
       </mesh>
       
       {/* Forehead bulge */}
       <mesh position={[0.5, 0.72, 0]}>
         <sphereGeometry args={[0.12, 14, 14]} />
-        <StyledMaterial color={color} style={style} />
+        <StyledMaterial color={color} style={style} surface="skin" />
       </mesh>
       
       {/* TRUNK - Properly connected with joint segments */}
@@ -2112,51 +2129,51 @@ export function ElephantModel({ color = COLORS.elephantGray, style = 'standard' 
         <StyledMaterial color={darkColor} style={style} />
       </mesh>
       
-      {/* Tusks - connected to face near trunk base */}
+      {/* Tusks - ivory bone material */}
       <mesh position={[0.54, 0.50, 0.09]} rotation={[0.1, 0.25, 0.4]}>
         <cylinderGeometry args={[0.018, 0.008, 0.18, 8]} />
-        <StyledMaterial color={COLORS.white} style={style} />
+        <StyledMaterial color={COLORS.white} style={style} surface="bone" />
       </mesh>
       <mesh position={[0.54, 0.50, -0.09]} rotation={[-0.1, -0.25, 0.4]}>
         <cylinderGeometry args={[0.018, 0.008, 0.18, 8]} />
-        <StyledMaterial color={COLORS.white} style={style} />
+        <StyledMaterial color={COLORS.white} style={style} surface="bone" />
       </mesh>
       
       {/* Ears - large African elephant style */}
       <mesh position={[0.28, 0.72, 0.24]} rotation={[0, 0.6, 0.1]} scale={[0.18, 0.28, 0.02]}>
         <sphereGeometry args={[1, 14, 14]} />
-        <StyledMaterial color={color} style={style} />
+        <StyledMaterial color={color} style={style} surface="skin" />
       </mesh>
       {/* Ear inner (darker) */}
       <mesh position={[0.30, 0.70, 0.22]} rotation={[0, 0.6, 0.1]} scale={[0.12, 0.20, 0.015]}>
         <sphereGeometry args={[1, 12, 12]} />
-        <StyledMaterial color={darkColor} style={style} />
+        <StyledMaterial color={darkColor} style={style} surface="skin" />
       </mesh>
       <mesh position={[0.28, 0.72, -0.24]} rotation={[0, -0.6, -0.1]} scale={[0.18, 0.28, 0.02]}>
         <sphereGeometry args={[1, 14, 14]} />
-        <StyledMaterial color={color} style={style} />
+        <StyledMaterial color={color} style={style} surface="skin" />
       </mesh>
       <mesh position={[0.30, 0.70, -0.22]} rotation={[0, -0.6, -0.1]} scale={[0.12, 0.20, 0.015]}>
         <sphereGeometry args={[1, 12, 12]} />
-        <StyledMaterial color={darkColor} style={style} />
+        <StyledMaterial color={darkColor} style={style} surface="skin" />
       </mesh>
       
       {/* Eyes with proper depth */}
       <mesh position={[0.50, 0.72, 0.13]}>
         <sphereGeometry args={[0.022, 10, 10]} />
-        <StyledMaterial color={COLORS.eyeWhite} style={style} />
+        <StyledMaterial color={COLORS.eyeWhite} style={style} surface="default" />
       </mesh>
       <mesh position={[0.52, 0.72, 0.14]}>
         <sphereGeometry args={[0.012, 8, 8]} />
-        <StyledMaterial color={COLORS.eyeBrown} style={style} />
+        <StyledMaterial color={COLORS.eyeBrown} style={style} surface="default" />
       </mesh>
       <mesh position={[0.50, 0.72, -0.13]}>
         <sphereGeometry args={[0.022, 10, 10]} />
-        <StyledMaterial color={COLORS.eyeWhite} style={style} />
+        <StyledMaterial color={COLORS.eyeWhite} style={style} surface="default" />
       </mesh>
       <mesh position={[0.52, 0.72, -0.14]}>
         <sphereGeometry args={[0.012, 8, 8]} />
-        <StyledMaterial color={COLORS.eyeBrown} style={style} />
+        <StyledMaterial color={COLORS.eyeBrown} style={style} surface="default" />
       </mesh>
       
       {/* Legs - thick pillars with joints */}
