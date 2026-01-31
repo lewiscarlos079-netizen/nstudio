@@ -4423,6 +4423,8 @@ export function ApronModel({ color = COLORS.white, style = 'standard' }: ModelPr
 
 // ==================== MODEL REGISTRY ====================
 
+import { UrbanModelRegistry } from './UrbanModels';
+
 export const ProceduralModelRegistry: Record<string, React.ComponentType<ModelProps>> = {
   // Characters
   'humanoid': HumanoidModel,
@@ -4503,6 +4505,9 @@ export const ProceduralModelRegistry: Record<string, React.ComponentType<ModelPr
   // Misc
   'fire-hydrant': FireHydrantModel,
   'apron': ApronModel,
+  
+  // Urban models (buildings, roads, street furniture)
+  ...UrbanModelRegistry,
 };
 
 // Helper function to get the appropriate model component
