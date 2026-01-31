@@ -147,8 +147,9 @@ const COLORS = {
   stoneLight: '#A9A9A9',
   brick: '#B22222',
   concrete: '#A9A9A9',
+  leather: '#8B4513',        // Saddle brown leather
+  leatherDark: '#5C3317',    // Dark leather
   
-  // Eye colors
   eyeBrown: '#654321',
   eyeBlue: '#4169E1',
   eyeGreen: '#228B22',
@@ -568,36 +569,109 @@ export function HumanoidModel({ color = COLORS.skin, bodyParts, style = 'standar
         <StyledMaterial color={skinColor} style={style} surface="skin" />
       </mesh>
       
-      {/* TORSO */}
+      {/* TORSO WITH FITTED CLOTHING */}
       <group position={applyPartTransform([0, 0.55, 0], torsoConfig)} scale={torsoConfig.scale}>
-        {/* Chest */}
+        {/* Base chest form */}
         <mesh position={[0, 0.05, 0]}>
           <capsuleGeometry args={[0.12, 0.18, 10, 20]} />
           <StyledMaterial color={shirtColor} style={style} surface="fabric" />
         </mesh>
         
-        {/* Shoulders */}
-        <mesh position={[-0.15, 0.08, 0]}>
-          <sphereGeometry args={[0.055, 12, 12]} />
+        {/* Shirt collar - V-neck style */}
+        <mesh position={[0, 0.16, 0.08]} rotation={[0.3, 0, 0]}>
+          <torusGeometry args={[0.06, 0.012, 8, 16, Math.PI]} />
           <StyledMaterial color={shirtColor} style={style} surface="fabric" />
         </mesh>
-        <mesh position={[0.15, 0.08, 0]}>
-          <sphereGeometry args={[0.055, 12, 12]} />
+        {/* Collar band */}
+        <mesh position={[0, 0.165, 0.03]}>
+          <torusGeometry args={[0.08, 0.008, 8, 24]} />
           <StyledMaterial color={shirtColor} style={style} surface="fabric" />
         </mesh>
         
-        {/* Abdomen */}
+        {/* Center front seam line */}
+        <mesh position={[0, 0, 0.115]}>
+          <boxGeometry args={[0.004, 0.28, 0.002]} />
+          <StyledMaterial color={COLORS.fabricDark} style={style} opacity={0.6} transparent />
+        </mesh>
+        
+        {/* Side seams - left */}
+        <mesh position={[-0.11, 0, 0]} rotation={[0, 0, 0.05]}>
+          <boxGeometry args={[0.003, 0.26, 0.002]} />
+          <StyledMaterial color={COLORS.fabricDark} style={style} opacity={0.5} transparent />
+        </mesh>
+        {/* Side seams - right */}
+        <mesh position={[0.11, 0, 0]} rotation={[0, 0, -0.05]}>
+          <boxGeometry args={[0.003, 0.26, 0.002]} />
+          <StyledMaterial color={COLORS.fabricDark} style={style} opacity={0.5} transparent />
+        </mesh>
+        
+        {/* Shoulders with sleeve caps */}
+        <group position={[-0.15, 0.08, 0]}>
+          <mesh>
+            <sphereGeometry args={[0.055, 12, 12]} />
+            <StyledMaterial color={shirtColor} style={style} surface="fabric" />
+          </mesh>
+          {/* Shoulder seam */}
+          <mesh position={[0, 0.02, 0]} rotation={[0, 0, 0.4]}>
+            <torusGeometry args={[0.045, 0.003, 6, 16, Math.PI]} />
+            <StyledMaterial color={COLORS.fabricDark} style={style} opacity={0.5} transparent />
+          </mesh>
+        </group>
+        <group position={[0.15, 0.08, 0]}>
+          <mesh>
+            <sphereGeometry args={[0.055, 12, 12]} />
+            <StyledMaterial color={shirtColor} style={style} surface="fabric" />
+          </mesh>
+          {/* Shoulder seam */}
+          <mesh position={[0, 0.02, 0]} rotation={[0, 0, -0.4]}>
+            <torusGeometry args={[0.045, 0.003, 6, 16, Math.PI]} />
+            <StyledMaterial color={COLORS.fabricDark} style={style} opacity={0.5} transparent />
+          </mesh>
+        </group>
+        
+        {/* Abdomen with shirt tuck detail */}
         <mesh position={[0, -0.12, 0]}>
           <capsuleGeometry args={[0.1, 0.1, 10, 20]} />
           <StyledMaterial color={shirtColor} style={style} surface="fabric" />
         </mesh>
+        
+        {/* Hem line at waist */}
+        <mesh position={[0, -0.18, 0]}>
+          <torusGeometry args={[0.095, 0.006, 8, 24]} />
+          <StyledMaterial color={shirtColor} style={style} surface="fabric" />
+        </mesh>
       </group>
       
-      {/* Pelvis/Hips */}
-      <mesh position={[0, 0.38, 0]}>
-        <boxGeometry args={[0.18, 0.08, 0.1]} />
-        <StyledMaterial color={pantsColor} style={style} surface="fabric" />
-      </mesh>
+      {/* PANTS / LOWER BODY */}
+      <group>
+        {/* Waistband with belt */}
+        <mesh position={[0, 0.38, 0]}>
+          <cylinderGeometry args={[0.095, 0.1, 0.04, 16]} />
+          <StyledMaterial color={pantsColor} style={style} surface="fabric" />
+        </mesh>
+        {/* Belt */}
+        <mesh position={[0, 0.39, 0]}>
+          <cylinderGeometry args={[0.102, 0.102, 0.02, 16]} />
+          <StyledMaterial color={COLORS.leather} style={style} surface="leather" />
+        </mesh>
+        {/* Belt buckle */}
+        <mesh position={[0, 0.39, 0.1]}>
+          <boxGeometry args={[0.025, 0.018, 0.004]} />
+          <StyledMaterial color={COLORS.metalShiny} style={style} metalness={0.9} roughness={0.1} />
+        </mesh>
+        
+        {/* Hip area */}
+        <mesh position={[0, 0.35, 0]}>
+          <sphereGeometry args={[0.1, 12, 12, 0, Math.PI * 2, 0, Math.PI / 2]} />
+          <StyledMaterial color={pantsColor} style={style} surface="fabric" />
+        </mesh>
+        
+        {/* Center front seam (fly area) */}
+        <mesh position={[0, 0.32, 0.085]}>
+          <boxGeometry args={[0.004, 0.08, 0.002]} />
+          <StyledMaterial color={COLORS.black} style={style} opacity={0.4} transparent />
+        </mesh>
+      </group>
       
       {/* LEFT ARM */}
       <group position={applyPartTransform([-0.2, 0.62, 0], leftArmConfig)} scale={leftArmConfig.scale}>
@@ -735,71 +809,145 @@ export function HumanoidModel({ color = COLORS.skin, bodyParts, style = 'standar
         </group>
       </group>
       
-      {/* LEFT LEG */}
+      {/* LEFT LEG WITH PANTS SEAMS */}
       <group position={applyPartTransform([-0.065, 0.32, 0], leftLegConfig)} scale={leftLegConfig.scale}>
         {/* Thigh */}
         <mesh position={[0, -0.1, 0]}>
           <capsuleGeometry args={[0.048, 0.14, 8, 16]} />
-          <StyledMaterial color={leftLegConfig.color || pantsColor} style={style} />
+          <StyledMaterial color={leftLegConfig.color || pantsColor} style={style} surface="fabric" />
         </mesh>
-        {/* Knee */}
+        {/* Outer seam */}
+        <mesh position={[-0.045, -0.1, 0]}>
+          <boxGeometry args={[0.003, 0.2, 0.002]} />
+          <StyledMaterial color={COLORS.black} style={style} opacity={0.3} transparent />
+        </mesh>
+        {/* Inner seam */}
+        <mesh position={[0.045, -0.1, 0]}>
+          <boxGeometry args={[0.003, 0.2, 0.002]} />
+          <StyledMaterial color={COLORS.black} style={style} opacity={0.3} transparent />
+        </mesh>
+        {/* Knee - reinforced with dart */}
         <mesh position={[0, -0.2, 0.015]}>
           <sphereGeometry args={[0.038, 10, 10]} />
-          <StyledMaterial color={pantsColor} style={style} />
+          <StyledMaterial color={pantsColor} style={style} surface="fabric" />
+        </mesh>
+        {/* Knee dart seam */}
+        <mesh position={[0, -0.2, 0.045]} rotation={[0.2, 0, 0]}>
+          <boxGeometry args={[0.02, 0.003, 0.002]} />
+          <StyledMaterial color={COLORS.black} style={style} opacity={0.4} transparent />
         </mesh>
         {/* Shin */}
         <mesh position={[0, -0.32, 0]}>
           <capsuleGeometry args={[0.035, 0.16, 8, 16]} />
-          <StyledMaterial color={pantsColor} style={style} />
+          <StyledMaterial color={pantsColor} style={style} surface="fabric" />
+        </mesh>
+        {/* Shin outer seam */}
+        <mesh position={[-0.033, -0.32, 0]}>
+          <boxGeometry args={[0.002, 0.18, 0.002]} />
+          <StyledMaterial color={COLORS.black} style={style} opacity={0.3} transparent />
+        </mesh>
+        {/* Cuff hem */}
+        <mesh position={[0, -0.41, 0]}>
+          <torusGeometry args={[0.035, 0.004, 6, 16]} />
+          <StyledMaterial color={pantsColor} style={style} surface="fabric" />
         </mesh>
         {/* Ankle */}
         <mesh position={[0, -0.42, 0]}>
           <sphereGeometry args={[0.028, 8, 8]} />
-          <StyledMaterial color={COLORS.black} style={style} />
+          <StyledMaterial color={COLORS.black} style={style} surface="leather" />
         </mesh>
-        {/* Foot */}
-        <mesh position={[0, -0.45, 0.025]}>
-          <boxGeometry args={[0.055, 0.03, 0.09]} />
-          <StyledMaterial color={COLORS.black} style={style} />
-        </mesh>
+        {/* Shoe - more detailed */}
+        <group position={[0, -0.45, 0.025]}>
+          <mesh>
+            <boxGeometry args={[0.055, 0.03, 0.09]} />
+            <StyledMaterial color={COLORS.black} style={style} surface="leather" />
+          </mesh>
+          {/* Shoe sole */}
+          <mesh position={[0, -0.015, 0]}>
+            <boxGeometry args={[0.058, 0.008, 0.095]} />
+            <StyledMaterial color={COLORS.fabricDark} style={style} surface="leather" />
+          </mesh>
+          {/* Shoe lace area */}
+          <mesh position={[0, 0.012, -0.01]}>
+            <boxGeometry args={[0.03, 0.008, 0.04]} />
+            <StyledMaterial color={COLORS.black} style={style} surface="leather" />
+          </mesh>
+        </group>
         {/* Toe cap */}
         <mesh position={[0, -0.45, 0.07]}>
           <sphereGeometry args={[0.028, 8, 8]} />
-          <StyledMaterial color={COLORS.black} style={style} />
+          <StyledMaterial color={COLORS.black} style={style} surface="leather" />
         </mesh>
       </group>
       
-      {/* RIGHT LEG */}
+      {/* RIGHT LEG WITH PANTS SEAMS */}
       <group position={applyPartTransform([0.065, 0.32, 0], rightLegConfig)} scale={rightLegConfig.scale}>
         {/* Thigh */}
         <mesh position={[0, -0.1, 0]}>
           <capsuleGeometry args={[0.048, 0.14, 8, 16]} />
-          <StyledMaterial color={rightLegConfig.color || pantsColor} style={style} />
+          <StyledMaterial color={rightLegConfig.color || pantsColor} style={style} surface="fabric" />
+        </mesh>
+        {/* Outer seam */}
+        <mesh position={[0.045, -0.1, 0]}>
+          <boxGeometry args={[0.003, 0.2, 0.002]} />
+          <StyledMaterial color={COLORS.black} style={style} opacity={0.3} transparent />
+        </mesh>
+        {/* Inner seam */}
+        <mesh position={[-0.045, -0.1, 0]}>
+          <boxGeometry args={[0.003, 0.2, 0.002]} />
+          <StyledMaterial color={COLORS.black} style={style} opacity={0.3} transparent />
         </mesh>
         {/* Knee */}
         <mesh position={[0, -0.2, 0.015]}>
           <sphereGeometry args={[0.038, 10, 10]} />
-          <StyledMaterial color={pantsColor} style={style} />
+          <StyledMaterial color={pantsColor} style={style} surface="fabric" />
+        </mesh>
+        {/* Knee dart seam */}
+        <mesh position={[0, -0.2, 0.045]} rotation={[0.2, 0, 0]}>
+          <boxGeometry args={[0.02, 0.003, 0.002]} />
+          <StyledMaterial color={COLORS.black} style={style} opacity={0.4} transparent />
         </mesh>
         {/* Shin */}
         <mesh position={[0, -0.32, 0]}>
           <capsuleGeometry args={[0.035, 0.16, 8, 16]} />
-          <StyledMaterial color={pantsColor} style={style} />
+          <StyledMaterial color={pantsColor} style={style} surface="fabric" />
+        </mesh>
+        {/* Shin outer seam */}
+        <mesh position={[0.033, -0.32, 0]}>
+          <boxGeometry args={[0.002, 0.18, 0.002]} />
+          <StyledMaterial color={COLORS.black} style={style} opacity={0.3} transparent />
+        </mesh>
+        {/* Cuff hem */}
+        <mesh position={[0, -0.41, 0]}>
+          <torusGeometry args={[0.035, 0.004, 6, 16]} />
+          <StyledMaterial color={pantsColor} style={style} surface="fabric" />
         </mesh>
         {/* Ankle */}
         <mesh position={[0, -0.42, 0]}>
           <sphereGeometry args={[0.028, 8, 8]} />
-          <StyledMaterial color={COLORS.black} style={style} />
+          <StyledMaterial color={COLORS.black} style={style} surface="leather" />
         </mesh>
-        {/* Foot */}
-        <mesh position={[0, -0.45, 0.025]}>
-          <boxGeometry args={[0.055, 0.03, 0.09]} />
-          <StyledMaterial color={COLORS.black} style={style} />
-        </mesh>
+        {/* Shoe - more detailed */}
+        <group position={[0, -0.45, 0.025]}>
+          <mesh>
+            <boxGeometry args={[0.055, 0.03, 0.09]} />
+            <StyledMaterial color={COLORS.black} style={style} surface="leather" />
+          </mesh>
+          {/* Shoe sole */}
+          <mesh position={[0, -0.015, 0]}>
+            <boxGeometry args={[0.058, 0.008, 0.095]} />
+            <StyledMaterial color={COLORS.fabricDark} style={style} surface="leather" />
+          </mesh>
+          {/* Shoe lace area */}
+          <mesh position={[0, 0.012, -0.01]}>
+            <boxGeometry args={[0.03, 0.008, 0.04]} />
+            <StyledMaterial color={COLORS.black} style={style} surface="leather" />
+          </mesh>
+        </group>
         {/* Toe cap */}
         <mesh position={[0, -0.45, 0.07]}>
           <sphereGeometry args={[0.028, 8, 8]} />
-          <StyledMaterial color={COLORS.black} style={style} />
+          <StyledMaterial color={COLORS.black} style={style} surface="leather" />
         </mesh>
       </group>
     </group>
