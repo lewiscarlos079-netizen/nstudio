@@ -10,15 +10,15 @@ import { MotionCapturePanel } from '@/components/studio/MotionCapturePanel';
 import { ExpandedInventory } from '@/components/studio/ExpandedInventory';
 import { InventorySidebar } from '@/components/studio/InventorySidebar';
 import { SceneSettings } from '@/components/studio/SceneSettings';
-import { SandboxBuilder } from '@/components/studio/SandboxBuilder';
 import { PDFUploader } from '@/components/studio/PDFUploader';
 import { BodyPartEditor } from '@/components/studio/BodyPartEditor';
-import { CharacterCreationSidebar } from '@/components/studio/CharacterCreationSidebar';
 import { WeatherSystem } from '@/components/studio/WeatherSystem';
 import { TerrainBuilder } from '@/components/studio/TerrainBuilder';
+import { LayerEditor } from '@/components/studio/LayerEditor';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 import { 
   Box, 
   Layers, 
@@ -33,17 +33,16 @@ import {
   Download,
   Camera,
   Activity,
-  Package,
-  Bone,
   RefreshCw,
-  ArrowUp,
-  ArrowDown,
-  Map
+  Map,
+  Wand2,
+  Bone,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useSceneStore } from '@/store/sceneStore';
 
 export default function Studio() {
+  const navigate = useNavigate();
   const [showLeftPanel, setShowLeftPanel] = useState(true);
   const [showRightPanel, setShowRightPanel] = useState(true);
   const [showAIChat, setShowAIChat] = useState(false);
@@ -152,10 +151,17 @@ export default function Studio() {
           </Tabs>
 
           <div className="flex items-center gap-2">
-            <CharacterCreationSidebar />
+            <Button variant="outline" size="sm" className="gap-2 h-8" onClick={() => navigate('/character-creator')}>
+              <Wand2 className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Creator</span>
+            </Button>
+            <Button variant="outline" size="sm" className="gap-2 h-8" onClick={() => navigate('/character-sandbox')}>
+              <Bone className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Sandbox</span>
+            </Button>
             <WeatherSystem />
+            <LayerEditor />
             <PDFUploader />
-            <SandboxBuilder />
             <InventorySidebar />
             <SceneSettings />
             <Button

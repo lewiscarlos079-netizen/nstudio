@@ -11,6 +11,8 @@ import Portfolio from "./pages/Portfolio";
 import Subscription from "./pages/Subscription";
 import Legal from "./pages/Legal";
 import NotFound from "./pages/NotFound";
+import CharacterCreator from "./pages/CharacterCreator";
+import CharacterSandbox from "./pages/CharacterSandbox";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +30,8 @@ const App = () => (
           <Route path="/portfolio" element={<Portfolio />} />
           <Route path="/subscription" element={<Subscription />} />
           <Route path="/legal" element={<Legal />} />
+          <Route path="/character-creator" element={<CharacterCreator />} />
+          <Route path="/character-sandbox" element={<CharacterSandbox />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
