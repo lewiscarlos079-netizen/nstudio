@@ -327,8 +327,8 @@ export default function CharacterCreator() {
               transition={{ delay: 0.2 }}
             >
               <Card className="h-[600px] flex flex-col">
-                <CardHeader className="pb-2">
-                  <Tabs value={activeTab} onValueChange={setActiveTab}>
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col h-full">
+                  <CardHeader className="pb-2">
                     <TabsList className="grid grid-cols-3">
                       <TabsTrigger value="role" className="text-xs">
                         <User className="w-3 h-3 mr-1" />
@@ -343,123 +343,123 @@ export default function CharacterCreator() {
                         Gear
                       </TabsTrigger>
                     </TabsList>
-                  </Tabs>
-                </CardHeader>
-                <CardContent className="flex-1 overflow-hidden">
-                  <ScrollArea className="h-full pr-4">
-                    <TabsContent value="role" className="mt-0 space-y-4">
-                      <div className="grid grid-cols-2 gap-2">
-                        {CHARACTER_ROLES.map((role) => (
-                          <Button
-                            key={role.id}
-                            variant={character.role === role.id ? "default" : "outline"}
-                            size="sm"
-                            className="justify-start gap-2 h-auto py-3 relative flex-col items-start"
-                            onClick={() => selectRole(role.id)}
-                          >
-                            <div className="flex items-center gap-2 w-full">
-                              <role.icon className="w-4 h-4" />
-                              <span>{role.name}</span>
-                              {role.tier === 'pro' && (
-                                <Crown className="w-3 h-3 text-yellow-500 ml-auto" />
-                              )}
-                            </div>
-                            <span className="text-[10px] text-muted-foreground text-left">
-                              {role.description}
-                            </span>
-                          </Button>
-                        ))}
-                      </div>
-
-                      <Separator />
-
-                      {/* Blood Effects Toggle */}
-                      <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
-                        <div className="flex items-center gap-2">
-                          <Droplets className="w-4 h-4 text-red-500" />
-                          <Label className="text-sm">Blood Effects</Label>
-                        </div>
-                        <Switch
-                          checked={character.bloodEffects}
-                          onCheckedChange={(checked) => 
-                            setCharacter(prev => ({ ...prev, bloodEffects: checked }))
-                          }
-                        />
-                      </div>
-                    </TabsContent>
-
-                    <TabsContent value="body" className="mt-0 space-y-4">
-                      {/* Skin Tone */}
-                      <div className="space-y-3">
-                        <Label className="text-sm font-medium">Skin Tone</Label>
-                        <div className="grid grid-cols-6 gap-2">
-                          {SKIN_TONES.map((tone) => (
-                            <button
-                              key={tone.color}
-                              className={`w-10 h-10 rounded-lg border-2 transition-all ${
-                                character.skinTone === tone.color 
-                                  ? 'border-primary scale-110 shadow-lg' 
-                                  : 'border-transparent hover:border-muted-foreground'
-                              }`}
-                              style={{ backgroundColor: tone.color }}
-                              onClick={() => setCharacter(prev => ({ ...prev, skinTone: tone.color }))}
-                              title={`${tone.name}: ${tone.description}`}
-                            />
-                          ))}
-                        </div>
-                      </div>
-
-                      <Separator />
-
-                      {/* Body Scale */}
-                      <div className="space-y-3">
-                        <Label className="text-sm font-medium">Body Scale</Label>
-                        {['x', 'y', 'z'].map((axis) => (
-                          <div key={axis} className="space-y-1">
-                            <div className="flex items-center justify-between">
-                              <Label className="text-xs uppercase">
-                                {axis === 'x' ? 'Width' : axis === 'y' ? 'Height' : 'Depth'}
-                              </Label>
-                              <span className="text-xs text-muted-foreground">
-                                {(character.bodyScale[axis as keyof typeof character.bodyScale] * 100).toFixed(0)}%
+                  </CardHeader>
+                  <CardContent className="flex-1 overflow-hidden">
+                    <ScrollArea className="h-full pr-4">
+                      <TabsContent value="role" className="mt-0 space-y-4">
+                        <div className="grid grid-cols-2 gap-2">
+                          {CHARACTER_ROLES.map((role) => (
+                            <Button
+                              key={role.id}
+                              variant={character.role === role.id ? "default" : "outline"}
+                              size="sm"
+                              className="justify-start gap-2 h-auto py-3 relative flex-col items-start"
+                              onClick={() => selectRole(role.id)}
+                            >
+                              <div className="flex items-center gap-2 w-full">
+                                <role.icon className="w-4 h-4" />
+                                <span>{role.name}</span>
+                                {role.tier === 'pro' && (
+                                  <Crown className="w-3 h-3 text-yellow-500 ml-auto" />
+                                )}
+                              </div>
+                              <span className="text-[10px] text-muted-foreground text-left">
+                                {role.description}
                               </span>
-                            </div>
-                            <Slider
-                              value={[character.bodyScale[axis as keyof typeof character.bodyScale] * 100]}
-                              onValueChange={([val]) => setCharacter(prev => ({
-                                ...prev,
-                                bodyScale: { ...prev.bodyScale, [axis]: val / 100 }
-                              }))}
-                              min={50}
-                              max={150}
-                              step={1}
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    </TabsContent>
-
-                    <TabsContent value="gear" className="mt-0 space-y-4">
-                      <div className="space-y-2">
-                        <Label className="text-sm font-medium">Equipped Items</Label>
-                        <div className="space-y-2">
-                          {selectedRole?.defaultClothing.map((item, i) => (
-                            <div key={i} className="flex items-center gap-2 p-2 rounded-lg bg-muted/30">
-                              <Shirt className="w-4 h-4 text-muted-foreground" />
-                              <span className="text-sm capitalize">{item.replace(/_/g, ' ')}</span>
-                            </div>
+                            </Button>
                           ))}
-                          {selectedRole?.defaultEquipment.map((item, i) => (
-                            <div key={i} className="flex items-center gap-2 p-2 rounded-lg bg-primary/10">
-                              <Wrench className="w-4 h-4 text-primary" />
-                              <span className="text-sm capitalize">{item.replace(/_/g, ' ')}</span>
+                        </div>
+
+                        <Separator />
+
+                        {/* Blood Effects Toggle */}
+                        <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
+                          <div className="flex items-center gap-2">
+                            <Droplets className="w-4 h-4 text-red-500" />
+                            <Label className="text-sm">Blood Effects</Label>
+                          </div>
+                          <Switch
+                            checked={character.bloodEffects}
+                            onCheckedChange={(checked) => 
+                              setCharacter(prev => ({ ...prev, bloodEffects: checked }))
+                            }
+                          />
+                        </div>
+                      </TabsContent>
+
+                      <TabsContent value="body" className="mt-0 space-y-4">
+                        {/* Skin Tone */}
+                        <div className="space-y-3">
+                          <Label className="text-sm font-medium">Skin Tone</Label>
+                          <div className="grid grid-cols-6 gap-2">
+                            {SKIN_TONES.map((tone) => (
+                              <button
+                                key={tone.color}
+                                className={`w-10 h-10 rounded-lg border-2 transition-all ${
+                                  character.skinTone === tone.color 
+                                    ? 'border-primary scale-110 shadow-lg' 
+                                    : 'border-transparent hover:border-muted-foreground'
+                                }`}
+                                style={{ backgroundColor: tone.color }}
+                                onClick={() => setCharacter(prev => ({ ...prev, skinTone: tone.color }))}
+                                title={`${tone.name}: ${tone.description}`}
+                              />
+                            ))}
+                          </div>
+                        </div>
+
+                        <Separator />
+
+                        {/* Body Scale */}
+                        <div className="space-y-3">
+                          <Label className="text-sm font-medium">Body Scale</Label>
+                          {['x', 'y', 'z'].map((axis) => (
+                            <div key={axis} className="space-y-1">
+                              <div className="flex items-center justify-between">
+                                <Label className="text-xs uppercase">
+                                  {axis === 'x' ? 'Width' : axis === 'y' ? 'Height' : 'Depth'}
+                                </Label>
+                                <span className="text-xs text-muted-foreground">
+                                  {(character.bodyScale[axis as keyof typeof character.bodyScale] * 100).toFixed(0)}%
+                                </span>
+                              </div>
+                              <Slider
+                                value={[character.bodyScale[axis as keyof typeof character.bodyScale] * 100]}
+                                onValueChange={([val]) => setCharacter(prev => ({
+                                  ...prev,
+                                  bodyScale: { ...prev.bodyScale, [axis]: val / 100 }
+                                }))}
+                                min={50}
+                                max={150}
+                                step={1}
+                              />
                             </div>
                           ))}
                         </div>
-                      </div>
-                    </TabsContent>
-                  </ScrollArea>
-                </CardContent>
+                      </TabsContent>
+
+                      <TabsContent value="gear" className="mt-0 space-y-4">
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium">Equipped Items</Label>
+                          <div className="space-y-2">
+                            {selectedRole?.defaultClothing.map((item, i) => (
+                              <div key={i} className="flex items-center gap-2 p-2 rounded-lg bg-muted/30">
+                                <Shirt className="w-4 h-4 text-muted-foreground" />
+                                <span className="text-sm capitalize">{item.replace(/_/g, ' ')}</span>
+                              </div>
+                            ))}
+                            {selectedRole?.defaultEquipment.map((item, i) => (
+                              <div key={i} className="flex items-center gap-2 p-2 rounded-lg bg-primary/10">
+                                <Wrench className="w-4 h-4 text-primary" />
+                                <span className="text-sm capitalize">{item.replace(/_/g, ' ')}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </TabsContent>
+                    </ScrollArea>
+                  </CardContent>
+                </Tabs>
               </Card>
             </motion.div>
 
