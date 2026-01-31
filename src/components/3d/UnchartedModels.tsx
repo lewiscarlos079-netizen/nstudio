@@ -1,4 +1,4 @@
-import { StyledMaterial } from './ToonMaterials';
+import { StyledMaterial, SurfaceType } from './ToonMaterials';
 import { ModelStyle } from '@/store/sceneStore';
 
 interface ModelProps {
@@ -63,23 +63,23 @@ export function NathanDrakeModel({ style = 'standard' }: ModelProps) {
       <group position={[0, 0.95, 0]}>
         <mesh>
           <sphereGeometry args={[0.13, 24, 24]} />
-          <StyledMaterial color={COLORS.drakeSkin} style={style} />
+          <StyledMaterial color={COLORS.drakeSkin} style={style} surface="skin" />
         </mesh>
         
         {/* Stubble/jaw definition */}
         <mesh position={[0, -0.06, 0.04]}>
           <boxGeometry args={[0.1, 0.05, 0.08]} />
-          <StyledMaterial color={COLORS.drakeSkin} style={style} />
+          <StyledMaterial color={COLORS.drakeSkin} style={style} surface="skin" />
         </mesh>
         
         {/* Hair - messy short style */}
         <mesh position={[0, 0.06, 0]}>
           <sphereGeometry args={[0.14, 20, 20, 0, Math.PI * 2, 0, Math.PI / 2]} />
-          <StyledMaterial color={COLORS.drakeHair} style={style} />
+          <StyledMaterial color={COLORS.drakeHair} style={style} surface="hair" />
         </mesh>
         <mesh position={[0, 0.02, 0.08]} rotation={[-0.3, 0, 0]}>
           <boxGeometry args={[0.12, 0.04, 0.06]} />
-          <StyledMaterial color={COLORS.drakeHair} style={style} />
+          <StyledMaterial color={COLORS.drakeHair} style={style} surface="hair" />
         </mesh>
         
         {/* Eyes */}
@@ -131,40 +131,40 @@ export function NathanDrakeModel({ style = 'standard' }: ModelProps) {
       <group position={[0, 0.58, 0]}>
         <mesh>
           <capsuleGeometry args={[0.11, 0.16, 10, 20]} />
-          <StyledMaterial color={COLORS.drakeHenley} style={style} />
+          <StyledMaterial color={COLORS.drakeHenley} style={style} surface="fabric" />
         </mesh>
         
         {/* Henley collar/buttons */}
         <mesh position={[0, 0.1, 0.09]}>
           <boxGeometry args={[0.03, 0.08, 0.02]} />
-          <StyledMaterial color={COLORS.drakeSkin} style={style} />
+          <StyledMaterial color={COLORS.drakeSkin} style={style} surface="skin" />
         </mesh>
         
         {/* SHOULDER JOINTS */}
         <mesh position={[-0.14, 0.06, 0]}>
           <sphereGeometry args={[0.05, 12, 12]} />
-          <StyledMaterial color={COLORS.drakeHenley} style={style} />
+          <StyledMaterial color={COLORS.drakeHenley} style={style} surface="fabric" />
         </mesh>
         <mesh position={[0.14, 0.06, 0]}>
           <sphereGeometry args={[0.05, 12, 12]} />
-          <StyledMaterial color={COLORS.drakeHenley} style={style} />
+          <StyledMaterial color={COLORS.drakeHenley} style={style} surface="fabric" />
         </mesh>
       </group>
       
       {/* SPINE CONNECTION - torso to pelvis */}
       <mesh position={[0, 0.44, 0]}>
         <sphereGeometry args={[0.06, 10, 10]} />
-        <StyledMaterial color={COLORS.drakeHenley} style={style} />
+        <StyledMaterial color={COLORS.drakeHenley} style={style} surface="fabric" />
       </mesh>
       
       {/* Belt with holster */}
       <mesh position={[0, 0.4, 0]}>
         <cylinderGeometry args={[0.1, 0.1, 0.04, 16]} />
-        <StyledMaterial color={COLORS.drakeBelt} style={style} />
+        <StyledMaterial color={COLORS.drakeBelt} style={style} surface="leather" />
       </mesh>
       <mesh position={[0.1, 0.4, 0]}>
         <boxGeometry args={[0.04, 0.06, 0.03]} />
-        <StyledMaterial color={COLORS.leather} style={style} />
+        <StyledMaterial color={COLORS.leather} style={style} surface="leather" />
       </mesh>
       
       {/* LEFT ARM with joints */}
@@ -972,68 +972,226 @@ export function ChloeFrazerModel({ style = 'standard' }: ModelProps) {
   );
 }
 
-// Ancient Temple Ruins
+// Ancient Temple Ruins - Detailed with inscriptions, varied pillars, weathering
 export function AncientTempleModel({ style = 'standard' }: ModelProps) {
   return (
     <group>
-      {/* Base platform */}
-      <mesh position={[0, 0.05, 0]}>
-        <boxGeometry args={[1.2, 0.1, 1.2]} />
-        <StyledMaterial color={COLORS.stoneDark} style={style} />
+      {/* Foundation - weathered stone blocks */}
+      <mesh position={[0, 0.03, 0]}>
+        <boxGeometry args={[1.4, 0.06, 1.4]} />
+        <StyledMaterial color={COLORS.stoneDark} style={style} surface="stone" />
+      </mesh>
+      <mesh position={[0, 0.08, 0]}>
+        <boxGeometry args={[1.25, 0.04, 1.25]} />
+        <StyledMaterial color={COLORS.stone} style={style} surface="stone" />
       </mesh>
       
-      {/* Steps */}
-      <mesh position={[0, 0.15, 0.45]}>
-        <boxGeometry args={[0.8, 0.1, 0.3]} />
-        <StyledMaterial color={COLORS.stone} style={style} />
-      </mesh>
-      <mesh position={[0, 0.25, 0.35]}>
-        <boxGeometry args={[0.7, 0.1, 0.2]} />
-        <StyledMaterial color={COLORS.stone} style={style} />
+      {/* Main platform with carved edges */}
+      <mesh position={[0, 0.14, 0]}>
+        <boxGeometry args={[1.15, 0.08, 1.15]} />
+        <StyledMaterial color={COLORS.stoneLight} style={style} surface="stone" />
       </mesh>
       
-      {/* Main structure */}
-      <mesh position={[0, 0.45, 0]}>
-        <boxGeometry args={[0.9, 0.5, 0.8]} />
-        <StyledMaterial color={COLORS.stone} style={style} />
-      </mesh>
-      
-      {/* Pillars */}
-      {[[-0.35, 0.55, 0.35], [0.35, 0.55, 0.35], [-0.35, 0.55, -0.3], [0.35, 0.55, -0.3]].map((pos, i) => (
-        <group key={i} position={pos as [number, number, number]}>
-          <mesh position={[0, 0, 0]}>
-            <cylinderGeometry args={[0.08, 0.1, 0.6, 12]} />
-            <StyledMaterial color={COLORS.stoneLight} style={style} />
-          </mesh>
-          {/* Pillar cap */}
-          <mesh position={[0, 0.35, 0]}>
-            <boxGeometry args={[0.15, 0.08, 0.15]} />
-            <StyledMaterial color={COLORS.stone} style={style} />
-          </mesh>
-        </group>
+      {/* Decorative border carvings on platform */}
+      {[-0.52, 0.52].map((x, i) => (
+        <mesh key={`border-${i}`} position={[x, 0.14, 0]}>
+          <boxGeometry args={[0.03, 0.1, 1.1]} />
+          <StyledMaterial color={COLORS.stoneDark} style={style} surface="stone" />
+        </mesh>
       ))}
       
-      {/* Roof/lintel */}
-      <mesh position={[0, 0.95, 0]}>
-        <boxGeometry args={[1, 0.12, 0.9]} />
-        <StyledMaterial color={COLORS.stoneDark} style={style} />
+      {/* Grand staircase with worn steps */}
+      {[0, 1, 2, 3].map((step) => (
+        <mesh key={`step-${step}`} position={[0, 0.12 + step * 0.06, 0.5 + step * 0.08]}>
+          <boxGeometry args={[0.7 + step * 0.05, 0.06, 0.12]} />
+          <StyledMaterial color={step % 2 === 0 ? COLORS.stone : COLORS.stoneLight} style={style} surface="stone" />
+        </mesh>
+      ))}
+      
+      {/* Main inner chamber */}
+      <mesh position={[0, 0.4, 0]}>
+        <boxGeometry args={[0.85, 0.4, 0.75]} />
+        <StyledMaterial color={COLORS.stone} style={style} surface="stone" />
       </mesh>
       
-      {/* Decorative carvings */}
-      <mesh position={[0, 0.5, 0.41]}>
-        <boxGeometry args={[0.4, 0.2, 0.02]} />
-        <StyledMaterial color={COLORS.gold} style={style} />
+      {/* PILLARS - Various states of decay */}
+      {/* Front left - intact Doric style */}
+      <group position={[-0.42, 0, 0.42]}>
+        {/* Base */}
+        <mesh position={[0, 0.22, 0]}>
+          <boxGeometry args={[0.16, 0.04, 0.16]} />
+          <StyledMaterial color={COLORS.stoneDark} style={style} surface="stone" />
+        </mesh>
+        {/* Fluted column */}
+        <mesh position={[0, 0.55, 0]}>
+          <cylinderGeometry args={[0.065, 0.08, 0.62, 12]} />
+          <StyledMaterial color={COLORS.stoneLight} style={style} surface="stone" />
+        </mesh>
+        {/* Capital - Doric echinus */}
+        <mesh position={[0, 0.88, 0]}>
+          <cylinderGeometry args={[0.09, 0.065, 0.06, 12]} />
+          <StyledMaterial color={COLORS.stone} style={style} surface="stone" />
+        </mesh>
+        {/* Abacus */}
+        <mesh position={[0, 0.93, 0]}>
+          <boxGeometry args={[0.18, 0.04, 0.18]} />
+          <StyledMaterial color={COLORS.stoneDark} style={style} surface="stone" />
+        </mesh>
+      </group>
+      
+      {/* Front right - partially broken */}
+      <group position={[0.42, 0, 0.42]}>
+        <mesh position={[0, 0.22, 0]}>
+          <boxGeometry args={[0.16, 0.04, 0.16]} />
+          <StyledMaterial color={COLORS.stoneDark} style={style} surface="stone" />
+        </mesh>
+        {/* Broken column - shorter */}
+        <mesh position={[0, 0.42, 0]}>
+          <cylinderGeometry args={[0.065, 0.08, 0.36, 12]} />
+          <StyledMaterial color={COLORS.stoneLight} style={style} surface="stone" />
+        </mesh>
+        {/* Jagged break at top */}
+        <mesh position={[0.02, 0.62, 0.01]} rotation={[0.2, 0.3, 0.1]}>
+          <coneGeometry args={[0.04, 0.06, 5]} />
+          <StyledMaterial color={COLORS.stone} style={style} surface="stone" />
+        </mesh>
+        {/* Fallen piece nearby */}
+        <mesh position={[0.15, 0.12, 0.1]} rotation={[0.4, 0.2, 1.2]}>
+          <cylinderGeometry args={[0.05, 0.06, 0.2, 8]} />
+          <StyledMaterial color={COLORS.stoneLight} style={style} surface="stone" />
+        </mesh>
+      </group>
+      
+      {/* Back left - Ionic style with scrolls */}
+      <group position={[-0.42, 0, -0.35]}>
+        <mesh position={[0, 0.22, 0]}>
+          <boxGeometry args={[0.14, 0.04, 0.14]} />
+          <StyledMaterial color={COLORS.stoneDark} style={style} surface="stone" />
+        </mesh>
+        <mesh position={[0, 0.58, 0]}>
+          <cylinderGeometry args={[0.055, 0.07, 0.68, 14]} />
+          <StyledMaterial color={COLORS.stoneLight} style={style} surface="stone" />
+        </mesh>
+        {/* Ionic volutes (scrolls) */}
+        <mesh position={[-0.07, 0.94, 0]}>
+          <torusGeometry args={[0.03, 0.012, 8, 12]} />
+          <StyledMaterial color={COLORS.stone} style={style} surface="stone" />
+        </mesh>
+        <mesh position={[0.07, 0.94, 0]}>
+          <torusGeometry args={[0.03, 0.012, 8, 12]} />
+          <StyledMaterial color={COLORS.stone} style={style} surface="stone" />
+        </mesh>
+        <mesh position={[0, 0.94, 0]}>
+          <boxGeometry args={[0.14, 0.04, 0.08]} />
+          <StyledMaterial color={COLORS.stone} style={style} surface="stone" />
+        </mesh>
+      </group>
+      
+      {/* Back right - Arched remnant */}
+      <group position={[0.42, 0, -0.35]}>
+        <mesh position={[0, 0.22, 0]}>
+          <boxGeometry args={[0.14, 0.04, 0.14]} />
+          <StyledMaterial color={COLORS.stoneDark} style={style} surface="stone" />
+        </mesh>
+        <mesh position={[0, 0.48, 0]}>
+          <cylinderGeometry args={[0.06, 0.07, 0.48, 10]} />
+          <StyledMaterial color={COLORS.stoneLight} style={style} surface="stone" />
+        </mesh>
+        {/* Partial arch extending toward center */}
+        <mesh position={[-0.12, 0.75, 0]} rotation={[0, 0, 0.4]}>
+          <boxGeometry args={[0.2, 0.05, 0.08]} />
+          <StyledMaterial color={COLORS.stone} style={style} surface="stone" />
+        </mesh>
+      </group>
+      
+      {/* ARCHITRAVE AND ENTABLATURE - partially intact */}
+      <mesh position={[-0.42, 1.0, 0.04]}>
+        <boxGeometry args={[0.2, 0.08, 0.85]} />
+        <StyledMaterial color={COLORS.stoneDark} style={style} surface="stone" />
       </mesh>
       
-      {/* Moss/vegetation */}
-      <mesh position={[-0.4, 0.7, 0.35]}>
-        <sphereGeometry args={[0.06, 8, 8]} />
-        <StyledMaterial color={COLORS.moss} style={style} />
+      {/* Decorative frieze with carved reliefs */}
+      <mesh position={[0, 0.52, 0.38]}>
+        <boxGeometry args={[0.5, 0.12, 0.02]} />
+        <StyledMaterial color={COLORS.gold} style={style} surface="metal" />
       </mesh>
-      <mesh position={[0.3, 0.85, -0.2]}>
-        <sphereGeometry args={[0.08, 8, 8]} />
-        <StyledMaterial color={COLORS.moss} style={style} />
+      
+      {/* INSCRIPTIONS - Ancient text carved into stone */}
+      {/* Main inscription panel */}
+      <group position={[0, 0.35, 0.376]}>
+        {/* Inscription background */}
+        <mesh position={[0, 0, 0]}>
+          <boxGeometry args={[0.35, 0.08, 0.01]} />
+          <StyledMaterial color={COLORS.stoneDark} style={style} surface="stone" />
+        </mesh>
+        {/* Carved text lines (simplified as horizontal grooves) */}
+        {[-0.12, -0.04, 0.04, 0.12].map((x, i) => (
+          <mesh key={`text-${i}`} position={[x, 0, 0.006]}>
+            <boxGeometry args={[0.06, 0.015, 0.002]} />
+            <StyledMaterial color={COLORS.gold} style={style} surface="metal" />
+          </mesh>
+        ))}
+      </group>
+      
+      {/* Side inscription with hieroglyph-like symbols */}
+      <group position={[-0.426, 0.4, 0]}>
+        <mesh position={[0, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
+          <boxGeometry args={[0.25, 0.15, 0.01]} />
+          <StyledMaterial color={COLORS.stoneDark} style={style} surface="stone" />
+        </mesh>
+        {/* Symbol carvings */}
+        {[[-0.08, 0.04], [0, 0.04], [0.08, 0.04], [-0.04, -0.04], [0.04, -0.04]].map(([y, z], i) => (
+          <mesh key={`sym-${i}`} position={[0.006, y, z]} rotation={[0, Math.PI / 2, 0]}>
+            <circleGeometry args={[0.018, 6]} />
+            <StyledMaterial color={COLORS.goldDark} style={style} surface="metal" />
+          </mesh>
+        ))}
+      </group>
+      
+      {/* Roof remnants */}
+      <mesh position={[-0.2, 1.08, 0.1]} rotation={[0, 0, 0.15]}>
+        <boxGeometry args={[0.5, 0.06, 0.6]} />
+        <StyledMaterial color={COLORS.stoneDark} style={style} surface="stone" />
       </mesh>
+      
+      {/* Fallen architectural pieces */}
+      <mesh position={[0.5, 0.08, 0.6]} rotation={[0.3, 0.5, 0.1]}>
+        <boxGeometry args={[0.15, 0.08, 0.12]} />
+        <StyledMaterial color={COLORS.stoneLight} style={style} surface="stone" />
+      </mesh>
+      <mesh position={[-0.55, 0.06, 0.3]} rotation={[0.1, 0.8, 0.2]}>
+        <cylinderGeometry args={[0.04, 0.05, 0.18, 8]} />
+        <StyledMaterial color={COLORS.stone} style={style} surface="stone" />
+      </mesh>
+      
+      {/* Vegetation reclaiming the structure */}
+      {/* Moss patches */}
+      {[[-0.4, 0.75, 0.42], [0.35, 0.3, 0.4], [-0.3, 1.02, 0.1], [0.4, 0.65, -0.33]].map(([x, y, z], i) => (
+        <mesh key={`moss-${i}`} position={[x, y, z]}>
+          <sphereGeometry args={[0.04 + i * 0.01, 8, 8]} />
+          <StyledMaterial color={COLORS.moss} style={style} surface="organic" />
+        </mesh>
+      ))}
+      
+      {/* Hanging vines */}
+      {[[-0.42, 0.8, 0.43], [-0.44, 0.65, -0.35]].map(([x, y, z], i) => (
+        <mesh key={`vine-${i}`} position={[x, y, z]} rotation={[0, 0, 0.1 + i * 0.05]}>
+          <capsuleGeometry args={[0.012, 0.25, 4, 8]} />
+          <StyledMaterial color={COLORS.vine} style={style} surface="organic" />
+        </mesh>
+      ))}
+      
+      {/* Small ferns at base */}
+      {[[0.5, 0.12, -0.4], [-0.5, 0.12, 0.5]].map(([x, y, z], i) => (
+        <group key={`fern-${i}`} position={[x, y, z]}>
+          {[0, 0.6, 1.2, 1.8, 2.4].map((rot, j) => (
+            <mesh key={j} position={[0, 0, 0]} rotation={[0.4, rot, 0]}>
+              <coneGeometry args={[0.015, 0.06, 3]} />
+              <StyledMaterial color={COLORS.vine} style={style} surface="organic" />
+            </mesh>
+          ))}
+        </group>
+      ))}
     </group>
   );
 }
@@ -1125,58 +1283,195 @@ export function StoneArtifactModel({ style = 'standard' }: ModelProps) {
   );
 }
 
-// Jungle Ruins
+// Jungle Ruins - Detailed overgrown ancient structure
 export function JungleRuinsModel({ style = 'standard' }: ModelProps) {
   return (
     <group>
-      {/* Ruined walls */}
-      <mesh position={[-0.4, 0.25, 0]}>
-        <boxGeometry args={[0.15, 0.5, 0.8]} />
-        <StyledMaterial color={COLORS.stone} style={style} />
+      {/* RUINED WALLS with carved details */}
+      {/* Main wall section with window opening */}
+      <group position={[-0.4, 0, 0]}>
+        <mesh position={[0, 0.25, 0]}>
+          <boxGeometry args={[0.12, 0.5, 0.85]} />
+          <StyledMaterial color={COLORS.stone} style={style} surface="stone" />
+        </mesh>
+        {/* Window/door opening */}
+        <mesh position={[0.04, 0.2, 0]}>
+          <boxGeometry args={[0.08, 0.25, 0.2]} />
+          <StyledMaterial color={COLORS.stoneDark} style={style} surface="stone" />
+        </mesh>
+        {/* Carved border around opening */}
+        <mesh position={[0.065, 0.35, 0]}>
+          <boxGeometry args={[0.02, 0.04, 0.28]} />
+          <StyledMaterial color={COLORS.goldDark} style={style} surface="metal" />
+        </mesh>
+        {/* Wall inscriptions */}
+        <mesh position={[0.065, 0.4, 0.25]} rotation={[0, Math.PI / 2, 0]}>
+          <boxGeometry args={[0.12, 0.06, 0.01]} />
+          <StyledMaterial color={COLORS.stoneDark} style={style} surface="stone" />
+        </mesh>
+        {/* Carved symbols */}
+        {[[0.42, -0.3], [0.42, -0.22], [0.35, -0.26]].map(([y, z], i) => (
+          <mesh key={`sym-l-${i}`} position={[0.065, y, z]} rotation={[0, Math.PI / 2, 0]}>
+            <circleGeometry args={[0.015, 5 + i]} />
+            <StyledMaterial color={COLORS.gold} style={style} surface="metal" />
+          </mesh>
+        ))}
+      </group>
+      
+      {/* Secondary crumbling wall */}
+      <group position={[0.4, 0, 0.2]}>
+        <mesh position={[0, 0.18, 0]}>
+          <boxGeometry args={[0.1, 0.36, 0.55]} />
+          <StyledMaterial color={COLORS.stoneDark} style={style} surface="stone" />
+        </mesh>
+        {/* Weathered top edge */}
+        <mesh position={[0, 0.38, 0.1]} rotation={[0.2, 0, 0]}>
+          <boxGeometry args={[0.11, 0.04, 0.2]} />
+          <StyledMaterial color={COLORS.stone} style={style} surface="stone" />
+        </mesh>
+        {/* Relief carving */}
+        <mesh position={[-0.052, 0.15, 0]}>
+          <boxGeometry args={[0.01, 0.18, 0.25]} />
+          <StyledMaterial color={COLORS.stoneLight} style={style} surface="stone" />
+        </mesh>
+      </group>
+      
+      {/* PILLARS - Various states */}
+      {/* Intact short pillar */}
+      <group position={[0.1, 0, -0.35]}>
+        <mesh position={[0, 0.04, 0]}>
+          <boxGeometry args={[0.14, 0.04, 0.14]} />
+          <StyledMaterial color={COLORS.stoneDark} style={style} surface="stone" />
+        </mesh>
+        <mesh position={[0, 0.22, 0]}>
+          <cylinderGeometry args={[0.055, 0.07, 0.32, 10]} />
+          <StyledMaterial color={COLORS.stoneLight} style={style} surface="stone" />
+        </mesh>
+        {/* Decorative ring */}
+        <mesh position={[0, 0.3, 0]}>
+          <torusGeometry args={[0.06, 0.012, 8, 16]} />
+          <StyledMaterial color={COLORS.stone} style={style} surface="stone" />
+        </mesh>
+        <mesh position={[0, 0.4, 0]}>
+          <boxGeometry args={[0.12, 0.04, 0.12]} />
+          <StyledMaterial color={COLORS.stoneDark} style={style} surface="stone" />
+        </mesh>
+      </group>
+      
+      {/* Fallen pillar */}
+      <group position={[-0.1, 0, 0.35]}>
+        <mesh position={[0, 0.04, 0]} rotation={[0, 0.4, 1.45]}>
+          <cylinderGeometry args={[0.05, 0.06, 0.35, 10]} />
+          <StyledMaterial color={COLORS.stoneLight} style={style} surface="stone" />
+        </mesh>
+        {/* Broken base still standing */}
+        <mesh position={[-0.2, 0.06, 0]}>
+          <cylinderGeometry args={[0.06, 0.07, 0.1, 10]} />
+          <StyledMaterial color={COLORS.stone} style={style} surface="stone" />
+        </mesh>
+      </group>
+      
+      {/* ARCHED REMNANT */}
+      <group position={[0, 0, -0.15]}>
+        {/* Left support */}
+        <mesh position={[-0.18, 0.12, 0]}>
+          <boxGeometry args={[0.08, 0.24, 0.08]} />
+          <StyledMaterial color={COLORS.stone} style={style} surface="stone" />
+        </mesh>
+        {/* Right support (broken) */}
+        <mesh position={[0.18, 0.08, 0]}>
+          <boxGeometry args={[0.08, 0.16, 0.08]} />
+          <StyledMaterial color={COLORS.stoneDark} style={style} surface="stone" />
+        </mesh>
+        {/* Partial arch */}
+        <mesh position={[-0.08, 0.28, 0]} rotation={[0, 0, 0.3]}>
+          <boxGeometry args={[0.18, 0.05, 0.08]} />
+          <StyledMaterial color={COLORS.stoneLight} style={style} surface="stone" />
+        </mesh>
+        {/* Keystone fallen */}
+        <mesh position={[0.05, 0.04, 0.12]} rotation={[0.3, 0.2, 0.5]}>
+          <boxGeometry args={[0.06, 0.08, 0.06]} />
+          <StyledMaterial color={COLORS.stone} style={style} surface="stone" />
+        </mesh>
+      </group>
+      
+      {/* SCATTERED DEBRIS */}
+      {[
+        [0.22, 0.04, 0.32, 0.2, 0.5, 0.1],
+        [-0.18, 0.035, 0.4, 0.1, 0.3, 0.2],
+        [0.3, 0.03, -0.2, 0.4, 0.1, 0.3],
+        [-0.25, 0.025, -0.35, 0.2, 0.6, 0.15],
+      ].map(([x, y, z, rx, ry, rz], i) => (
+        <mesh key={`debris-${i}`} position={[x, y, z]} rotation={[rx, ry, rz]}>
+          <boxGeometry args={[0.1 + i * 0.02, 0.05 + i * 0.01, 0.08 + i * 0.015]} />
+          <StyledMaterial color={i % 2 === 0 ? COLORS.stone : COLORS.stoneDark} style={style} surface="stone" />
+        </mesh>
+      ))}
+      
+      {/* VEGETATION - Bringing life */}
+      {/* Thick vines climbing walls */}
+      <group position={[-0.46, 0, 0.2]}>
+        <mesh position={[0, 0.2, 0]} rotation={[0, 0, 0.08]}>
+          <capsuleGeometry args={[0.018, 0.35, 6, 10]} />
+          <StyledMaterial color={COLORS.vine} style={style} surface="organic" />
+        </mesh>
+        <mesh position={[0.02, 0.35, 0.05]} rotation={[0.3, 0, -0.2]}>
+          <capsuleGeometry args={[0.012, 0.15, 4, 8]} />
+          <StyledMaterial color={COLORS.vine} style={style} surface="organic" />
+        </mesh>
+        {/* Leaves */}
+        {[[0.03, 0.25, 0.02], [-0.01, 0.38, 0.04], [0.02, 0.15, -0.02]].map(([x, y, z], i) => (
+          <mesh key={`leaf-${i}`} position={[x, y, z]} rotation={[0.5, i * 0.8, 0.2]}>
+            <sphereGeometry args={[0.025, 6, 6]} />
+            <StyledMaterial color="#2d5a1e" style={style} surface="organic" />
+          </mesh>
+        ))}
+      </group>
+      
+      {/* More vine tendrils */}
+      <mesh position={[-0.38, 0.42, -0.18]} rotation={[0.25, 0, -0.12]}>
+        <capsuleGeometry args={[0.012, 0.22, 4, 8]} />
+        <StyledMaterial color={COLORS.vine} style={style} surface="organic" />
       </mesh>
-      <mesh position={[0.4, 0.15, 0.2]}>
-        <boxGeometry args={[0.12, 0.3, 0.5]} />
-        <StyledMaterial color={COLORS.stoneDark} style={style} />
+      <mesh position={[0.42, 0.28, 0.35]} rotation={[0.1, 0, 0.15]}>
+        <capsuleGeometry args={[0.015, 0.2, 4, 8]} />
+        <StyledMaterial color={COLORS.vine} style={style} surface="organic" />
       </mesh>
       
-      {/* Broken pillar */}
-      <mesh position={[0.1, 0.15, -0.3]}>
-        <cylinderGeometry args={[0.08, 0.1, 0.3, 10]} />
-        <StyledMaterial color={COLORS.stoneLight} style={style} />
-      </mesh>
+      {/* Moss clusters - giving ancient feel */}
+      {[
+        [-0.38, 0.48, 0.15],
+        [0.38, 0.32, 0.25],
+        [0.08, 0.42, -0.35],
+        [-0.25, 0.12, 0.38],
+        [0.15, 0.08, 0.4],
+      ].map(([x, y, z], i) => (
+        <mesh key={`moss-${i}`} position={[x, y, z]}>
+          <sphereGeometry args={[0.03 + i * 0.008, 8, 8]} />
+          <StyledMaterial color={COLORS.moss} style={style} surface="organic" />
+        </mesh>
+      ))}
       
-      {/* Fallen stones */}
-      <mesh position={[0.2, 0.05, 0.3]} rotation={[0.2, 0.5, 0.1]}>
-        <boxGeometry args={[0.2, 0.1, 0.15]} />
-        <StyledMaterial color={COLORS.stone} style={style} />
-      </mesh>
-      <mesh position={[-0.15, 0.04, 0.35]}>
-        <boxGeometry args={[0.12, 0.08, 0.1]} />
-        <StyledMaterial color={COLORS.stoneDark} style={style} />
-      </mesh>
+      {/* Ground foliage - ferns and small plants */}
+      {[[0.35, 0.02, -0.4], [-0.3, 0.02, 0.45], [0.25, 0.02, 0.5]].map(([x, y, z], i) => (
+        <group key={`fern-${i}`} position={[x, y, z]}>
+          {[0, 0.5, 1.0, 1.5, 2.0, 2.5].map((rot, j) => (
+            <mesh key={j} position={[0, 0.02, 0]} rotation={[0.5, rot, 0]}>
+              <coneGeometry args={[0.012, 0.055, 3]} />
+              <StyledMaterial color={j % 2 === 0 ? COLORS.vine : "#3a7a2a"} style={style} surface="organic" />
+            </mesh>
+          ))}
+        </group>
+      ))}
       
-      {/* Vines */}
-      <mesh position={[-0.42, 0.35, 0.2]} rotation={[0, 0, 0.1]}>
-        <capsuleGeometry args={[0.02, 0.3, 4, 8]} />
-        <StyledMaterial color={COLORS.vine} style={style} />
+      {/* Roots breaking through stone */}
+      <mesh position={[-0.35, 0.02, -0.1]} rotation={[0.8, 0.2, 0.3]}>
+        <capsuleGeometry args={[0.02, 0.12, 4, 8]} />
+        <StyledMaterial color={COLORS.wood} style={style} surface="wood" />
       </mesh>
-      <mesh position={[-0.38, 0.4, -0.15]} rotation={[0.2, 0, -0.15]}>
-        <capsuleGeometry args={[0.015, 0.25, 4, 8]} />
-        <StyledMaterial color={COLORS.vine} style={style} />
-      </mesh>
-      
-      {/* Moss patches */}
-      <mesh position={[-0.35, 0.45, 0.1]}>
-        <sphereGeometry args={[0.06, 6, 6]} />
-        <StyledMaterial color={COLORS.moss} style={style} />
-      </mesh>
-      <mesh position={[0.38, 0.25, 0.15]}>
-        <sphereGeometry args={[0.05, 6, 6]} />
-        <StyledMaterial color={COLORS.moss} style={style} />
-      </mesh>
-      <mesh position={[0.1, 0.28, -0.28]}>
-        <sphereGeometry args={[0.04, 6, 6]} />
-        <StyledMaterial color={COLORS.moss} style={style} />
+      <mesh position={[0.32, 0.015, 0.0]} rotation={[0.6, -0.3, 0.4]}>
+        <capsuleGeometry args={[0.015, 0.1, 4, 8]} />
+        <StyledMaterial color={COLORS.woodDark} style={style} surface="wood" />
       </mesh>
     </group>
   );
