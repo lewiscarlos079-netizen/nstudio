@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { Group } from 'three';
 import { useFrame } from '@react-three/fiber';
 import { BodyPartType, BodyPartConfig, ModelStyle } from '@/store/sceneStore';
-import { StyledMaterial, SurfaceType } from './ToonMaterials';
+import { StyledMaterial, SurfaceType } from './Materials';
 
 // Realistic color palettes for different asset types
 const COLORS = {

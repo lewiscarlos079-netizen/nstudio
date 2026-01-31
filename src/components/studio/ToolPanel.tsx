@@ -83,7 +83,7 @@ export function ToolPanel() {
   };
 
   const cycleModelStyle = () => {
-    const styles: ModelStyle[] = ['standard', 'toon', 'wireframe'];
+    const styles: ModelStyle[] = ['standard', 'wireframe'];
     const currentIndex = styles.indexOf(modelStyle);
     const nextStyle = styles[(currentIndex + 1) % styles.length];
     setModelStyle(nextStyle);
@@ -102,7 +102,6 @@ export function ToolPanel() {
 
   const getStyleLabel = () => {
     switch (modelStyle) {
-      case 'toon': return 'Toon';
       case 'wireframe': return 'Wire';
       default: return 'Std';
     }
@@ -312,7 +311,7 @@ export function ToolPanel() {
                 <Button
                   variant={modelStyle !== 'standard' ? "default" : "ghost"}
                   size="icon"
-                  className={`w-10 h-10 mx-auto relative ${modelStyle === 'toon' ? 'glow-primary-sm' : ''}`}
+                  className="w-10 h-10 mx-auto relative"
                   onClick={cycleModelStyle}
                 >
                   <Palette className="w-4 h-4" />

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import * as THREE from 'three';
 
-export type ModelStyle = 'standard' | 'toon' | 'wireframe';
+export type ModelStyle = 'standard' | 'wireframe';
 
 // Surface types for realistic material properties
 export type SurfaceType = 
@@ -38,38 +38,6 @@ const SURFACE_PROPERTIES: Record<SurfaceType, {
   default: { metalness: 0.15, roughness: 0.65, envMapIntensity: 0.5 },
 };
 
-// Create a gradient texture for toon shading color bands
-function createToonGradient(): THREE.Texture {
-  const canvas = document.createElement('canvas');
-  canvas.width = 4;
-  canvas.height = 1;
-  const ctx = canvas.getContext('2d')!;
-  
-  // 4-step gradient for cartoon cel shading
-  ctx.fillStyle = '#333333';
-  ctx.fillRect(0, 0, 1, 1);
-  ctx.fillStyle = '#666666';
-  ctx.fillRect(1, 0, 1, 1);
-  ctx.fillStyle = '#999999';
-  ctx.fillRect(2, 0, 1, 1);
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(3, 0, 1, 1);
-  
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.minFilter = THREE.NearestFilter;
-  texture.magFilter = THREE.NearestFilter;
-  
-  return texture;
-}
-
-// Singleton gradient texture
-let gradientMap: THREE.Texture | null = null;
-function getGradientMap(): THREE.Texture {
-  if (!gradientMap) {
-    gradientMap = createToonGradient();
-  }
-  return gradientMap;
-}
 
 interface ToonMaterialProps {
   color: string;
@@ -98,19 +66,6 @@ export function useToonMaterial({
     const surfaceProps = SURFACE_PROPERTIES[surface];
     const finalMetalness = metalness ?? surfaceProps.metalness;
     const finalRoughness = roughness ?? surfaceProps.roughness;
-
-    if (style === 'toon') {
-      return (
-        <meshToonMaterial
-          color={color}
-          gradientMap={getGradientMap()}
-          emissive={emissive}
-          emissiveIntensity={emissiveIntensity}
-          opacity={opacity}
-          transparent={transparent || opacity < 1}
-        />
-      );
-    }
     
     if (style === 'wireframe') {
       return (
@@ -168,19 +123,6 @@ export function StyledMaterial(props: StyledMaterialProps) {
   const surfaceProps = SURFACE_PROPERTIES[surface];
   const finalMetalness = metalness ?? surfaceProps.metalness;
   const finalRoughness = roughness ?? surfaceProps.roughness;
-  
-  if (style === 'toon') {
-    return (
-      <meshToonMaterial
-        color={color}
-        gradientMap={getGradientMap()}
-        emissive={emissive}
-        emissiveIntensity={emissiveIntensity}
-        opacity={opacity}
-        transparent={transparent || opacity < 1}
-      />
-    );
-  }
   
   if (style === 'wireframe') {
     return (

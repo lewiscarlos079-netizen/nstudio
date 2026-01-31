@@ -1,4 +1,4 @@
-import { StyledMaterial, SurfaceType } from './ToonMaterials';
+import { StyledMaterial, SurfaceType } from './Materials';
 import { ModelStyle } from '@/store/sceneStore';
 
 interface ModelProps {

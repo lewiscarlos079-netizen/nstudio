@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 export type PrimitiveType = 'cube' | 'sphere' | 'cylinder' | 'cone' | 'plane' | 'torus';
 
-export type ModelStyle = 'standard' | 'toon' | 'wireframe';
+export type ModelStyle = 'standard' | 'wireframe';
 
 export type BodyPartType = 
   | 'head' | 'face' | 'torso' | 'leftArm' | 'rightArm' | 'leftLeg' | 'rightLeg' 
