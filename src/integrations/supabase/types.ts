@@ -14,7 +14,153 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      hardware_presets: {
+        Row: {
+          created_at: string
+          enable_pbr: boolean | null
+          enable_physics_animations: boolean | null
+          enable_raytracing: boolean | null
+          gpu_tier: string
+          id: string
+          lod_bias: number | null
+          max_polygons: number
+          max_texture_size: number
+          preset_name: string
+        }
+        Insert: {
+          created_at?: string
+          enable_pbr?: boolean | null
+          enable_physics_animations?: boolean | null
+          enable_raytracing?: boolean | null
+          gpu_tier: string
+          id?: string
+          lod_bias?: number | null
+          max_polygons?: number
+          max_texture_size?: number
+          preset_name: string
+        }
+        Update: {
+          created_at?: string
+          enable_pbr?: boolean | null
+          enable_physics_animations?: boolean | null
+          enable_raytracing?: boolean | null
+          gpu_tier?: string
+          id?: string
+          lod_bias?: number | null
+          max_polygons?: number
+          max_texture_size?: number
+          preset_name?: string
+        }
+        Relationships: []
+      }
+      model_assets: {
+        Row: {
+          animation_count: number | null
+          base_geometry: Json
+          category: string
+          created_at: string
+          description: string | null
+          has_animations: boolean | null
+          high_quality: Json | null
+          id: string
+          last_refreshed_at: string | null
+          low_quality: Json | null
+          medium_quality: Json | null
+          model_id: string
+          name: string
+          pbr_enabled: boolean | null
+          polygon_count_high: number | null
+          polygon_count_low: number | null
+          raytracing_compatible: boolean | null
+          ultra_quality: Json | null
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          animation_count?: number | null
+          base_geometry?: Json
+          category: string
+          created_at?: string
+          description?: string | null
+          has_animations?: boolean | null
+          high_quality?: Json | null
+          id?: string
+          last_refreshed_at?: string | null
+          low_quality?: Json | null
+          medium_quality?: Json | null
+          model_id: string
+          name: string
+          pbr_enabled?: boolean | null
+          polygon_count_high?: number | null
+          polygon_count_low?: number | null
+          raytracing_compatible?: boolean | null
+          ultra_quality?: Json | null
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          animation_count?: number | null
+          base_geometry?: Json
+          category?: string
+          created_at?: string
+          description?: string | null
+          has_animations?: boolean | null
+          high_quality?: Json | null
+          id?: string
+          last_refreshed_at?: string | null
+          low_quality?: Json | null
+          medium_quality?: Json | null
+          model_id?: string
+          name?: string
+          pbr_enabled?: boolean | null
+          polygon_count_high?: number | null
+          polygon_count_low?: number | null
+          raytracing_compatible?: boolean | null
+          ultra_quality?: Json | null
+          updated_at?: string
+          version?: number
+        }
+        Relationships: []
+      }
+      model_sync_status: {
+        Row: {
+          category: string | null
+          completed_at: string | null
+          created_at: string
+          error_message: string | null
+          id: string
+          models_processed: number | null
+          models_updated: number | null
+          started_at: string | null
+          status: string
+          sync_type: string
+        }
+        Insert: {
+          category?: string | null
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          models_processed?: number | null
+          models_updated?: number | null
+          started_at?: string | null
+          status: string
+          sync_type: string
+        }
+        Update: {
+          category?: string | null
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          models_processed?: number | null
+          models_updated?: number | null
+          started_at?: string | null
+          status?: string
+          sync_type?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
