@@ -178,7 +178,7 @@ export function ModelThumbnail3D({ modelId, className = '' }: ModelThumbnail3DPr
     triggerOnce: false,
   });
   
-  // Cycle through styles every 20 seconds
+  // Cycle through styles every 10 seconds
   const [styleIndex, setStyleIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   
@@ -191,7 +191,7 @@ export function ModelThumbnail3D({ modelId, className = '' }: ModelThumbnail3DPr
         setStyleIndex((prev) => (prev + 1) % STYLE_CYCLE.length);
         setIsTransitioning(false);
       }, 300);
-    }, 20000);
+    }, 10000);
     
     return () => clearInterval(interval);
   }, [inView]);
