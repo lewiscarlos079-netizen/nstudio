@@ -4,185 +4,220 @@ import { useFrame } from '@react-three/fiber';
 import { BodyPartType, BodyPartConfig, ModelStyle } from '@/store/sceneStore';
 import { StyledMaterial, SurfaceType } from './Materials';
 
-// Realistic color palettes for different asset types
+// Photorealistic color palettes based on real-world references
+// Colors are desaturated and natural for realistic rendering
 const COLORS = {
-  // Wood & Materials
-  wood: '#8B4513',           // Saddle brown
-  woodLight: '#DEB887',      // Burlywood
-  woodDark: '#5D3A1A',       // Dark wood
-  metal: '#708090',          // Slate gray
-  metalDark: '#2F4F4F',      // Dark slate gray
-  metalShiny: '#C0C0C0',     // Silver
-  glass: '#87CEEB',          // Sky blue
-  chrome: '#E8E8E8',         // Chrome
-  rubber: '#1a1a1a',         // Tire black
+  // Wood & Materials - Real wood tones
+  wood: '#6B4423',           // Walnut brown
+  woodLight: '#C4A574',      // Light oak
+  woodDark: '#3D2817',       // Ebony
+  metal: '#5A6066',          // Weathered steel
+  metalDark: '#3A4045',      // Dark iron
+  metalShiny: '#A8ADB3',     // Brushed aluminum
+  glass: '#C5D8E8',          // Clear glass tint
+  chrome: '#D4D7DB',         // Chrome
+  rubber: '#252525',         // Tire rubber
   
-  // Fabrics
-  fabric: '#DC143C',         // Crimson
-  fabricDark: '#8B0000',     // Dark red
-  fabricBlue: '#4169E1',     // Royal blue
+  // Fabrics - Natural clothing tones
+  fabric: '#8B3A3A',         // Muted crimson
+  fabricDark: '#4A3535',     // Dark maroon
+  fabricBlue: '#3A5070',     // Denim blue
+  fabricNavy: '#252D3A',     // Navy
+  fabricGray: '#5A5A5A',     // Charcoal
+  fabricKhaki: '#A69070',    // Khaki
   
-  // Nature
-  leaf: '#228B22',           // Forest green
-  leafLight: '#90EE90',      // Light green
-  leafDark: '#006400',       // Dark green
-  leafAutumn: '#D2691E',     // Chocolate (autumn leaves)
-  trunk: '#654321',          // Dark brown
-  trunkBirch: '#F5F5DC',     // Beige (birch bark)
-  grass: '#7CFC00',          // Lawn green
+  // Nature - Realistic vegetation
+  leaf: '#3A6B35',           // Forest green (desaturated)
+  leafLight: '#6B8B60',      // Light foliage
+  leafDark: '#2A4A25',       // Deep forest
+  leafAutumn: '#9B6B35',     // Autumn brown-orange
+  trunk: '#4A3525',          // Tree bark brown
+  trunkBirch: '#D5D0C5',     // Birch bark
+  grass: '#4A7040',          // Natural grass
+  dirt: '#6B5040',           // Soil brown
+  sand: '#C4B090',           // Beach sand
   
-  // Animal colors - Dogs
-  dogGolden: '#DAA520',      // Goldenrod (Golden Retriever)
-  dogCream: '#F5DEB3',       // Wheat (cream colored)
-  dogBrown: '#8B4513',       // Saddle brown (Chocolate Lab)
-  dogBlack: '#1a1a1a',       // Black (Black Lab)
-  dogWhite: '#F5F5F5',       // White smoke (White dogs)
-  dogTan: '#D2B48C',         // Tan (Beagle)
-  dogNose: '#2a2a2a',        // Dog nose black
+  // Human skin tones - Realistic range
+  skin: '#D4A574',           // Medium Caucasian
+  skinLight: '#E8D0B8',      // Light/pale
+  skinMedium: '#C49060',     // Mediterranean/Tan
+  skinOlive: '#A8845A',      // Olive
+  skinBrown: '#8B6B4A',      // Brown
+  skinDark: '#5A4030',       // Dark brown
+  skinPink: '#D4A090',       // Rosy undertone
   
-  // Animal colors - Cats
-  catOrange: '#FF8C00',      // Dark orange (Tabby)
-  catGray: '#808080',        // Gray (Russian Blue)
-  catBlack: '#1a1a1a',       // Black cat
-  catWhite: '#FFFAF0',       // Floral white
-  catSiamese: '#F5DEB3',     // Wheat (Siamese body)
-  catPink: '#FFB6C1',        // Light pink (nose/ears)
+  // Human features
+  lips: '#A06060',           // Natural lip color
+  lipsDark: '#704545',       // Darker lips
+  blush: '#C08080',          // Cheek blush
   
-  // Animal colors - Wild animals
-  wolfGray: '#696969',       // Dim gray
-  wolfWhite: '#DCDCDC',      // Gainsboro (Arctic wolf)
-  tigerOrange: '#FF6600',    // Bright orange
-  tigerStripe: '#1a1a1a',    // Black stripes
-  lionTan: '#C19A6B',        // Camel
-  lionMane: '#8B4513',       // Dark mane
-  bearBrown: '#8B4513',      // Saddle brown
-  bearPolar: '#F0F0F0',      // White smoke
-  foxOrange: '#FF6B35',      // Fox orange
-  foxWhite: '#FFFAF0',       // Fox chest
-  raccoonGray: '#5A5A5A',    // Raccoon body gray
-  raccoonMask: '#1a1a1a',    // Raccoon eye mask black
-  raccoonRings: '#2a2a2a',   // Tail ring dark
-  raccoonCream: '#F5F5DC',   // Raccoon light fur
+  // Animal colors - Dogs (realistic coat colors)
+  dogGolden: '#B8935A',      // Golden Retriever
+  dogCream: '#D8C8A8',       // Cream Lab
+  dogBrown: '#6B4830',       // Chocolate Lab
+  dogBlack: '#252525',       // Black Lab
+  dogWhite: '#E8E4E0',       // White (off-white)
+  dogTan: '#A08060',         // Beagle tan
+  dogNose: '#252020',        // Nose leather
+  dogGums: '#9B6B6B',        // Gum pink
+  
+  // Animal colors - Cats (realistic)
+  catOrange: '#B87040',      // Ginger tabby
+  catGray: '#707070',        // Russian Blue
+  catBlack: '#202020',       // Black cat
+  catWhite: '#E8E5E0',       // White cat
+  catSiamese: '#D8C8B0',     // Siamese cream
+  catPink: '#C8A0A0',        // Nose/ear pink
+  catStripe: '#4A3A30',      // Tabby stripes
+  
+  // Wild animals - Naturalistic colors
+  wolfGray: '#606060',       // Timber wolf
+  wolfWhite: '#D0D0D0',      // Arctic wolf
+  wolfBlack: '#303030',      // Black wolf
+  tigerOrange: '#C87030',    // Bengal tiger
+  tigerStripe: '#252015',    // Tiger stripes
+  lionTan: '#B09060',        // Lion body
+  lionMane: '#6B4A30',       // Lion mane
+  bearBrown: '#5A4030',      // Brown bear
+  bearPolar: '#E0DDD8',      // Polar bear
+  bearBlack: '#252525',      // Black bear
+  foxOrange: '#B86030',      // Red fox
+  foxWhite: '#E8E0D8',       // Fox belly
+  foxBlack: '#202020',       // Fox legs
+  raccoonGray: '#505050',    // Raccoon body
+  raccoonMask: '#202020',    // Eye mask
+  raccoonRings: '#353535',   // Tail rings
+  raccoonCream: '#D0C8C0',   // Light underfur
 
-  // Animal colors - Birds
-  birdBlue: '#4169E1',       // Royal blue (Bluebird)
-  birdRed: '#DC143C',        // Crimson (Cardinal)
-  birdYellow: '#FFD700',     // Gold (Canary)
-  birdGreen: '#32CD32',      // Lime green (Parrot)
-  birdBrown: '#8B4513',      // Brown (Sparrow)
-  birdBlack: '#1a1a1a',      // Black (Crow)
-  beakOrange: '#FF8C00',     // Orange beak
-  beakYellow: '#FFD700',     // Yellow beak
+  // Birds - Realistic plumage
+  birdBlue: '#4A6080',       // Bluebird (muted)
+  birdRed: '#8B3030',        // Cardinal (natural)
+  birdYellow: '#C8A040',     // Canary
+  birdGreen: '#4A7040',      // Parrot
+  birdBrown: '#6B5040',      // Sparrow
+  birdBlack: '#202020',      // Crow/Raven
+  beakOrange: '#C8804A',     // Orange beak
+  beakYellow: '#C8A860',     // Yellow beak
+  beakBlack: '#303030',      // Dark beak
   
-  // Animal colors - Sea creatures
-  fishOrange: '#FF7F00',     // Orange (Goldfish/Clownfish)
-  fishBlue: '#1E90FF',       // Dodger blue (Tropical)
-  fishSilver: '#C0C0C0',     // Silver (Salmon)
-  fishYellow: '#FFD700',     // Gold (Angelfish)
-  fishPink: '#FA8072',       // Salmon pink
-  dolphinGray: '#708090',    // Slate gray
-  dolphinLight: '#B0C4DE',   // Light steel blue (belly)
-  whaleBlue: '#2F4F4F',      // Dark slate gray
-  sharkGray: '#808080',      // Gray
-  sharkWhite: '#E8E8E8',     // Shark belly
+  // Marine life - Ocean colors
+  fishOrange: '#C87040',     // Clownfish
+  fishBlue: '#4A6890',       // Tropical blue
+  fishSilver: '#A0A8B0',     // Silver scales
+  fishYellow: '#C8A850',     // Angelfish
+  fishPink: '#B08080',       // Salmon
+  dolphinGray: '#607080',    // Dolphin
+  dolphinLight: '#909AA8',   // Dolphin belly
+  whaleBlue: '#404850',      // Whale
+  sharkGray: '#606870',      // Shark
+  sharkWhite: '#C8C8C8',     // Shark belly
   
-  // Animal colors - Reptiles
-  crocodileGreen: '#2E8B57', // Sea green
-  snakeGreen: '#228B22',     // Forest green
-  turtleGreen: '#556B2F',    // Dark olive green
-  turtleShell: '#8B4513',    // Shell brown
+  // Reptiles
+  crocodileGreen: '#4A6050', // Crocodile
+  snakeGreen: '#3A5A40',     // Green snake
+  snakeBrown: '#5A4A3A',     // Brown snake
+  turtleGreen: '#4A5A40',    // Sea turtle
+  turtleShell: '#5A4A35',    // Shell brown
   
-  // Fantasy creatures
-  dragonGreen: '#228B22',    // Forest green
-  dragonRed: '#B22222',      // Firebrick
-  dragonBlue: '#4169E1',     // Royal blue
-  dragonGold: '#FFD700',     // Gold
-  dragonBlack: '#2F2F2F',    // Dark gray
-  dragonScale: '#2E8B57',    // Scale highlight
+  // Fantasy creatures - More grounded colors
+  dragonGreen: '#3A5A40',    // Forest dragon
+  dragonRed: '#803030',      // Fire dragon
+  dragonBlue: '#405060',     // Ice dragon
+  dragonGold: '#B09040',     // Gold dragon
+  dragonBlack: '#303030',    // Shadow dragon
+  dragonBrown: '#5A4A3A',    // Earth dragon
+  dragonWhite: '#D0D0D0',    // Frost dragon
   
-  // Primate colors
-  gorillaBlack: '#1a1a1a',   // Black
-  gorillaGray: '#696969',    // Dim gray (silverback)
-  chimpBrown: '#8B4513',     // Saddle brown
+  // Generic neutral colors
+  white: '#F0EDE8',          // Natural white
+  black: '#1A1A1A',          // Deep black
+  gray: '#606060',           // Medium gray
   
-  // Horse colors
-  horseBrown: '#8B4513',     // Bay brown
-  horseBlack: '#1a1a1a',     // Black horse
-  horseWhite: '#F5F5F5',     // White horse
-  horseChestnut: '#954535',  // Chestnut
-  horseMane: '#2a2a2a',      // Mane color
+  // Eyes - Realistic eye colors
+  eyeBrown: '#5A4030',       // Brown iris
+  eyeBlue: '#4A6080',        // Blue iris
+  eyeGreen: '#4A6050',       // Green iris
+  eyeHazel: '#6B5A40',       // Hazel iris
+  eyeAmber: '#8B6B30',       // Amber/gold iris
+  eyeGray: '#606870',        // Gray iris
+  eyeWhite: '#F8F5F0',       // Sclera (slightly warm)
+  pupil: '#101010',          // Pupil black
   
-  // Elephant
-  elephantGray: '#808080',   // Gray
-  elephantDark: '#696969',   // Darker accents
+  // Hair colors - Natural range
+  hair: '#302520',           // Dark brown
+  hairBlack: '#151510',      // Black hair
+  hairBrown: '#4A3525',      // Medium brown
+  hairAuburn: '#5A3025',     // Auburn/red-brown
+  hairBlonde: '#B09060',     // Blonde
+  hairGray: '#808080',       // Gray/silver
+  hairWhite: '#D0CCC8',      // White hair
+  hairRed: '#6B3525',        // Ginger
   
-  // Penguin
-  penguinBlack: '#1a1a1a',   // Back
-  penguinWhite: '#FFFFFF',   // Front
-  penguinYellow: '#FFD700',  // Beak accent
-  penguinOrange: '#FF8C00',  // Feet
+  // Teeth/bone
+  teeth: '#E8E0D8',          // Ivory
+  bone: '#D8D0C8',           // Bone color
+  claw: '#C8C0B8',           // Nail/claw
   
-  // Rabbit
-  rabbitBrown: '#D2B48C',    // Tan rabbit
-  rabbitWhite: '#FFFAF0',    // White rabbit
-  rabbitPink: '#FFB6C1',     // Inner ears
+  // Additional animal colors needed for compatibility
+  gorillaBlack: '#252520',   // Gorilla black
+  gorillaGray: '#505050',    // Silverback gray
+  chimpBrown: '#5A4030',     // Chimp brown
+  horseBrown: '#6B4830',     // Bay horse
+  horseBlack: '#202020',     // Black horse
+  horseWhite: '#E0DCD8',     // White horse
+  horseChestnut: '#7A4030',  // Chestnut
+  horseMane: '#252020',      // Mane
+  elephantGray: '#707070',   // Elephant gray
+  elephantDark: '#505050',   // Darker gray
+  penguinBlack: '#151515',   // Penguin black
+  penguinWhite: '#F0EDE8',   // Penguin white
+  penguinYellow: '#C8A040',  // Beak yellow
+  penguinOrange: '#C87040',  // Feet orange
+  rabbitBrown: '#A08060',    // Rabbit tan
+  rabbitWhite: '#E8E5E0',    // White rabbit
+  rabbitPink: '#C8A0A0',     // Inner ears
   
-  // Human
-  skin: '#FFDAB9',           // Peach puff
-  skinLight: '#FFE4C4',      // Bisque
-  skinDark: '#D2691E',       // Chocolate
-  hair: '#4A3C2A',           // Dark brown
-  hairBlonde: '#F0E68C',     // Khaki
-  hairBlack: '#1a1a1a',      // Black
-  hairRed: '#8B0000',        // Dark red
+  // General utility colors
+  fur: '#8B6B50',            // Generic fur
+  furDark: '#5A4030',        // Dark fur
+  water: '#4A6080',          // Water blue
+  waterLight: '#708090',     // Light water
+  waterDeep: '#303850',      // Deep water
+  stone: '#606060',          // Stone gray
+  stoneDark: '#404040',      // Dark stone
+  stoneLight: '#909090',     // Light stone
+  brick: '#8B4040',          // Brick red
+  concrete: '#909090',       // Concrete
+  leather: '#6B4A35',        // Leather brown
+  leatherDark: '#4A3525',    // Dark leather
   
-  // General colors
-  fur: '#D2691E',
-  furDark: '#8B4513',
-  water: '#4169E1',
-  waterLight: '#87CEEB',
-  waterDeep: '#000080',
-  stone: '#696969',
-  stoneDark: '#404040',
-  stoneLight: '#A9A9A9',
-  brick: '#B22222',
-  concrete: '#A9A9A9',
-  leather: '#8B4513',        // Saddle brown leather
-  leatherDark: '#5C3317',    // Dark leather
+  // Basic named colors (muted for realism)
+  blue: '#4A6080',           // Muted blue
+  red: '#8B4040',            // Muted red
+  green: '#4A6B40',          // Muted green
+  yellow: '#B09040',         // Muted yellow
+  orange: '#B87040',         // Muted orange
+  pink: '#A08080',           // Muted pink
+  purple: '#6A5080',         // Muted purple
   
-  eyeBrown: '#654321',
-  eyeBlue: '#4169E1',
-  eyeGreen: '#228B22',
-  eyeYellow: '#FFD700',
-  eyeBlack: '#1a1a1a',
-  pupil: '#000000',
-  eyeWhite: '#FFFFFF',
+  // Eye variants
+  eyeBlack: '#151510',       // Very dark eye
+  eyeYellow: '#8B7030',      // Amber/yellow eye
   
-  // Basic colors
-  white: '#FFFFFF',
-  black: '#1a1a1a',
-  orange: '#FF8C00',
-  yellow: '#FFD700',
-  blue: '#1E90FF',
-  red: '#DC143C',
-  green: '#32CD32',
-  pink: '#FF69B4',
-  purple: '#9932CC',
-  gray: '#808080',
+  // Dragon/fantasy
+  dragonScale: '#4A5A40',    // Scale highlight
   
-  // Vehicle colors (most popular car colors)
-  carWhite: '#FFFFFF',       // White (most popular)
-  carBlack: '#1a1a1a',       // Black
-  carSilver: '#C0C0C0',      // Silver
-  carGray: '#808080',        // Gray
-  carRed: '#CC0000',         // Red
-  carBlue: '#0047AB',        // Cobalt blue
-  carNavy: '#000080',        // Navy
-  carYellow: '#FFD700',      // Yellow (sports cars)
-  
-  // Tail lights
-  tailLight: '#8B0000',      // Dark red
-  brakeLight: '#FF0000',     // Bright red
+  // Vehicle colors
+  carWhite: '#E8E5E0',       // Car white
+  carBlack: '#202020',       // Car black
+  carSilver: '#A0A5A8',      // Silver
+  carGray: '#606060',        // Gray
+  carRed: '#8B3030',         // Car red
+  carBlue: '#3A5070',        // Car blue
+  carNavy: '#252D3A',        // Navy
+  carYellow: '#B09040',      // Yellow
+  tailLight: '#6B3030',      // Tail light
+  brakeLight: '#B03030',     // Brake light
 };
 
 export interface ModelProps {
