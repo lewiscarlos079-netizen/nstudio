@@ -31,7 +31,8 @@ import {
   Camera,
   Activity,
   Package,
-  Bone
+  Bone,
+  RefreshCw
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -40,22 +41,35 @@ export default function Studio() {
   const [showRightPanel, setShowRightPanel] = useState(true);
   const [showAIChat, setShowAIChat] = useState(false);
   const [activeTab, setActiveTab] = useState('model');
+  const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
 
   // Auto-save indicator
   const [lastSaved, setLastSaved] = useState(new Date());
 
   useEffect(() => {
+    if (!autoSaveEnabled) return;
+    
     const interval = setInterval(() => {
       setLastSaved(new Date());
-    }, 120000); // Update every 2 minutes
+      // Auto-save silently
+    }, 120000); // Auto-save every 2 minutes
     return () => clearInterval(interval);
-  }, []);
+  }, [autoSaveEnabled]);
 
   const handleSave = () => {
     toast.success('Project saved', {
       description: 'Your project has been saved successfully.',
     });
     setLastSaved(new Date());
+  };
+
+  const toggleAutoSave = () => {
+    setAutoSaveEnabled(!autoSaveEnabled);
+    toast.success(autoSaveEnabled ? 'Auto-save disabled' : 'Auto-save enabled', {
+      description: autoSaveEnabled 
+        ? 'Remember to save manually.' 
+        : 'Your project will be saved automatically.',
+    });
   };
 
   const handleExport = () => {
@@ -131,6 +145,16 @@ export default function Studio() {
             <SandboxBuilder />
             <InventorySidebar />
             <SceneSettings />
+            <Button 
+              variant={autoSaveEnabled ? "default" : "ghost"} 
+              size="sm" 
+              className={`gap-2 h-8 ${autoSaveEnabled ? 'bg-primary/20 hover:bg-primary/30' : ''}`}
+              onClick={toggleAutoSave}
+              title={autoSaveEnabled ? 'Auto-save enabled' : 'Auto-save disabled'}
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${autoSaveEnabled ? 'animate-spin' : ''}`} style={{ animationDuration: '3s' }} />
+              <span className="hidden sm:inline">{autoSaveEnabled ? 'Auto' : 'Manual'}</span>
+            </Button>
             <Button variant="ghost" size="sm" className="gap-2 h-8" onClick={handleSave}>
               <Save className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Save</span>
