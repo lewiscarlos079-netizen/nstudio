@@ -15,6 +15,14 @@ export interface Project3D {
   modelData?: string;
 }
 
+export interface AssetDeveloperInfo {
+  name: string;
+  email?: string;
+  website?: string;
+  license?: string;
+  attribution?: string;
+}
+
 export interface Asset {
   id: string;
   name: string;
@@ -22,6 +30,9 @@ export interface Asset {
   thumbnail: string;
   source: 'local' | 'google' | 'reddit' | 'unity' | 'sketchfab';
   createdAt: Date;
+  developer?: AssetDeveloperInfo;
+  fileSize?: number;
+  fileFormat?: string;
 }
 
 interface ProjectState {

@@ -2,46 +2,145 @@ import { useCallback, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Upload, File, X, CheckCircle, AlertCircle } from 'lucide-react';
+import { Upload, File, X, CheckCircle, AlertCircle, User, Mail, Globe, FileText } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useProjectStore } from '@/store/projectStore';
+import { useProjectStore, AssetDeveloperInfo } from '@/store/projectStore';
+import { toast } from 'sonner';
 
 interface UploadedFile {
   id: string;
   name: string;
   size: number;
   type: string;
-  status: 'pending' | 'success' | 'error';
+  status: 'pending' | 'processing' | 'success' | 'error';
   url?: string;
+  developer?: AssetDeveloperInfo;
 }
 
 const ACCEPTED_FORMATS = ['.gltf', '.glb', '.obj', '.fbx', '.stl', '.dae', '.3ds', '.zip'];
+const METADATA_FILES = ['readme.txt', 'readme.md', 'license.txt', 'license.md', 'credits.txt', 'author.txt', 'info.txt', 'metadata.json'];
+
+// Parse developer info from common metadata file formats
+function parseDeveloperInfo(content: string, fileName: string): AssetDeveloperInfo {
+  const info: AssetDeveloperInfo = { name: 'Unknown Developer' };
+  
+  // Try JSON format first
+  if (fileName.endsWith('.json')) {
+    try {
+      const json = JSON.parse(content);
+      info.name = json.author || json.creator || json.developer || json.name || 'Unknown Developer';
+      info.email = json.email || json.contact;
+      info.website = json.website || json.url || json.homepage;
+      info.license = json.license;
+      info.attribution = json.attribution || json.credits;
+      return info;
+    } catch {
+      // Continue with text parsing
+    }
+  }
+  
+  const lines = content.split('\n');
+  
+  for (const line of lines) {
+    const lowerLine = line.toLowerCase();
+    
+    // Author/Creator patterns
+    if (lowerLine.includes('author:') || lowerLine.includes('creator:') || lowerLine.includes('by:') || lowerLine.includes('developer:')) {
+      const match = line.match(/(?:author|creator|by|developer)[:\s]+(.+)/i);
+      if (match) info.name = match[1].trim();
+    }
+    
+    // Email patterns
+    const emailMatch = line.match(/[\w.-]+@[\w.-]+\.\w+/);
+    if (emailMatch) info.email = emailMatch[0];
+    
+    // Website patterns
+    const urlMatch = line.match(/https?:\/\/[^\s]+/);
+    if (urlMatch) info.website = urlMatch[0];
+    
+    // License patterns
+    if (lowerLine.includes('license:') || lowerLine.includes('licence:')) {
+      const match = line.match(/licen[cs]e[:\s]+(.+)/i);
+      if (match) info.license = match[1].trim();
+    }
+    
+    // Attribution patterns
+    if (lowerLine.includes('attribution:') || lowerLine.includes('credit:')) {
+      const match = line.match(/(?:attribution|credit)[:\s]+(.+)/i);
+      if (match) info.attribution = match[1].trim();
+    }
+  }
+  
+  // If no name found, try to extract from first non-empty line
+  if (info.name === 'Unknown Developer') {
+    const firstLine = lines.find(l => l.trim().length > 0 && !l.startsWith('#') && !l.startsWith('//'));
+    if (firstLine && firstLine.length < 100) {
+      info.name = firstLine.trim();
+    }
+  }
+  
+  return info;
+}
 
 export function FileUploader() {
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const addAsset = useProjectStore((s) => s.addAsset);
 
-  const handleFiles = useCallback((fileList: FileList | null) => {
+  const handleFiles = useCallback(async (fileList: FileList | null) => {
     if (!fileList) return;
 
-    const newFiles: UploadedFile[] = Array.from(fileList)
-      .filter((file) => {
-        const ext = '.' + file.name.split('.').pop()?.toLowerCase();
-        return ACCEPTED_FORMATS.includes(ext);
-      })
-      .map((file) => ({
-        id: crypto.randomUUID(),
-        name: file.name,
-        size: file.size,
-        type: file.name.split('.').pop()?.toUpperCase() || 'Unknown',
-        status: 'pending' as const,
-      }));
+    const fileArray = Array.from(fileList);
+    
+    // Separate model files from metadata files
+    const modelFiles = fileArray.filter((file) => {
+      const ext = '.' + file.name.split('.').pop()?.toLowerCase();
+      return ACCEPTED_FORMATS.includes(ext);
+    });
+    
+    const metadataFiles = fileArray.filter((file) => {
+      return METADATA_FILES.some(meta => file.name.toLowerCase() === meta || file.name.toLowerCase().endsWith(meta));
+    });
+
+    // Parse metadata files for developer info
+    let developerInfo: AssetDeveloperInfo | undefined;
+    
+    for (const metaFile of metadataFiles) {
+      try {
+        const content = await metaFile.text();
+        developerInfo = parseDeveloperInfo(content, metaFile.name.toLowerCase());
+        if (developerInfo.name !== 'Unknown Developer') {
+          toast.success(`Found developer info: ${developerInfo.name}`);
+          break;
+        }
+      } catch (e) {
+        console.error('Failed to parse metadata file:', e);
+      }
+    }
+
+    const newFiles: UploadedFile[] = modelFiles.map((file) => ({
+      id: crypto.randomUUID(),
+      name: file.name,
+      size: file.size,
+      type: file.name.split('.').pop()?.toUpperCase() || 'Unknown',
+      status: 'pending' as const,
+      developer: developerInfo,
+    }));
 
     setFiles((prev) => [...prev, ...newFiles]);
 
-    // Simulate processing and add to store
+    // Process files and add to store
     newFiles.forEach((uploadedFile) => {
+      // Update to processing state
+      setTimeout(() => {
+        setFiles((prev) =>
+          prev.map((f) =>
+            f.id === uploadedFile.id ? { ...f, status: 'processing' as const } : f
+          )
+        );
+      }, 500);
+      
+      // Complete processing
       setTimeout(() => {
         setFiles((prev) =>
           prev.map((f) =>
@@ -49,14 +148,21 @@ export function FileUploader() {
           )
         );
         
-        // Add to project store (id is auto-generated by store)
+        // Add to project store with developer info
         addAsset({
           name: uploadedFile.name.replace(/\.[^/.]+$/, ''),
           type: 'model',
           source: 'local',
           thumbnail: '',
+          developer: uploadedFile.developer,
+          fileSize: uploadedFile.size,
+          fileFormat: uploadedFile.type.toLowerCase(),
         });
-      }, 1000 + Math.random() * 1000);
+        
+        toast.success(
+          `Added: ${uploadedFile.name}${uploadedFile.developer?.name ? ` by ${uploadedFile.developer.name}` : ''}`
+        );
+      }, 1500 + Math.random() * 1000);
     });
   }, [addAsset]);
 
@@ -107,7 +213,7 @@ export function FileUploader() {
           id="file-input"
           type="file"
           multiple
-          accept={ACCEPTED_FORMATS.join(',')}
+          accept={[...ACCEPTED_FORMATS, '.txt', '.md', '.json'].join(',')}
           className="hidden"
           onChange={(e) => handleFiles(e.target.files)}
         />
@@ -123,12 +229,16 @@ export function FileUploader() {
           <p className="text-muted-foreground text-sm text-center max-w-md mb-4">
             Drag and drop your 3D files here, or click to browse
           </p>
-          <div className="flex flex-wrap gap-2 justify-center">
+          <div className="flex flex-wrap gap-2 justify-center mb-4">
             {ACCEPTED_FORMATS.map((format) => (
               <Badge key={format} variant="outline" className="text-xs">
                 {format}
               </Badge>
             ))}
+          </div>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 px-3 py-2 rounded-lg">
+            <FileText className="w-4 h-4" />
+            <span>Include readme.txt, license.txt, or metadata.json for developer attribution</span>
           </div>
         </div>
       </Card>
@@ -166,10 +276,44 @@ export function FileUploader() {
                           {file.type}
                         </Badge>
                       </div>
+                      {file.developer && file.status === 'success' && (
+                        <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
+                          <div className="flex items-center gap-1">
+                            <User className="w-3 h-3" />
+                            <span>{file.developer.name}</span>
+                          </div>
+                          {file.developer.email && (
+                            <div className="flex items-center gap-1">
+                              <Mail className="w-3 h-3" />
+                              <span>{file.developer.email}</span>
+                            </div>
+                          )}
+                          {file.developer.website && (
+                            <a 
+                              href={file.developer.website} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1 hover:text-primary transition-colors"
+                            >
+                              <Globe className="w-3 h-3" />
+                              <span>Website</span>
+                            </a>
+                          )}
+                        </div>
+                      )}
                     </div>
                     <div className="flex items-center gap-2">
                       {file.status === 'pending' && (
-                        <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                          <span>Waiting...</span>
+                        </div>
+                      )}
+                      {file.status === 'processing' && (
+                        <div className="flex items-center gap-2 text-xs text-primary">
+                          <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                          <span>Processing...</span>
+                        </div>
                       )}
                       {file.status === 'success' && (
                         <CheckCircle className="w-5 h-5 text-green-500" />

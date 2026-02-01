@@ -16,11 +16,15 @@ import {
   Download,
   RefreshCw,
   Pencil,
-  FileCode
+  FileCode,
+  User,
+  Mail,
+  Globe
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { SketchfabBrowser } from '@/components/assets/SketchfabBrowser';
 import { FileUploader } from '@/components/assets/FileUploader';
 import { ModelThumbnail3D } from '@/components/assets/ModelThumbnail3D';
@@ -28,6 +32,7 @@ import { ModelEditModal } from '@/components/assets/ModelEditModal';
 import { BlenderExportModal } from '@/components/assets/BlenderExportModal';
 import { useProjectStore } from '@/store/projectStore';
 import { useModelAssets, useRefreshModels, detectHardwareTier, ModelAsset } from '@/hooks/useModelAssets';
+import { toast } from 'sonner';
 
 const assetSources = [
   { id: 'local', label: 'Local' },
@@ -91,11 +96,40 @@ export default function Assets() {
               </p>
             </div>
             <div className="flex gap-3">
-              <Button variant="outline" className="gap-2">
+              <Button 
+                variant="outline" 
+                className="gap-2"
+                onClick={() => {
+                  const url = window.prompt('Enter model URL (Sketchfab, GitHub, etc.):');
+                  if (url) {
+                    // Extract name from URL
+                    const urlName = url.split('/').pop()?.split('?')[0] || 'Imported Model';
+                    useProjectStore.getState().addAsset({
+                      name: urlName.replace(/[-_]/g, ' '),
+                      type: 'model',
+                      source: url.includes('sketchfab') ? 'sketchfab' : 'local',
+                      thumbnail: '',
+                      developer: {
+                        name: 'External Import',
+                        website: url,
+                      }
+                    });
+                    toast.success(`Imported: ${urlName}`);
+                  }
+                }}
+              >
                 <ExternalLink className="w-4 h-4" />
                 Import from URL
               </Button>
-              <Button variant="cyber" className="gap-2">
+              <Button 
+                variant="cyber" 
+                className="gap-2"
+                onClick={() => {
+                  // Switch to upload tab
+                  const uploadTab = document.querySelector('[value="upload"]') as HTMLButtonElement;
+                  uploadTab?.click();
+                }}
+              >
                 <Upload className="w-4 h-4" />
                 Upload Asset
               </Button>
@@ -303,7 +337,51 @@ export default function Assets() {
                             <Badge variant="outline" className="text-xs capitalize">
                               {asset.type}
                             </Badge>
+                            {asset.fileFormat && (
+                              <Badge variant="secondary" className="text-xs uppercase">
+                                {asset.fileFormat}
+                              </Badge>
+                            )}
                           </div>
+                          {asset.developer && (
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground cursor-help">
+                                    <User className="w-3 h-3" />
+                                    <span className="truncate">{asset.developer.name}</span>
+                                  </div>
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-xs">
+                                  <div className="space-y-1">
+                                    <p className="font-medium">{asset.developer.name}</p>
+                                    {asset.developer.email && (
+                                      <div className="flex items-center gap-1 text-xs">
+                                        <Mail className="w-3 h-3" />
+                                        {asset.developer.email}
+                                      </div>
+                                    )}
+                                    {asset.developer.website && (
+                                      <div className="flex items-center gap-1 text-xs">
+                                        <Globe className="w-3 h-3" />
+                                        {asset.developer.website}
+                                      </div>
+                                    )}
+                                    {asset.developer.license && (
+                                      <p className="text-xs text-muted-foreground">
+                                        License: {asset.developer.license}
+                                      </p>
+                                    )}
+                                    {asset.developer.attribution && (
+                                      <p className="text-xs italic">
+                                        {asset.developer.attribution}
+                                      </p>
+                                    )}
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          )}
                         </CardContent>
                       </Card>
                     </motion.div>
