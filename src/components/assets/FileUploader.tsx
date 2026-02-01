@@ -15,7 +15,7 @@ interface UploadedFile {
   url?: string;
 }
 
-const ACCEPTED_FORMATS = ['.gltf', '.glb', '.obj', '.fbx', '.stl', '.dae', '.3ds'];
+const ACCEPTED_FORMATS = ['.gltf', '.glb', '.obj', '.fbx', '.stl', '.dae', '.3ds', '.zip'];
 
 export function FileUploader() {
   const [files, setFiles] = useState<UploadedFile[]>([]);
