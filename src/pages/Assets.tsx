@@ -53,10 +53,26 @@ export default function Assets() {
   const assets = useProjectStore((s) => s.assets);
   const localAssets = assets.filter((a) => a.source === 'local');
   
+  // Search state
+  const [modelsSearch, setModelsSearch] = useState('');
+  const [localSearch, setLocalSearch] = useState('');
+  
   // Fetch 3D models from database
   const { data: modelAssets, isLoading: modelsLoading } = useModelAssets();
   const refreshModels = useRefreshModels();
   const hardwareTier = detectHardwareTier();
+  
+  // Filtered assets based on search
+  const filteredModelAssets = modelAssets?.filter(model => 
+    model.name.toLowerCase().includes(modelsSearch.toLowerCase()) ||
+    model.category.toLowerCase().includes(modelsSearch.toLowerCase())
+  );
+  
+  const filteredLocalAssets = localAssets.filter(asset =>
+    asset.name.toLowerCase().includes(localSearch.toLowerCase()) ||
+    asset.type.toLowerCase().includes(localSearch.toLowerCase()) ||
+    asset.developer?.name?.toLowerCase().includes(localSearch.toLowerCase())
+  );
   
   // Edit modal state
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -169,6 +185,8 @@ export default function Assets() {
                   <Input 
                     placeholder="Search 3D models..." 
                     className="pl-10 bg-card border-primary/20"
+                    value={modelsSearch}
+                    onChange={(e) => setModelsSearch(e.target.value)}
                   />
                 </div>
                 <Button variant="outline" className="gap-2">
@@ -201,7 +219,7 @@ export default function Assets() {
                 </div>
               ) : (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                  {modelAssets?.map((model, index) => (
+                  {filteredModelAssets?.map((model, index) => (
                     <motion.div
                       key={model.id}
                       initial={{ opacity: 0, scale: 0.95 }}
@@ -271,7 +289,18 @@ export default function Assets() {
                     </motion.div>
                   ))}
 
-                  {(!modelAssets || modelAssets.length === 0) && (
+                  {modelsSearch && filteredModelAssets?.length === 0 && (
+                    <div className="col-span-full text-center py-16">
+                      <Search className="w-16 h-16 text-muted-foreground/30 mx-auto mb-4" />
+                      <h3 className="font-display text-xl font-semibold mb-2">No Results Found</h3>
+                      <p className="text-muted-foreground mb-4">No models match "{modelsSearch}"</p>
+                      <Button variant="outline" onClick={() => setModelsSearch('')}>
+                        Clear Search
+                      </Button>
+                    </div>
+                  )}
+
+                  {!modelsSearch && (!modelAssets || modelAssets.length === 0) && (
                     <div className="col-span-full text-center py-16">
                       <Box className="w-16 h-16 text-muted-foreground/30 mx-auto mb-4" />
                       <h3 className="font-display text-xl font-semibold mb-2">No 3D Models</h3>
@@ -296,8 +325,10 @@ export default function Assets() {
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input 
-                    placeholder="Search assets..." 
+                    placeholder="Search assets by name, type, or developer..." 
                     className="pl-10 bg-card border-primary/20"
+                    value={localSearch}
+                    onChange={(e) => setLocalSearch(e.target.value)}
                   />
                 </div>
                 <Button variant="outline" className="gap-2">
@@ -308,7 +339,7 @@ export default function Assets() {
 
               {/* Asset Grid */}
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                {localAssets.map((asset, index) => {
+                {filteredLocalAssets.map((asset, index) => {
                   const Icon = typeIcons[asset.type as keyof typeof typeIcons] || Box;
                   return (
                     <motion.div
@@ -318,8 +349,21 @@ export default function Assets() {
                       transition={{ delay: index * 0.05 }}
                     >
                       <Card className="group bg-card border-primary/10 hover:border-primary/30 transition-all cursor-pointer overflow-hidden">
-                        <div className="aspect-square bg-muted/50 flex items-center justify-center relative">
-                          <Icon className="w-12 h-12 text-muted-foreground/50" />
+                        <div className="aspect-square bg-gradient-to-b from-muted/30 to-muted/60 flex items-center justify-center relative overflow-hidden">
+                          {asset.thumbnail ? (
+                            <img 
+                              src={asset.thumbnail} 
+                              alt={asset.name} 
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="flex flex-col items-center justify-center gap-2">
+                              <Icon className="w-12 h-12 text-primary/60" />
+                              <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
+                                {asset.type}
+                              </span>
+                            </div>
+                          )}
                           <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-4">
                             <div className="flex gap-2">
                               <Button size="sm" variant="glass" className="h-8">
@@ -388,7 +432,18 @@ export default function Assets() {
                   );
                 })}
 
-                {localAssets.length === 0 && (
+                {localSearch && filteredLocalAssets.length === 0 && (
+                  <div className="col-span-full text-center py-16">
+                    <Search className="w-16 h-16 text-muted-foreground/30 mx-auto mb-4" />
+                    <h3 className="font-display text-xl font-semibold mb-2">No Results Found</h3>
+                    <p className="text-muted-foreground mb-4">No assets match "{localSearch}"</p>
+                    <Button variant="outline" onClick={() => setLocalSearch('')}>
+                      Clear Search
+                    </Button>
+                  </div>
+                )}
+
+                {!localSearch && localAssets.length === 0 && (
                   <div className="col-span-full text-center py-16">
                     <Box className="w-16 h-16 text-muted-foreground/30 mx-auto mb-4" />
                     <h3 className="font-display text-xl font-semibold mb-2">No Local Assets</h3>
