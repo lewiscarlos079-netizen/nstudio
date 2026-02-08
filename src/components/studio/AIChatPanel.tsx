@@ -61,28 +61,19 @@ export function AIChatPanel({ isOpen, onClose }: AIChatPanelProps) {
     setIsLoading(true);
 
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-chat`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-          },
-          body: JSON.stringify({
-            messages: messages.concat(userMessage).map(m => ({
-              role: m.role,
-              content: m.content,
-            })),
-          }),
-        }
-      );
+      const { data, error: fnError } = await supabase.functions.invoke('ai-chat', {
+        body: {
+          messages: messages.concat(userMessage).map(m => ({
+            role: m.role,
+            content: m.content,
+          })),
+        },
+      });
 
-      if (!response.ok) {
+      if (fnError) {
         throw new Error('Failed to get response');
       }
 
-      const data = await response.json();
       
       const assistantMessage: Message = {
         id: crypto.randomUUID(),
